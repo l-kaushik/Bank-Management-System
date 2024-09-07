@@ -36,12 +36,12 @@ public class Login extends JFrame implements ActionListener {
                 false, new Point((int) (ScreenSize.getWidth() - 100) / 4, (int) ScreenSize.getHeight() / 4));
 
         // top center image
-        JLabel topCenterImage = GetScaledImageWithLabel("icons/bank.png", 100, 100);
+        JLabel topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
         topCenterImage.setBounds((int) this.getWidth() / 2 - 50, 10, 100, 100);
         add(topCenterImage);
 
         // bottom right card image
-        JLabel cardImage = GetScaledImageWithLabel("icons/card.png", 100, 100);
+        JLabel cardImage = Common.GetScaledImageWithLabel("icons/card.png", 100, 100);
         cardImage.setBounds((int) this.getWidth() - 200, 350, 100, 100);
         add(cardImage);
 
@@ -84,19 +84,11 @@ public class Login extends JFrame implements ActionListener {
         add(signUpButton);
 
         // background image
-        JLabel backgroundImage = GetScaledImageWithLabel("icons/backbg.png", this.getWidth(), this.getHeight());
+        JLabel backgroundImage = Common.GetScaledImageWithLabel("icons/backbg.png", this.getWidth(), this.getHeight());
         backgroundImage.setBounds(0, 0, this.getWidth(), this.getHeight());
         add(backgroundImage);
 
         setVisible(true);
-    }
-
-    private JLabel GetScaledImageWithLabel(String ImagePath, int WidthScale, int HeightScale) {
-        // get image -> scale it -> get image again
-        ImageIcon imageIcon = new ImageIcon(new ImageIcon(ClassLoader.getSystemResource(ImagePath))
-                .getImage().getScaledInstance(WidthScale, HeightScale, Image.SCALE_DEFAULT));
-
-        return new JLabel(imageIcon);
     }
 
     @Override
