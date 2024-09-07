@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -51,6 +52,13 @@ public class Common {
 
         return button;
     }
+    public static JLabel CreateLabel(String labelText, Font font, Rectangle bounds) {
+        JLabel label = new JLabel(labelText);
+        label.setFont(font);
+        label.setBounds(bounds);
+
+        return label;
+    }
 
     public static JLabel CreateLabel(String labelText, Color foregroundColor, Font font, Rectangle bounds) {
         JLabel label = new JLabel(labelText);
@@ -67,5 +75,20 @@ public class Common {
                 .getImage().getScaledInstance(WidthScale, HeightScale, Image.SCALE_DEFAULT));
 
         return new JLabel(imageIcon);
+    }
+
+    public static JTextField CreateTextField(int columns, Font font, Rectangle bounds){
+        JTextField textField = new JTextField(columns);
+        textField.setFont(font);
+        textField.setBounds(bounds);
+
+        return textField;
+    }
+    public static JTextField CreateTextField(Font font, Rectangle bounds){
+        JTextField textField = new JTextField();
+        textField.setFont(font);
+        textField.setBounds(bounds);
+
+        return textField;
     }
 }
