@@ -46,12 +46,12 @@ public class Login extends JFrame implements ActionListener {
         add(cardImage);
 
         // title below top center image
-        titleLabel = CreateLabel("WELCOME TO ATM", Color.WHITE, new Font("AvantGarde", Font.BOLD, 38),
+        titleLabel = Common.CreateLabel("WELCOME TO ATM", Color.WHITE, new Font("AvantGarde", Font.BOLD, 38),
                 new Rectangle(230, 125, 450, 40));
         add(titleLabel);
 
         // get card number from user
-        cardNumberLabel = CreateLabel("Card No: ", Color.WHITE, new Font("Ralway", Font.BOLD, 28),
+        cardNumberLabel = Common.CreateLabel("Card No: ", Color.WHITE, new Font("Ralway", Font.BOLD, 28),
                 new Rectangle(150, 190, 375, 30));
         add(cardNumberLabel);
 
@@ -61,7 +61,7 @@ public class Login extends JFrame implements ActionListener {
         add(cardNumberTextField);
 
         // get pin number from user
-        pinLabel = CreateLabel("Pin No: ", Color.WHITE, new Font("Ralway", Font.BOLD, 28),
+        pinLabel = Common.CreateLabel("Pin No: ", Color.WHITE, new Font("Ralway", Font.BOLD, 28),
                 new Rectangle(150, 250, 375, 30));
         add(pinLabel);
 
@@ -71,15 +71,15 @@ public class Login extends JFrame implements ActionListener {
         add(passwordField);
 
         // buttons
-        signInButton = CreateButton("SIGN IN", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
+        signInButton = Common.CreateButton("SIGN IN", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
                 new Rectangle(325, 300, 100, 30), this);
         add(signInButton);
 
-        clearButton = CreateButton("CLEAR", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
+        clearButton = Common.CreateButton("CLEAR", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
                 new Rectangle(455, 300, 100, 30), this);
         add(clearButton);
 
-        signUpButton = CreateButton("SIGN UP", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
+        signUpButton = Common.CreateButton("SIGN UP", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
                 new Rectangle(325, 350, 230, 30), this);
         add(signUpButton);
 
@@ -97,27 +97,6 @@ public class Login extends JFrame implements ActionListener {
                 .getImage().getScaledInstance(WidthScale, HeightScale, Image.SCALE_DEFAULT));
 
         return new JLabel(imageIcon);
-    }
-
-    private JButton CreateButton(String buttonText, boolean isFocusable, Font buttonFont, Color foregroundColor,
-            Rectangle bounds, ActionListener actionListener) {
-        JButton button = new JButton(buttonText);
-        button.setFocusable(isFocusable);
-        button.setFont(buttonFont);
-        button.setForeground(foregroundColor);
-        button.setBounds(bounds);
-        button.addActionListener(actionListener);
-
-        return button;
-    }
-
-    private JLabel CreateLabel(String labelText, Color foregroundColor, Font font, Rectangle bounds) {
-        JLabel label = new JLabel(labelText);
-        label.setForeground(foregroundColor);
-        label.setFont(font);
-        label.setBounds(bounds);
-
-        return label;
     }
 
     @Override
