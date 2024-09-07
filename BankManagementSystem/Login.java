@@ -69,15 +69,15 @@ public class Login extends JFrame implements ActionListener {
         add(passwordField);
 
         // buttons
-        signInButton = Common.CreateButton("SIGN IN", false, ArialBold14, Color.BLACK,
+        signInButton = Common.CreateButton("SIGN IN", ArialBold14, Color.BLACK,
                 new Rectangle(325, 300, 100, 30), this);
         add(signInButton);
 
-        clearButton = Common.CreateButton("CLEAR", false, ArialBold14, Color.BLACK,
+        clearButton = Common.CreateButton("CLEAR", ArialBold14, Color.BLACK,
                 new Rectangle(455, 300, 100, 30), this);
         add(clearButton);
 
-        signUpButton = Common.CreateButton("SIGN UP", false, ArialBold14, Color.BLACK,
+        signUpButton = Common.CreateButton("SIGN UP", ArialBold14, Color.BLACK,
                 new Rectangle(325, 350, 230, 30), this);
         add(signUpButton);
 
