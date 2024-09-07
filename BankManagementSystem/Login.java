@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -52,17 +53,13 @@ public class Login extends JFrame implements ActionListener {
         add(cardImage);
 
         // title below top center image
-        titleLabel = new JLabel("WELCOME TO ATM");
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new Font("AvantGarde", Font.BOLD, 38));
-        titleLabel.setBounds(230, 125, 450, 40);
+        titleLabel = CreateLabel("WELCOME TO ATM", Color.WHITE, new Font("AvantGarde", Font.BOLD, 38),
+                new Rectangle(230, 125, 450, 40));
         add(titleLabel);
 
         // get card number from user
-        cardNumberLabel = new JLabel("Card No: ");
-        cardNumberLabel.setFont(new Font("Ralway", Font.BOLD, 28));
-        cardNumberLabel.setForeground(Color.WHITE);
-        cardNumberLabel.setBounds(150, 190, 375, 30);
+        cardNumberLabel = CreateLabel("Card No: ", Color.WHITE, new Font("Ralway", Font.BOLD, 28),
+                new Rectangle(150, 190, 375, 30));
         add(cardNumberLabel);
 
         cardNumberTextField = new JTextField(15);
@@ -71,10 +68,8 @@ public class Login extends JFrame implements ActionListener {
         add(cardNumberTextField);
 
         // get pin number from user
-        pinLabel = new JLabel("Pin No: ");
-        pinLabel.setFont(new Font("Ralway", Font.BOLD, 28));
-        pinLabel.setForeground(Color.WHITE);
-        pinLabel.setBounds(150, 250, 375, 30);
+        pinLabel = CreateLabel("Pin No: ", Color.WHITE, new Font("Ralway", Font.BOLD, 28),
+                new Rectangle(150, 250, 375, 30));
         add(pinLabel);
 
         passwordField = new JPasswordField(15);
@@ -82,28 +77,17 @@ public class Login extends JFrame implements ActionListener {
         passwordField.setFont(new Font("Arial", Font.BOLD, 14));
         add(passwordField);
 
-        signInButton = new JButton("SIGN IN");
-        signInButton.setFont(new Font("Arial", Font.BOLD, 14));
-        signInButton.setForeground(Color.BLACK);
-        signInButton.setFocusable(false);
-        signInButton.setBounds(325, 300, 100, 30);
-        signInButton.addActionListener(this);
+        // buttons
+        signInButton = CreateButton("SIGN IN", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
+                new Rectangle(325, 300, 100, 30), this);
         add(signInButton);
 
-        clearButton = new JButton("CLEAR");
-        clearButton.setFont(new Font("Arial", Font.BOLD, 14));
-        clearButton.setForeground(Color.BLACK);
-        clearButton.setFocusable(false);
-        clearButton.setBounds(455, 300, 100, 30);
-        clearButton.addActionListener(this);
+        clearButton = CreateButton("CLEAR", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
+                new Rectangle(455, 300, 100, 30), this);
         add(clearButton);
 
-        signUpButton = new JButton("SIGN UP");
-        signUpButton.setFont(new Font("Arial", Font.BOLD, 14));
-        signUpButton.setForeground(Color.BLACK);
-        signUpButton.setFocusable(false);
-        signUpButton.setBounds(325, 350, 230, 30);
-        signUpButton.addActionListener(this);
+        signUpButton = CreateButton("SIGN UP", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
+                new Rectangle(325, 350, 230, 30), this);
         add(signUpButton);
 
         // background image
@@ -122,23 +106,42 @@ public class Login extends JFrame implements ActionListener {
         return new JLabel(imageIcon);
     }
 
+    private JButton CreateButton(String buttonText, boolean isFocusable, Font buttonFont, Color foregroundColor,
+            Rectangle bounds, ActionListener actionListener) {
+        JButton button = new JButton(buttonText);
+        button.setFocusable(isFocusable);
+        button.setFont(buttonFont);
+        button.setForeground(foregroundColor);
+        button.setBounds(bounds);
+        button.addActionListener(actionListener);
+
+        return button;
+    }
+
+    private JLabel CreateLabel(String labelText, Color foregroundColor, Font font, Rectangle bounds) {
+        JLabel label = new JLabel(labelText);
+        label.setForeground(foregroundColor);
+        label.setFont(font);
+        label.setBounds(bounds);
+
+        return label;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-      try {
-        if(e.getSource() == signInButton){
-       
-        }
-        else if(e.getSource() == signUpButton){
+        try {
+            if (e.getSource() == signInButton) {
 
+            } else if (e.getSource() == signUpButton) {
+
+            } else if (e.getSource() == clearButton) {
+                cardNumberTextField.setText("");
+                passwordField.setText("");
+            }
+
+        } catch (Exception E) {
+            E.printStackTrace();
         }
-        else if(e.getSource() == clearButton){
-            cardNumberTextField.setText("");
-            passwordField.setText("");
-        }
-        
-      } catch (Exception E) {
-        E.printStackTrace();
-      }
     }
 
     public static void main(String[] args) {
