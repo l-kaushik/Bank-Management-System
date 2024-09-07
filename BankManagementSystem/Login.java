@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
@@ -30,17 +31,9 @@ public class Login extends JFrame implements ActionListener {
     JButton signUpButton;
 
     Login() {
-
-        super("Bank Management System");
-        setLayout(null);
-        setSize(850, 480);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-
         Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        // set the frame location in center
-        setLocation((int) (ScreenSize.getWidth() - 100) / 4, (int) ScreenSize.getHeight() / 4);
+        Common.InitializeJFrame(this, "Bank Management System", null, new Dimension(850, 480), JFrame.EXIT_ON_CLOSE,
+                false, new Point((int) (ScreenSize.getWidth() - 100) / 4, (int) ScreenSize.getHeight() / 4));
 
         // top center image
         JLabel topCenterImage = GetScaledImageWithLabel("icons/bank.png", 100, 100);
