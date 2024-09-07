@@ -29,6 +29,8 @@ public class Login extends JFrame implements ActionListener {
     JButton signUpButton;
 
     Login() {
+        Font ArialBold14 = new Font("Arial", Font.BOLD, 14);
+
         Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Common.InitializeJFrame(this, "Bank Management System", null, new Dimension(850, 480), JFrame.EXIT_ON_CLOSE,
                 false, new Point((int) (ScreenSize.getWidth() - 100) / 4, (int) ScreenSize.getHeight() / 4));
@@ -53,9 +55,7 @@ public class Login extends JFrame implements ActionListener {
                 new Rectangle(150, 190, 375, 30));
         add(cardNumberLabel);
 
-        cardNumberTextField = new JTextField(15);
-        cardNumberTextField.setBounds(325, 190, 230, 30);
-        cardNumberTextField.setFont(new Font("Arial", Font.BOLD, 14));
+        cardNumberTextField = Common.CreateTextField(15, ArialBold14, new Rectangle(325, 190, 230, 30));
         add(cardNumberTextField);
 
         // get pin number from user
@@ -65,19 +65,19 @@ public class Login extends JFrame implements ActionListener {
 
         passwordField = new JPasswordField(15);
         passwordField.setBounds(325, 250, 230, 30);
-        passwordField.setFont(new Font("Arial", Font.BOLD, 14));
+        passwordField.setFont(ArialBold14);
         add(passwordField);
 
         // buttons
-        signInButton = Common.CreateButton("SIGN IN", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
+        signInButton = Common.CreateButton("SIGN IN", false, ArialBold14, Color.BLACK,
                 new Rectangle(325, 300, 100, 30), this);
         add(signInButton);
 
-        clearButton = Common.CreateButton("CLEAR", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
+        clearButton = Common.CreateButton("CLEAR", false, ArialBold14, Color.BLACK,
                 new Rectangle(455, 300, 100, 30), this);
         add(clearButton);
 
-        signUpButton = Common.CreateButton("SIGN UP", false, new Font("Arial", Font.BOLD, 14), Color.BLACK,
+        signUpButton = Common.CreateButton("SIGN UP", false, ArialBold14, Color.BLACK,
                 new Rectangle(325, 350, 230, 30), this);
         add(signUpButton);
 
