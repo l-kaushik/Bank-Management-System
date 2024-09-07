@@ -6,7 +6,8 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Random;
 
 import javax.swing.ButtonGroup;
@@ -18,7 +19,7 @@ import javax.swing.JTextField;
 
 import com.toedter.calendar.JDateChooser;
 
-public class SignUp extends JFrame {
+public class SignUp extends JFrame implements ActionListener{
 
     Random random = new Random();
     long first4 = (random.nextLong() % 9000L) + 1000L;
@@ -177,12 +178,17 @@ public class SignUp extends JFrame {
         stateTextField = Common.CreateTextField(RalewayBold14, new Rectangle(300, 640, 400, 30));
         add(stateTextField);
 
-        nextButton = Common.CreateButton("Next", RalewayBold14, Color.BLACK, new Rectangle(620, 710, 80, 30), null);
+        nextButton = Common.CreateButton("Next", RalewayBold14, Color.BLACK, new Rectangle(620, 710, 80, 30), this);
         add(nextButton);
 
         setVisible(true);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        
+    }
+    
     public static void main(String[] args) {
         new SignUp();
     }
