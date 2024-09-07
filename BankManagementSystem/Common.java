@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import java.awt.Color;
@@ -41,10 +42,10 @@ public class Common {
         object.getContentPane().setBackground(backgroundColor);
     }
 
-    public static JButton CreateButton(String buttonText, boolean isFocusable, Font buttonFont, Color foregroundColor,
+    public static JButton CreateButton(String buttonText, Font buttonFont, Color foregroundColor,
             Rectangle bounds, ActionListener actionListener) {
         JButton button = new JButton(buttonText);
-        button.setFocusable(isFocusable);
+        button.setFocusable(false);
         button.setFont(buttonFont);
         button.setForeground(foregroundColor);
         button.setBounds(bounds);
@@ -90,5 +91,15 @@ public class Common {
         textField.setBounds(bounds);
 
         return textField;
+    }
+
+    public static JRadioButton CreateRadioButton(String text, Font font, Color backgroundColor, Rectangle bounds){
+        JRadioButton radioButton = new JRadioButton(text);
+        radioButton.setFont(font);
+        radioButton.setBounds(bounds);
+        radioButton.setFocusable(false);
+        radioButton.setBackground(backgroundColor);
+
+        return radioButton;
     }
 }
