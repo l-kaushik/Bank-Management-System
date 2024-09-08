@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 
 public class MyCon {
 
-    String folderPath = "../databases";
+    String folderPath = "src/Databases";
     String fileName = "SQLiteTest1.db";
     String filePath = folderPath + "/" + fileName;
 
@@ -15,8 +15,8 @@ public class MyCon {
 
     MyCon() {
         try {
-            // Class.forName("org.sqlite.jdbc");
-            connection = DriverManager.getConnection("jdbc:sqlite:test1.db");
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + filePath);
             statement = connection.createStatement();
 
             String sql = "CREATE TABLE IF NOT EXISTS signup (" +
