@@ -1,4 +1,4 @@
-package src.BankManagementSystem;
+package BankManagementSystem;
 
 import java.sql.Connection;
 import java.sql.Statement;

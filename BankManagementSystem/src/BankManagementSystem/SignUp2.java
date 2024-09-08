@@ -1,4 +1,4 @@
-package src.BankManagementSystem;
+package BankManagementSystem;
 
 public class SignUp2 {
     

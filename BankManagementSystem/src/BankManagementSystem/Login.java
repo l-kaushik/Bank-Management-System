@@ -1,4 +1,4 @@
-package src.BankManagementSystem;
+package BankManagementSystem;
 
 import java.awt.Color;
 import java.awt.Dimension;
