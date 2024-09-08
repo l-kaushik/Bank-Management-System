@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,6 +24,13 @@ public class Common {
      * need in most of classes.
      */
 
+    public static Color FrameBackgroundColor = new Color(222, 255, 228);
+
+    public static Font RalewayBold22 = new Font("Raleway", Font.BOLD, 22);
+    public static Font RalewayBold20 = new Font("Raleway", Font.BOLD, 20);
+    public static Font RalewayBold14 = new Font("Raleway", Font.BOLD, 14);
+    public static Font RalewayBold18 = new Font("Raleway", Font.BOLD, 18);
+
     public static void InitializeJFrame(JFrame object, String title, LayoutManager manager, Dimension size,
             int defaultCloseOperation, boolean isResizeable, Point locationOnScreen) {
         object.setTitle(title);
@@ -34,11 +42,7 @@ public class Common {
 
     public static void InitializeJFrame(JFrame object, String title, LayoutManager manager, Dimension size,
             int defaultCloseOperation, boolean isResizeable, Point locationOnScreen, Color backgroundColor) {
-        object.setTitle(title);
-        object.setLayout(manager);
-        object.setSize(size);
-        object.setDefaultCloseOperation(defaultCloseOperation);
-        object.setLocation(locationOnScreen);
+        InitializeJFrame(object, title, manager, size, defaultCloseOperation, isResizeable, locationOnScreen);
         object.getContentPane().setBackground(backgroundColor);
     }
 
@@ -62,10 +66,9 @@ public class Common {
     }
 
     public static JLabel CreateLabel(String labelText, Color foregroundColor, Font font, Rectangle bounds) {
-        JLabel label = new JLabel(labelText);
+
+        JLabel label = CreateLabel(labelText, font, bounds);
         label.setForeground(foregroundColor);
-        label.setFont(font);
-        label.setBounds(bounds);
 
         return label;
     }
@@ -86,11 +89,7 @@ public class Common {
         return textField;
     }
     public static JTextField CreateTextField(Font font, Rectangle bounds){
-        JTextField textField = new JTextField();
-        textField.setFont(font);
-        textField.setBounds(bounds);
-
-        return textField;
+        return CreateTextField(0, font, bounds);
     }
 
     public static JRadioButton CreateRadioButton(String text, Font font, Color backgroundColor, Rectangle bounds){
@@ -101,5 +100,18 @@ public class Common {
         radioButton.setBackground(backgroundColor);
 
         return radioButton;
+    }
+
+    public static <T> JComboBox<T> CreateComboBox(T[] items, Color backgroundColor, Font font, Rectangle bounds){
+        JComboBox<T> comboBox = new JComboBox<T>(items);
+        comboBox.setBackground(backgroundColor);
+        comboBox.setFont(font);
+        comboBox.setBounds(bounds);
+
+        return comboBox;
+    }
+
+    public static <T> JComboBox<T> CreateComboBox(T[] items, Font font, Rectangle bounds){
+        return CreateComboBox(items, new Color(227, 223, 222), font, bounds);
     }
 }
