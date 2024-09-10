@@ -6,7 +6,9 @@ import java.sql.DriverManager;
 
 public class MyCon {
 
-    String folderPath = "src/Databases";
+    // add a way to check if folder is present or not, if not then create one
+    
+    String folderPath = "BankManagementSystem/src/Databases";
     String fileName = "SQLiteTest1.db";
     String filePath = folderPath + "/" + fileName;
 
