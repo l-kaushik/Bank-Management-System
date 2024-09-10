@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -113,5 +114,15 @@ public class Common {
 
     public static <T> JComboBox<T> CreateComboBox(T[] items, Font font, Rectangle bounds){
         return CreateComboBox(items, new Color(227, 223, 222), font, bounds);
+    }
+
+    public static JCheckBox CreateCheckBox(String text, Color backgorundColor, Font font, Rectangle bounds){
+        JCheckBox checkBox = new JCheckBox(text);
+        checkBox.setBackground(backgorundColor);
+        checkBox.setFont(font);
+        checkBox.setBounds(bounds);
+        checkBox.setFocusable(false);
+
+        return checkBox;
     }
 }
