@@ -5,6 +5,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,8 +14,9 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
+import javax.swing.ButtonGroup;
 
-public class SignUp2 extends JFrame {
+public class SignUp2 extends JFrame implements ActionListener{
 
     JComboBox<String> religionComboBox;
     JComboBox<String> categoryComboBox;
@@ -100,35 +103,51 @@ public class SignUp2 extends JFrame {
         add(occupationComboBox);
 
         // show pan number text field
-        JLabel panNumberLabel = Common.CreateLabel("PAN Number: ", Common.RalewayBold18, new Rectangle(100, 370, 150, 30));
+        JLabel panNumberLabel = Common.CreateLabel("PAN Number: ", Common.RalewayBold18,
+                new Rectangle(100, 370, 150, 30));
         add(panNumberLabel);
 
         panNumberTextField = Common.CreateTextField(Common.RalewayBold18, new Rectangle(350, 370, 320, 30));
         add(panNumberTextField);
 
-        JLabel aadharNumberLabel = Common.CreateLabel("Aadhar Number: ", Common.RalewayBold18, new Rectangle(100, 420, 180, 30));
+        JLabel aadharNumberLabel = Common.CreateLabel("Aadhar Number: ", Common.RalewayBold18,
+                new Rectangle(100, 420, 180, 30));
         add(aadharNumberLabel);
 
         aadharNumberTextField = Common.CreateTextField(Common.RalewayBold18, new Rectangle(350, 420, 320, 30));
         add(aadharNumberTextField);
 
-        JLabel seniorCitizenLabel = Common.CreateLabel("Senior Citizen: ", Common.RalewayBold18, new Rectangle(100, 470, 180, 30));
+        JLabel seniorCitizenLabel = Common.CreateLabel("Senior Citizen: ", Common.RalewayBold18,
+                new Rectangle(100, 470, 180, 30));
         add(seniorCitizenLabel);
 
-        yesSeniorCitizenRadioButton = Common.CreateRadioButton("Yes", Common.RalewayBold14, Common.FrameBackgroundColor, new Rectangle(350, 470, 100, 30));
+        yesSeniorCitizenRadioButton = Common.CreateRadioButton("Yes", Common.RalewayBold14, Common.FrameBackgroundColor,
+                new Rectangle(350, 470, 100, 30));
         add(yesSeniorCitizenRadioButton);
-        
-        noSeniorCitizenRadioButton = Common.CreateRadioButton("No", Common.RalewayBold14, Common.FrameBackgroundColor, new Rectangle(460, 470, 100, 30));
+
+        noSeniorCitizenRadioButton = Common.CreateRadioButton("No", Common.RalewayBold14, Common.FrameBackgroundColor,
+                new Rectangle(460, 470, 100, 30));
         add(noSeniorCitizenRadioButton);
 
-        JLabel existingAccountLabel = Common.CreateLabel("Existing Account: ", Common.RalewayBold18, new Rectangle(100, 520, 180, 30));
+        ButtonGroup seniorCitizeButtonGroup = new ButtonGroup();
+        seniorCitizeButtonGroup.add(yesSeniorCitizenRadioButton);
+        seniorCitizeButtonGroup.add(noSeniorCitizenRadioButton);
+
+        JLabel existingAccountLabel = Common.CreateLabel("Existing Account: ", Common.RalewayBold18,
+                new Rectangle(100, 520, 180, 30));
         add(existingAccountLabel);
 
-        yesExistingAccountRadioButton = Common.CreateRadioButton("Yes", Common.RalewayBold14, Common.FrameBackgroundColor, new Rectangle(350, 520, 100, 30));
+        yesExistingAccountRadioButton = Common.CreateRadioButton("Yes", Common.RalewayBold14,
+                Common.FrameBackgroundColor, new Rectangle(350, 520, 100, 30));
         add(yesExistingAccountRadioButton);
-        
-        noExisitingAccountRadioButton = Common.CreateRadioButton("No", Common.RalewayBold14, Common.FrameBackgroundColor, new Rectangle(460, 520, 100, 30));
+
+        noExisitingAccountRadioButton = Common.CreateRadioButton("No", Common.RalewayBold14,
+                Common.FrameBackgroundColor, new Rectangle(460, 520, 100, 30));
         add(noExisitingAccountRadioButton);
+
+        ButtonGroup existingAccountButtonGroup = new ButtonGroup();
+        existingAccountButtonGroup.add(yesExistingAccountRadioButton);
+        existingAccountButtonGroup.add(noExisitingAccountRadioButton);
 
         JLabel formNoLabel = Common.CreateLabel("Form No: ", Common.RalewayBold18, new Rectangle(670, 10, 100, 30));
         add(formNoLabel);
@@ -136,7 +155,8 @@ public class SignUp2 extends JFrame {
         JLabel formNoTextLabel = Common.CreateLabel(formNo, Common.RalewayBold18, new Rectangle(760, 10, 100, 30));
         add(formNoTextLabel);
 
-        nextButton = Common.CreateButton("Next", Common.RalewayBold14, Color.BLACK, new Rectangle(570, 600, 100, 30), null);
+        nextButton = Common.CreateButton("Next", Common.RalewayBold14, Color.BLACK, new Rectangle(570, 600, 100, 30),
+                this);
         add(nextButton);
 
         setVisible(true);
@@ -144,6 +164,15 @@ public class SignUp2 extends JFrame {
 
     public static void main(String[] args) {
         new SignUp2("0000");
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        try {
+            throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+        } catch (Exception E) {
+           
+        }
     }
 
 }
