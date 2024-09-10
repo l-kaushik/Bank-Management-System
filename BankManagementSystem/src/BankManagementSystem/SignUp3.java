@@ -15,6 +15,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+
+import java.util.Random;
 
 public class SignUp3 extends JFrame implements ActionListener{
 
@@ -166,11 +169,60 @@ public class SignUp3 extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == submitButton){
-            System.out.println("submit");
+
+        if(e.getSource() == cancelButton){
+                // show a dialog box of all information will be removed and remove data from database
+                System.exit(0);
         }
-        else if(e.getSource() == cancelButton){
-            System.out.println("cancel");
+
+        String accountType = null;
+        if(savingAccountRadioButton.isSelected()){accountType = savingAccountRadioButton.getText();}
+        if(currentAccountRadioButton.isSelected()){accountType = currentAccountRadioButton.getText();}
+        if(fixedDepopsiteRadioButton.isSelected()){accountType = fixedDepopsiteRadioButton.getText();}
+        if(recurringDepositeRadioButton.isSelected()){accountType = recurringDepositeRadioButton.getText();}
+        
+        Random random = new Random();
+        long first7 = (random.nextLong() % 90000000L) + 1409963000000000L;
+        String cardNo = "" + Math.abs(first7);
+        
+        long first3 = (random.nextLong() % 9000L) + 1000L;
+        String pin = "" + Math.abs(first3); 
+
+        String facilites = "";
+        if(ATMCardCheckBox.isSelected()){facilites += ATMCardCheckBox.getText() + ", ";}
+        if(internetBankingCheckBox.isSelected()){facilites += internetBankingCheckBox.getText() + ", ";}
+        if(mobileBankingCheckBox.isSelected()){facilites += mobileBankingCheckBox.getText() + ", ";}
+        if(emailAlertsCheckBox.isSelected()){facilites += emailAlertsCheckBox.getText() + ", ";}
+        if(chequeBookCheckBox.isSelected()){facilites += chequeBookCheckBox.getText() + ", ";}
+        if(eStatementCheckBox.isSelected()){facilites += eStatementCheckBox.getText() + ", ";}
+
+        // removing additional comma and space
+        if(!facilites.isEmpty()){facilites = facilites.substring(0, facilites.length() - 2);}
+
+        try {
+                // validate data
+                if(!Common.ValidateString(accountType, "In account type, you must select any one option.")){return;}
+                
+                // button events
+                if(e.getSource() == submitButton){
+                        if(!legalStaementCheckBox.isSelected()) {
+                                Common.ValidateString(null, "Check the box to assure that entered information is legit.");
+                                return;
+                        }
+                        
+                        MyCon con = new MyCon();
+        
+                        String queryForSignupTable3 = "INSERT INTO signupthree values('"+formNo+"','"+accountType+"','"+cardNo+"','"+pin+"','"+facilites+"')";
+                        String queryForLoginTable = "INSERT INTO login values('"+formNo+"','"+cardNo+"','"+pin+"')";
+                        con.statement.executeUpdate(queryForSignupTable3);
+                        con.statement.executeUpdate(queryForLoginTable);
+
+                        JOptionPane.showMessageDialog(null, "Card Number: "+cardNo+"\nPin: "+pin, "Card information",JOptionPane.INFORMATION_MESSAGE);
+                        setVisible(false);
+                }
+
+        } catch (Exception E) {
+                E.getStackTrace();
         }
     }
 
