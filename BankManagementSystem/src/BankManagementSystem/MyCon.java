@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 public class MyCon {
 
     // add a way to check if folder is present or not, if not then create one
-    
+
     String folderPath = "BankManagementSystem/src/Databases";
     String fileName = "SQLiteTest1.db";
     String filePath = folderPath + "/" + fileName;
@@ -21,7 +21,7 @@ public class MyCon {
             connection = DriverManager.getConnection("jdbc:sqlite:" + filePath);
             statement = connection.createStatement();
 
-            String sql = "CREATE TABLE IF NOT EXISTS signup (" +
+            String createSignupTable = "CREATE TABLE IF NOT EXISTS signup (" +
             "form_no TEXT PRIMARY KEY, " +
             "name TEXT, " +
             "father_name TEXT, " +
@@ -33,7 +33,20 @@ public class MyCon {
             "city TEXT, " +
             "pincode TEXT, " +
             "state TEXT)";
-            statement.execute(sql);
+            statement.execute(createSignupTable);
+
+            String createSignupTable2 = "CREATE TABLE IF NOT EXISTS signuptwo (" +
+            "form_no TEXT PRIMARY KEY, " +
+            "religion TEXT, " +
+            "category TEXT, " +
+            "income TEXT, " +
+            "education TEXT, " +
+            "occupation TEXT, " +
+            "pan TEXT, " +
+            "aadhar TEXT, " +
+            "senior_citizen TEXT, " +
+            "existing_account TEXT)";
+            statement.execute(createSignupTable2);
 
         } catch (Exception e) {
             e.printStackTrace();
