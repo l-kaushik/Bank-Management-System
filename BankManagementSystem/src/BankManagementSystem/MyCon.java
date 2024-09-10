@@ -48,6 +48,21 @@ public class MyCon {
             "existing_account TEXT)";
             statement.execute(createSignupTable2);
 
+            String createSignupTable3 = "CREATE TABLE IF NOT EXISTS signupthree (" +
+            "form_no TEXT PRIMARY KEY, " +
+            "account_type TEXT, " +
+            "card_number TEXT, " +
+            "pin TEXT, " +
+            "facility TEXT)";
+            statement.execute(createSignupTable3);
+
+            String createLoginTable = "CREATE TABLE IF NOT EXISTS login(" +
+            "form_no TEXT PRIMARY KEY, " +
+            "card_number TEXT, " +
+            "pin TEXT)";                    // find a better way to store pin
+            statement.execute(createLoginTable);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
