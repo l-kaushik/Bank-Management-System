@@ -18,6 +18,8 @@ import javax.swing.ButtonGroup;
 
 public class SignUp2 extends JFrame implements ActionListener{
 
+    String formNo = null;
+
     JComboBox<String> religionComboBox;
     JComboBox<String> categoryComboBox;
     JComboBox<String> incomeComboBox;
@@ -34,7 +36,9 @@ public class SignUp2 extends JFrame implements ActionListener{
 
     JButton nextButton;
 
-    SignUp2(String formNo) {
+    SignUp2(String inFormNo) {
+
+        formNo = inFormNo;
 
         Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Common.InitializeJFrame(this, "APPLICATION FORM", null, new Dimension(850, 700), JFrame.EXIT_ON_CLOSE, false,
@@ -162,17 +166,45 @@ public class SignUp2 extends JFrame implements ActionListener{
         setVisible(true);
     }
 
-    public static void main(String[] args) {
-        new SignUp2("0000");
-    }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
-        } catch (Exception E) {
-           
-        }
-    }
+                String religion = religionComboBox.getSelectedItem().toString();
+                String category = categoryComboBox.getSelectedItem().toString();
+                String income = incomeComboBox.getSelectedItem().toString();
+                String education = educationComboBox.getSelectedItem().toString();
+                String occupation = occupationComboBox.getSelectedItem().toString();
+                
+                String pan = panNumberTextField.getText();
+                String aadhar = aadharNumberTextField.getText();
 
+                String seniorCitizen = null;
+                if(yesSeniorCitizenRadioButton.isSelected()){seniorCitizen = yesSeniorCitizenRadioButton.getText();}
+                else if(noSeniorCitizenRadioButton.isSelected()){seniorCitizen = noSeniorCitizenRadioButton.getText();}
+
+                String existingAccount = null;
+                if(yesExistingAccountRadioButton.isSelected()){existingAccount = yesExistingAccountRadioButton.getText();}
+                else if(noExisitingAccountRadioButton.isSelected()){existingAccount = noExisitingAccountRadioButton.getText();}
+
+                try {
+
+                        if(!Common.ValidateString(pan, "Pan number should not be empty.")) {return;} 
+                        if(!Common.ValidateString(aadhar, "Aadhar number should not be empty.")) {return;}
+                        if(!Common.ValidateString(seniorCitizen,"In senior citizen, any one must be selected.")) {return;}
+                        if(!Common.ValidateString(existingAccount, "In existing account, any one must be selected.")) {return;}
+                        MyCon con = new MyCon();
+                        
+                        String query = "INSERT INTO signuptwo values('"+formNo+"','"+religion+"','"+category+"','"+income+"','"+education+"','"+occupation+"','"+pan+"','"+aadhar+"','"+seniorCitizen+"','"+existingAccount+"')";
+                        con.statement.executeUpdate(query);
+ 
+                        new SignUp3(formNo);
+                        setVisible(false);
+
+                } catch (Exception E) {
+                        E.printStackTrace();
+                }
+        }       
+        public static void main(String[] args) {
+            new SignUp2("1111");
+        }
 }
