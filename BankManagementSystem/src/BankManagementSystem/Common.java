@@ -13,6 +13,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -124,5 +125,13 @@ public class Common {
         checkBox.setFocusable(false);
 
         return checkBox;
+    }
+
+    public static boolean ValidateString(String str, String message){
+        if(str == null || str.isEmpty()){
+            JOptionPane.showMessageDialog(null, message.toString(), "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return false; 
+        }
+        return true;
     }
 }
