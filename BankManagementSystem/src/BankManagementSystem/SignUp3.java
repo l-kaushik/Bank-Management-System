@@ -18,6 +18,8 @@ import javax.swing.JCheckBox;
 
 public class SignUp3 extends JFrame implements ActionListener{
 
+    String formNo = null;
+
     JRadioButton savingAccountRadioButton;
     JRadioButton fixedDepopsiteRadioButton;
     JRadioButton currentAccountRadioButton;
@@ -35,7 +37,10 @@ public class SignUp3 extends JFrame implements ActionListener{
     JButton cancelButton;
 
 
-    SignUp3(String formNo) {
+    SignUp3(String informNo) {
+
+        formNo = informNo;
+
         Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Common.InitializeJFrame(this, "APPLICATION FORM", null, new Dimension(850, 800), JFrame.EXIT_ON_CLOSE, false,
                 new Point((int) (ScreenSize.getWidth()) / 4, 15), Common.FrameBackgroundColor);
