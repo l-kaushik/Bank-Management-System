@@ -218,6 +218,7 @@ public class SignUp extends JFrame implements ActionListener{
                         con.statement.executeUpdate(query);
 
                         new SignUp2(formNo);
+                        con.close();
                         setVisible(false);
                 }
                 // new SignUp2(formNo);   // for testing only
