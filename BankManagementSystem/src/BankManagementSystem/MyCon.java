@@ -3,8 +3,9 @@ package BankManagementSystem;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
-public class MyCon {
+public class MyCon implements AutoCloseable {
 
     // add a way to check if folder is present or not, if not then create one
 
@@ -76,7 +77,19 @@ public class MyCon {
         }
     }
 
+    @SuppressWarnings("resource")
     public static void main(String[] args) {
         new MyCon();
+    }
+
+    @Override
+    public void close() throws Exception {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
