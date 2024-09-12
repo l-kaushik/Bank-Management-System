@@ -218,6 +218,7 @@ public class SignUp3 extends JFrame implements ActionListener{
                         con.statement.executeUpdate(queryForLoginTable);
 
                         JOptionPane.showMessageDialog(null, "Card Number: "+cardNo+"\nPin: "+pin, "Card information",JOptionPane.INFORMATION_MESSAGE);
+                        new Deposit(pin);
                         setVisible(false);
                 }
 
