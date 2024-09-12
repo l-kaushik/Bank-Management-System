@@ -33,6 +33,8 @@ public class Common {
     public static Font RalewayBold14 = new Font("Raleway", Font.BOLD, 14);
     public static Font RalewayBold18 = new Font("Raleway", Font.BOLD, 18);
 
+    public static Font SystemBold16 = new Font("System", Font.BOLD, 16);
+
     public static void InitializeJFrame(JFrame object, String title, LayoutManager manager, Dimension size,
             int defaultCloseOperation, boolean isResizeable, Point locationOnScreen) {
         object.setTitle(title);
