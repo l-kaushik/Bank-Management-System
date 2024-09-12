@@ -95,6 +95,8 @@ public class Login extends JFrame implements ActionListener {
             if (e.getSource() == signInButton) {
 
             } else if (e.getSource() == signUpButton) {
+                new SignUp();
+                setVisible(false);
 
             } else if (e.getSource() == clearButton) {
                 cardNumberTextField.setText("");
