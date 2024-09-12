@@ -7,11 +7,14 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -93,7 +96,7 @@ public class Login extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             if (e.getSource() == signInButton) {
-
+                signupAction();
             } else if (e.getSource() == signUpButton) {
                 new SignUp();
                 setVisible(false);
@@ -108,8 +111,35 @@ public class Login extends JFrame implements ActionListener {
         }
     }
 
+    private void signupAction(){
+        String cardNumber = cardNumberTextField.getText();
+        String pin = new String(passwordField.getPassword());
+        if(!Common.ValidateString(cardNumber, "Enter your card number")) return;
+        if(!Common.ValidateString(cardNumber, "Enter your pin number")) return;
+
+        String query = "SELECT * FROM login WHERE card_number = ? AND pin = ? ";
+
+        try(MyCon con = new MyCon();
+            PreparedStatement preparedStatement = con.connection.prepareStatement(query)){
+
+            preparedStatement.setString(1, cardNumber);
+            preparedStatement.setString(2, pin);
+
+            try(ResultSet resultSet = preparedStatement.executeQuery()){                
+                if(resultSet.next()){
+                    setVisible(false);
+                    new AtmWindow(pin);
+                }
+                else {
+                    JOptionPane.showMessageDialog(this, "Invalid card number or pin.");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         new Login();
     }
-
 }
