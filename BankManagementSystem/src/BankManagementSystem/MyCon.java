@@ -62,6 +62,14 @@ public class MyCon {
             "pin TEXT)";                    // find a better way to store pin
             statement.execute(createLoginTable);
 
+            // generate a unique id for every user and use that instead of pin
+            String createBankTable = "CREATE TABLE IF NOT EXISTS bank(" +
+            "pin TEXT," +
+            "date TEXT, " +
+            "type TEXT, " +
+            "amount TEXT)";                    
+            statement.execute(createBankTable);
+
 
         } catch (Exception e) {
             e.printStackTrace();
