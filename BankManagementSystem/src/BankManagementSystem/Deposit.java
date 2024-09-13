@@ -91,13 +91,13 @@ public class Deposit extends JFrame implements ActionListener {
                     JOptionPane.INFORMATION_MESSAGE);
 
                     con.close();
-                    setVisible(false);
                     new AtmWindow(pin);
+                    dispose();
                 }
             }
             else if(e.getSource() == backButton){
-                setVisible(false);
                 new AtmWindow(pin);
+                dispose();
             }
 
         } catch (Exception E) {
