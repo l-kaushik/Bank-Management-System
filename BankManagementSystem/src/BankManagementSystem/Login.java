@@ -96,10 +96,10 @@ public class Login extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             if (e.getSource() == signInButton) {
-                signupAction();
+                signInAction();
             } else if (e.getSource() == signUpButton) {
                 new SignUp();
-                setVisible(false);
+                dispose();
 
             } else if (e.getSource() == clearButton) {
                 cardNumberTextField.setText("");
@@ -111,7 +111,7 @@ public class Login extends JFrame implements ActionListener {
         }
     }
 
-    private void signupAction(){
+    private void signInAction(){
         String cardNumber = cardNumberTextField.getText();
         String pin = new String(passwordField.getPassword());
         if(!Common.ValidateString(cardNumber, "Enter your card number")) return;
@@ -127,8 +127,8 @@ public class Login extends JFrame implements ActionListener {
 
             try(ResultSet resultSet = preparedStatement.executeQuery()){                
                 if(resultSet.next()){
-                    setVisible(false);
                     new AtmWindow(pin);
+                    dispose();
                 }
                 else {
                     JOptionPane.showMessageDialog(this, "Invalid card number or pin.");
