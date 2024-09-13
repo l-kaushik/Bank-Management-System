@@ -73,10 +73,12 @@ public class AtmWindow extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == depositButton){
-            deposit();
+            new Deposit(pin);
+            dispose();
         }
         else if(e.getSource() == cashWithdrawlButton){
-            cashWithdrawl();
+            new Withdrawal(pin);
+            dispose();
         }
         else if(e.getSource() == fastCashButton){
             fastCash();
@@ -88,20 +90,12 @@ public class AtmWindow extends JFrame implements ActionListener {
             pinChange();
         }        
         else if(e.getSource() == balanceEnquiryButton){
-            balanceEnquiry();
+            new BalanceEnquiry(pin);
+            dispose();
         }        
         else if(e.getSource() == exitButton){
             System.exit(0);   
         }
-
-    }
-
-    private void deposit(){
-        new Deposit("");
-        setVisible(false);
-    }
-
-    private void cashWithdrawl(){
 
     }
 
@@ -116,11 +110,6 @@ public class AtmWindow extends JFrame implements ActionListener {
     private void pinChange(){
         
     }
-
-    private void balanceEnquiry(){
-        
-    }
-
 
     public static void main(String[] args) {
         new AtmWindow("");
