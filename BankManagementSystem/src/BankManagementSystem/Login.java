@@ -134,6 +134,8 @@ public class Login extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(this, "Invalid card number or pin.");
                 }
             }
+            preparedStatement.close();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

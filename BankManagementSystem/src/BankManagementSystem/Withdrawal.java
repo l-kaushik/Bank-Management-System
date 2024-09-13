@@ -129,6 +129,8 @@ public class Withdrawal extends JFrame implements ActionListener {
 
             preparedStatementInsertData.executeUpdate();
             JOptionPane.showMessageDialog(this, "Rs. " + amount + " Withdrawn Successfully.");
+            preparedStatementFetchData.close();
+            preparedStatementInsertData.close();
             dispose();
             new AtmWindow(pin);
 
