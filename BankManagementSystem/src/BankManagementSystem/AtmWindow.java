@@ -81,13 +81,15 @@ public class AtmWindow extends JFrame implements ActionListener {
             dispose();
         }
         else if(e.getSource() == fastCashButton){
-            fastCash();
+            new FastCash(pin);
+            dispose();
         } 
         else if(e.getSource() == miniStatementButton){
-            miniStatement();
+            new MiniStatement(pin);
         }        
         else if(e.getSource() == pinChangeButton){
-            pinChange();
+            new Pin(pin);
+            dispose();
         }        
         else if(e.getSource() == balanceEnquiryButton){
             new BalanceEnquiry(pin);
@@ -97,18 +99,6 @@ public class AtmWindow extends JFrame implements ActionListener {
             System.exit(0);   
         }
 
-    }
-
-    private void fastCash(){
-        
-    }
-
-    private void miniStatement(){
-        
-    }
-
-    private void pinChange(){
-        
     }
 
     public static void main(String[] args) {
