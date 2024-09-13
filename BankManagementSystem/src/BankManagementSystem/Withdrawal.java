@@ -31,7 +31,7 @@ public class Withdrawal extends JFrame implements ActionListener {
 
         pin = inPin;
 
-        Common.InitializeJFrame(this, "Deposit Money", null, new Dimension(1550, 1080), JFrame.EXIT_ON_CLOSE, false,
+        Common.InitializeJFrame(this, "Withdrawal Money", null, new Dimension(1550, 1080), JFrame.EXIT_ON_CLOSE, false,
                 new Point(0, 0));
 
         JLabel backgroundImageLabel = Common.GetScaledImageWithLabel("icons/atm2.png", 1550, 830);
@@ -79,7 +79,8 @@ public class Withdrawal extends JFrame implements ActionListener {
         if (e.getSource() == withdrawalButton) {
             withdrawal();
         } else if (e.getSource() == backButton) {
-
+            new AtmWindow(pin);
+            dispose();
         }
     }
 
@@ -89,6 +90,11 @@ public class Withdrawal extends JFrame implements ActionListener {
         
         if (!Common.ValidateString(amount, "Please enter the amount you want to withdrawal."))
         return;
+
+        if(Integer.parseInt(amount) > 10000){
+            JOptionPane.showMessageDialog(this, "The maximum withdrawal limit is 10,000", "Withdrawal Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
         String queryFetchData = "SELECT * FROM bank WHERE pin = ?";
         String queryInsertData = "INSERT INTO bank VALUES(?, ?, ?, ?)";
@@ -116,8 +122,6 @@ public class Withdrawal extends JFrame implements ActionListener {
                 }
             }
 
-            System.out.println(balance);
-
             if(balance < Integer.parseInt(amount)){
                 JOptionPane.showMessageDialog(this, "Insufficient Balance");
                 return;
@@ -125,8 +129,7 @@ public class Withdrawal extends JFrame implements ActionListener {
 
             preparedStatementInsertData.executeUpdate();
             JOptionPane.showMessageDialog(this, "Rs. " + amount + " Withdrawn Successfully.");
-            setVisible(false);
-            // this.dispose();
+            dispose();
             new AtmWindow(pin);
 
         } catch (Exception E) {
