@@ -42,6 +42,7 @@ public class Common {
         object.setLayout(manager);
         object.setSize(size);
         object.setDefaultCloseOperation(defaultCloseOperation);
+        object.setResizable(isResizeable);
         object.setLocation(locationOnScreen);
     }
 
