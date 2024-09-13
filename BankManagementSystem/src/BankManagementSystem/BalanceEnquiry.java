@@ -32,7 +32,7 @@ class BalanceEnquiry extends JFrame implements ActionListener {
         JLabel backgroundImageLabel = Common.GetScaledImageWithLabel("icons/atm2.png", 1550, 830);
         backgroundImageLabel.setBounds(0, 0, 1550, 830);
         add(backgroundImageLabel);
-        
+
         JLabel currentBalanceLabel = Common.CreateLabel("Your Current Balance is Rs. ", Color.WHITE,
                 Common.SystemBold16, new Rectangle(430, 180, 700, 35));
         backgroundImageLabel.add(currentBalanceLabel);
@@ -45,43 +45,46 @@ class BalanceEnquiry extends JFrame implements ActionListener {
                 new Rectangle(700, 406, 150, 35), this);
         backgroundImageLabel.add(backButton);
 
+        setBalance(amountLabel);
+
+        setVisible(true);
+    }
+
+    private void setBalance(JLabel amountLabel) {
         int balance = 0;
-        
         try (MyCon con = new MyCon()) {
             String fetchQuery = "SELECT * FROM bank WHERE pin = ?";
             PreparedStatement preparedStatementFetchData = con.connection.prepareStatement(fetchQuery);
             preparedStatementFetchData.setString(1, pin);
 
             try (ResultSet resultSet = preparedStatementFetchData.executeQuery()) {
-                while(resultSet.next()){
-                    if(resultSet.getString("type").equals("Deposit")){
+                while (resultSet.next()) {
+                    if (resultSet.getString("type").equals("Deposit")) {
                         balance += Integer.parseInt(resultSet.getString("amount"));
-                    }
-                    else{
+                    } else {
                         balance -= Integer.parseInt(resultSet.getString("amount"));
                     }
                 }
             }
 
             amountLabel.setText("" + balance);
-            
+            preparedStatementFetchData.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == backButton){
+        if (e.getSource() == backButton) {
             new AtmWindow(pin);
             this.dispose();
         }
     }
 
     public static void main(String[] args) {
-        new BalanceEnquiry("");
+        new BalanceEnquiry("1111");
     }
 
 }
