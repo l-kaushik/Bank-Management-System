@@ -2,15 +2,13 @@ package BankManagementSystem;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.awt.event.ActionEvent;
 
 import javax.swing.*;
 
-public class Login extends JFrame implements ActionListener, ComponentListener {
+public class Login extends ResizableFrame implements ActionListener{
 
     JLabel titleLabel;
     JLabel cardNumberLabel;
@@ -86,7 +84,6 @@ public class Login extends JFrame implements ActionListener, ComponentListener {
         titleLabel = new JLabel("WELCOME TO ATM");
         titleLabel.setFont(new Font("AvantGarde", Font.BOLD, 38));
         titleLabel.setForeground(Color.BLACK);
-        this.addComponentListener(this);
 
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -214,20 +211,7 @@ public class Login extends JFrame implements ActionListener, ComponentListener {
     }
 
     @Override
-    public void componentResized(ComponentEvent e) {
-        if (resizeTimer != null) {
-            resizeTimer.stop(); // Stop the previous timer
-        }
-
-        // Start a new timer with a small delay (100ms)
-        resizeTimer = new Timer(100, ae -> {
-            handleResizing(); // Perform resizing tasks
-        });
-        resizeTimer.setRepeats(false); // Ensure it only triggers once
-        resizeTimer.start();
-    }
-
-    private void handleResizing() {
+    protected void handleResizing() {
         Dimension size = this.getSize(); // Get the current window size
 
         // Scale the font size based on the window width
@@ -335,18 +319,6 @@ public class Login extends JFrame implements ActionListener, ComponentListener {
                 backgroundLabel.revalidate();
             }
         }.execute();
-    }
-
-    @Override
-    public void componentMoved(ComponentEvent e) {
-    }
-
-    @Override
-    public void componentShown(ComponentEvent e) {
-    }
-
-    @Override
-    public void componentHidden(ComponentEvent e) {
     }
 
     public static void main(String[] args) {
