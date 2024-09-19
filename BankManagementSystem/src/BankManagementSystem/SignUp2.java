@@ -25,6 +25,8 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
     JRadioButton yesExistingAccountRadioButton;
     JRadioButton noExisitingAccountRadioButton;
 
+    JLabel topCenterImage;
+
     JButton nextButton;
 
     JPanel contentPanel;
@@ -309,6 +311,29 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
 
     private void updateButtonsFonts(float scaleFactor) {
 
+    }
+
+    private void scaleTopCenterImage(Dimension size) {
+
+        // Update GridBagConstraints properties dynamically
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Remove the old image
+        contentPanel.remove(topCenterImage);
+
+        // Create new top-center image with scaled size
+        int newImageWidth = (int) (size.width / 8);
+        int newImageHeight = (int) (size.height / 6);
+        topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", newImageWidth, newImageHeight);
+
+        // Re-add the resized image to the layout
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        contentPanel.add(topCenterImage, gbc);
     }
 
     public static void main(String[] args) {
