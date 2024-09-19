@@ -25,11 +25,21 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
     JRadioButton yesExistingAccountRadioButton;
     JRadioButton noExisitingAccountRadioButton;
 
-    JLabel topCenterImage;
-
     JButton nextButton;
 
+    JLabel topCenterImage;
     JPanel contentPanel;
+    JLabel pageNumberLabel;
+
+    SignUp2(String inFormNo) {
+
+        formNo = inFormNo;
+        Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        setupFrame(ScreenSize);
+        initializeComponents(ScreenSize);
+        setVisible(true);
+    }
 
     private void setupFrame(Dimension screenSize) {
         setTitle("Application Form");
@@ -51,6 +61,8 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         gbc.weightx = 1.0; // Allow components to expand horizontally
 
         // component initialization here
+        initializeTopCenterImage(gbc, screenSize);
+        initializePageNumberLabel(gbc);
 
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -58,28 +70,31 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
 
     }
 
-    SignUp2(String inFormNo) {
-
-        formNo = inFormNo;
-
-        Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        setupFrame(ScreenSize);
-
+    private void initializeTopCenterImage(GridBagConstraints gbc, Dimension screenSize) {
         // top center image
-        JLabel topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
-        topCenterImage.setBounds(150, 5, 100, 100);
-        add(topCenterImage);
+        topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
+        scaleTopCenterImage(screenSize);
+    }
 
+    private void initializePageNumberLabel(GridBagConstraints gbc) {
         // show page number
-        JLabel pageNumberLabel = Common.CreateLabel("Page 2", Common.RalewayBold22, new Rectangle(300, 30, 600, 30));
+        pageNumberLabel = new JLabel("Page 2");
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
         add(pageNumberLabel);
+    }
 
+    private void initializeAdditionDetailLabel(GridBagConstraints gbc) {
         // show additional detail on page
         JLabel additionalDetailLabel = Common.CreateLabel("Additional Details", Common.RalewayBold22,
                 new Rectangle(300, 60, 600, 40));
         add(additionalDetailLabel);
+    }
 
+    private void initializeReligionSelection(GridBagConstraints gbc) {
         // show combo box for religions
         JLabel religionLabel = Common.CreateLabel("Religion: ", Common.RalewayBold18, new Rectangle(100, 120, 100, 30));
         add(religionLabel);
@@ -88,7 +103,9 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         religionComboBox = Common.CreateComboBox(religions, Common.RalewayBold14,
                 new Rectangle(350, 120, 320, 30));
         add(religionComboBox);
+    }
 
+    private void initializeCategorySelection(GridBagConstraints gbc) {
         // show combo box for caste categories
         JLabel categoryLabel = Common.CreateLabel("Category: ", Common.RalewayBold18, new Rectangle(100, 170, 100, 30));
         add(categoryLabel);
@@ -97,7 +114,9 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         categoryComboBox = Common.CreateComboBox(categories, Common.RalewayBold14,
                 new Rectangle(350, 170, 320, 30));
         add(categoryComboBox);
+    }
 
+    private void initializeIncomeSelection(GridBagConstraints gbc) {
         // show combo box for incomes
         JLabel incomLabel = Common.CreateLabel("Income: ", Common.RalewayBold18, new Rectangle(100, 220, 100, 30));
         add(incomLabel);
@@ -106,7 +125,9 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         incomeComboBox = Common.CreateComboBox(incomes, Common.RalewayBold14,
                 new Rectangle(350, 220, 320, 30));
         add(incomeComboBox);
+    }
 
+    private void initializeEducationSelection(GridBagConstraints gbc) {
         // show combo box for education type
         JLabel educationLabel = Common.CreateLabel("Education: ", Common.RalewayBold18,
                 new Rectangle(100, 270, 150, 30));
@@ -116,7 +137,9 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         educationComboBox = Common.CreateComboBox(educations, Common.RalewayBold14,
                 new Rectangle(350, 270, 320, 30));
         add(educationComboBox);
+    }
 
+    private void initializeOccupationSelection(GridBagConstraints gbc) {
         // show combo box for occupation type
         JLabel occupationLabel = Common.CreateLabel("Occupation: ", Common.RalewayBold18,
                 new Rectangle(100, 320, 150, 30));
@@ -126,7 +149,9 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         occupationComboBox = Common.CreateComboBox(occupations, Common.RalewayBold14,
                 new Rectangle(350, 320, 320, 30));
         add(occupationComboBox);
+    }
 
+    private void initializePanField(GridBagConstraints gbc) {
         // show pan number text field
         JLabel panNumberLabel = Common.CreateLabel("PAN Number: ", Common.RalewayBold18,
                 new Rectangle(100, 370, 150, 30));
@@ -134,14 +159,18 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
 
         panNumberTextField = Common.CreateTextField(Common.RalewayBold18, new Rectangle(350, 370, 320, 30));
         add(panNumberTextField);
+    }
 
+    private void initializeAadharField(GridBagConstraints gbc) {
         JLabel aadharNumberLabel = Common.CreateLabel("Aadhar Number: ", Common.RalewayBold18,
                 new Rectangle(100, 420, 180, 30));
         add(aadharNumberLabel);
 
         aadharNumberTextField = Common.CreateTextField(Common.RalewayBold18, new Rectangle(350, 420, 320, 30));
         add(aadharNumberTextField);
+    }
 
+    private void initializeSeniorCitizenSelection(GridBagConstraints gbc) {
         JLabel seniorCitizenLabel = Common.CreateLabel("Senior Citizen: ", Common.RalewayBold18,
                 new Rectangle(100, 470, 180, 30));
         add(seniorCitizenLabel);
@@ -157,7 +186,9 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         ButtonGroup seniorCitizeButtonGroup = new ButtonGroup();
         seniorCitizeButtonGroup.add(yesSeniorCitizenRadioButton);
         seniorCitizeButtonGroup.add(noSeniorCitizenRadioButton);
+    }
 
+    private void initializeExistingAccountSelection(GridBagConstraints gbc) {
         JLabel existingAccountLabel = Common.CreateLabel("Existing Account: ", Common.RalewayBold18,
                 new Rectangle(100, 520, 180, 30));
         add(existingAccountLabel);
@@ -173,18 +204,20 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         ButtonGroup existingAccountButtonGroup = new ButtonGroup();
         existingAccountButtonGroup.add(yesExistingAccountRadioButton);
         existingAccountButtonGroup.add(noExisitingAccountRadioButton);
+    }
 
+    private void initializeFormNumberField(GridBagConstraints gbc) {
         JLabel formNoLabel = Common.CreateLabel("Form No: ", Common.RalewayBold18, new Rectangle(670, 10, 100, 30));
         add(formNoLabel);
 
         JLabel formNoTextLabel = Common.CreateLabel(formNo, Common.RalewayBold18, new Rectangle(760, 10, 100, 30));
         add(formNoTextLabel);
+    }
 
+    private void initializeNextButton(GridBagConstraints gbc) {
         nextButton = Common.CreateButton("Next", Common.RalewayBold14, Color.BLACK, new Rectangle(570, 600, 100, 30),
                 this);
         add(nextButton);
-
-        setVisible(true);
     }
 
     @Override
@@ -302,7 +335,9 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
     }
 
     private void updateLabelFonts(float scaleFactor) {
+        Font scaledFont22 = Common.RalewayBold22.deriveFont(22 * scaleFactor);
 
+        pageNumberLabel.setFont(scaledFont22);
     }
 
     private void updateFieldsFonts(float scaleFactor) {
