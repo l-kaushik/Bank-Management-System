@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class SignUp2 extends ResizableFrame implements ActionListener {
 
@@ -26,10 +27,22 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
     JRadioButton noExisitingAccountRadioButton;
 
     JButton nextButton;
+    JPanel contentPanel;
 
     JLabel topCenterImage;
-    JPanel contentPanel;
     JLabel pageNumberLabel;
+    JLabel additionalDetailLabel;
+    JLabel religionLabel;
+    JLabel categoryLabel;
+    JLabel incomeLabel;
+    JLabel educationLabel;
+    JLabel occupationLabel;
+    JLabel panNumberLabel;
+    JLabel aadharNumberLabel;
+    JLabel seniorCitizenLabel;
+    JLabel existingAccountLabel;
+    JLabel formNoLabel;
+    JLabel formNoTextLabel;
 
     SignUp2(String inFormNo) {
 
@@ -57,12 +70,24 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 50, 10, 50);
+        gbc.insets = new Insets(10, 50, 10, 10);
         gbc.weightx = 1.0; // Allow components to expand horizontally
 
         // component initialization here
         initializeTopCenterImage(gbc, screenSize);
         initializePageNumberLabel(gbc);
+        initializeAdditionDetailLabel(gbc);
+        initializeReligionSelection(gbc);
+        initializeCategorySelection(gbc);
+        initializeIncomeSelection(gbc);
+        initializeEducationSelection(gbc);
+        initializeOccupationSelection(gbc);
+        initializePanField(gbc);
+        initializeAadharField(gbc);
+        initializeSeniorCitizenSelection(gbc);
+        initializeExistingAccountSelection(gbc);
+        initializeFormNumberField(gbc);
+        initializeNextButton(gbc);
 
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -84,104 +109,137 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        add(pageNumberLabel);
+        contentPanel.add(pageNumberLabel, gbc);
     }
 
     private void initializeAdditionDetailLabel(GridBagConstraints gbc) {
         // show additional detail on page
-        JLabel additionalDetailLabel = Common.CreateLabel("Additional Details", Common.RalewayBold22,
-                new Rectangle(300, 60, 600, 40));
-        add(additionalDetailLabel);
+        additionalDetailLabel = new JLabel("Additional Details");
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        contentPanel.add(additionalDetailLabel, gbc);
     }
 
     private void initializeReligionSelection(GridBagConstraints gbc) {
         // show combo box for religions
-        JLabel religionLabel = Common.CreateLabel("Religion: ", Common.RalewayBold18, new Rectangle(100, 120, 100, 30));
-        add(religionLabel);
+        religionLabel = new JLabel("Religion: ");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        contentPanel.add(religionLabel, gbc);
 
         String religions[] = { "Hindu", "Muslim", "Sikh", "Christian", "Others" };
-        religionComboBox = Common.CreateComboBox(religions, Common.RalewayBold14,
-                new Rectangle(350, 120, 320, 30));
-        add(religionComboBox);
+        religionComboBox = new JComboBox<String>(religions);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        contentPanel.add(religionComboBox, gbc);
     }
 
     private void initializeCategorySelection(GridBagConstraints gbc) {
         // show combo box for caste categories
-        JLabel categoryLabel = Common.CreateLabel("Category: ", Common.RalewayBold18, new Rectangle(100, 170, 100, 30));
-        add(categoryLabel);
+        categoryLabel = new JLabel("Category: ");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        contentPanel.add(categoryLabel, gbc);
 
         String categories[] = { "GEN", "OBC", "SC", "ST", "Others" };
-        categoryComboBox = Common.CreateComboBox(categories, Common.RalewayBold14,
-                new Rectangle(350, 170, 320, 30));
-        add(categoryComboBox);
+        categoryComboBox = new JComboBox<String>(categories);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        contentPanel.add(categoryComboBox, gbc);
     }
 
     private void initializeIncomeSelection(GridBagConstraints gbc) {
         // show combo box for incomes
-        JLabel incomLabel = Common.CreateLabel("Income: ", Common.RalewayBold18, new Rectangle(100, 220, 100, 30));
-        add(incomLabel);
+        incomeLabel = new JLabel("Income: ");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        contentPanel.add(incomeLabel, gbc);
 
         String incomes[] = { "0", "< 1,50,000", "< 2,50,000", "< 5,00,000", "Upto 10,00,000", "Above 10,00,000" };
-        incomeComboBox = Common.CreateComboBox(incomes, Common.RalewayBold14,
-                new Rectangle(350, 220, 320, 30));
-        add(incomeComboBox);
+        incomeComboBox = new JComboBox<String>(incomes);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        contentPanel.add(incomeComboBox, gbc);
     }
 
     private void initializeEducationSelection(GridBagConstraints gbc) {
         // show combo box for education type
-        JLabel educationLabel = Common.CreateLabel("Education: ", Common.RalewayBold18,
-                new Rectangle(100, 270, 150, 30));
-        add(educationLabel);
+        educationLabel = new JLabel("Education: ");
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        contentPanel.add(educationLabel, gbc);
 
         String educations[] = { "Non-Graduate", "Graduate", "Post-Graduate", "Doctrate", "Others" };
-        educationComboBox = Common.CreateComboBox(educations, Common.RalewayBold14,
-                new Rectangle(350, 270, 320, 30));
-        add(educationComboBox);
+        educationComboBox = new JComboBox<String>(educations);
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        contentPanel.add(educationComboBox, gbc);
     }
 
     private void initializeOccupationSelection(GridBagConstraints gbc) {
         // show combo box for occupation type
-        JLabel occupationLabel = Common.CreateLabel("Occupation: ", Common.RalewayBold18,
-                new Rectangle(100, 320, 150, 30));
-        add(occupationLabel);
+        occupationLabel = new JLabel("Occupation: ");
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        contentPanel.add(occupationLabel, gbc);
 
         String occupations[] = { "Salaried", "Self-Employed", "Business", "Student", "Retired", "Others" };
-        occupationComboBox = Common.CreateComboBox(occupations, Common.RalewayBold14,
-                new Rectangle(350, 320, 320, 30));
-        add(occupationComboBox);
+        occupationComboBox = new JComboBox<String>(occupations);
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        contentPanel.add(occupationComboBox, gbc);
     }
 
     private void initializePanField(GridBagConstraints gbc) {
         // show pan number text field
-        JLabel panNumberLabel = Common.CreateLabel("PAN Number: ", Common.RalewayBold18,
-                new Rectangle(100, 370, 150, 30));
-        add(panNumberLabel);
+        panNumberLabel = new JLabel("PAN Number: ");
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        contentPanel.add(panNumberLabel, gbc);
 
-        panNumberTextField = Common.CreateTextField(Common.RalewayBold18, new Rectangle(350, 370, 320, 30));
-        add(panNumberTextField);
+        panNumberTextField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 7;
+        contentPanel.add(panNumberTextField, gbc);
     }
 
     private void initializeAadharField(GridBagConstraints gbc) {
-        JLabel aadharNumberLabel = Common.CreateLabel("Aadhar Number: ", Common.RalewayBold18,
-                new Rectangle(100, 420, 180, 30));
-        add(aadharNumberLabel);
+        aadharNumberLabel = new JLabel("Aadhar Number: ");
+        gbc.gridx = 0;
+        gbc.gridy = 8;
+        contentPanel.add(aadharNumberLabel, gbc);
 
-        aadharNumberTextField = Common.CreateTextField(Common.RalewayBold18, new Rectangle(350, 420, 320, 30));
-        add(aadharNumberTextField);
+        aadharNumberTextField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 8;
+        contentPanel.add(aadharNumberTextField, gbc);
     }
 
     private void initializeSeniorCitizenSelection(GridBagConstraints gbc) {
-        JLabel seniorCitizenLabel = Common.CreateLabel("Senior Citizen: ", Common.RalewayBold18,
-                new Rectangle(100, 470, 180, 30));
-        add(seniorCitizenLabel);
+        seniorCitizenLabel = new JLabel("Senior Citizen: ");
+        gbc.gridx = 0;
+        gbc.gridy = 9;
+        contentPanel.add(seniorCitizenLabel, gbc);
 
-        yesSeniorCitizenRadioButton = Common.CreateRadioButton("Yes", Common.RalewayBold14, Common.FrameBackgroundColor,
-                new Rectangle(350, 470, 100, 30));
-        add(yesSeniorCitizenRadioButton);
+        JPanel seniorCitizenPanel = new JPanel();
+        seniorCitizenPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        seniorCitizenPanel.setBackground(Common.FrameBackgroundColor);
 
-        noSeniorCitizenRadioButton = Common.CreateRadioButton("No", Common.RalewayBold14, Common.FrameBackgroundColor,
-                new Rectangle(460, 470, 100, 30));
-        add(noSeniorCitizenRadioButton);
+        yesSeniorCitizenRadioButton = new JRadioButton("Yes");
+        yesSeniorCitizenRadioButton.setBackground(Common.FrameBackgroundColor);
+        yesSeniorCitizenRadioButton.setFocusable(false);
+        yesSeniorCitizenRadioButton.setBorder(new EmptyBorder(0, 0, 0, 100));
+        seniorCitizenPanel.add(yesSeniorCitizenRadioButton);
+
+        noSeniorCitizenRadioButton = new JRadioButton("No");
+        noSeniorCitizenRadioButton.setBackground(Common.FrameBackgroundColor);
+        noSeniorCitizenRadioButton.setFocusable(false);
+        noSeniorCitizenRadioButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+        seniorCitizenPanel.add(noSeniorCitizenRadioButton);
+
+        gbc.gridx = 1;
+        gbc.gridy = 9;
+        contentPanel.add(seniorCitizenPanel, gbc);
 
         ButtonGroup seniorCitizeButtonGroup = new ButtonGroup();
         seniorCitizeButtonGroup.add(yesSeniorCitizenRadioButton);
@@ -189,17 +247,30 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
     }
 
     private void initializeExistingAccountSelection(GridBagConstraints gbc) {
-        JLabel existingAccountLabel = Common.CreateLabel("Existing Account: ", Common.RalewayBold18,
-                new Rectangle(100, 520, 180, 30));
-        add(existingAccountLabel);
+        existingAccountLabel = new JLabel("Existing Account: ");
+        gbc.gridx = 0;
+        gbc.gridy = 10;
+        contentPanel.add(existingAccountLabel, gbc);
 
-        yesExistingAccountRadioButton = Common.CreateRadioButton("Yes", Common.RalewayBold14,
-                Common.FrameBackgroundColor, new Rectangle(350, 520, 100, 30));
-        add(yesExistingAccountRadioButton);
+        JPanel existingAccountPanel = new JPanel();
+        existingAccountPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        existingAccountPanel.setBackground(Common.FrameBackgroundColor);
 
-        noExisitingAccountRadioButton = Common.CreateRadioButton("No", Common.RalewayBold14,
-                Common.FrameBackgroundColor, new Rectangle(460, 520, 100, 30));
-        add(noExisitingAccountRadioButton);
+        yesExistingAccountRadioButton = new JRadioButton("Yes");
+        yesExistingAccountRadioButton.setBackground(Common.FrameBackgroundColor);
+        yesExistingAccountRadioButton.setFocusable(false);
+        yesExistingAccountRadioButton.setBorder(new EmptyBorder(0, 0, 0, 100));
+        existingAccountPanel.add(yesExistingAccountRadioButton);
+
+        noExisitingAccountRadioButton = new JRadioButton("No");
+        noExisitingAccountRadioButton.setBackground(Common.FrameBackgroundColor);
+        noExisitingAccountRadioButton.setFocusable(false);
+        noExisitingAccountRadioButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+        existingAccountPanel.add(noExisitingAccountRadioButton);
+
+        gbc.gridx = 1;
+        gbc.gridy = 10;
+        contentPanel.add(existingAccountPanel, gbc);
 
         ButtonGroup existingAccountButtonGroup = new ButtonGroup();
         existingAccountButtonGroup.add(yesExistingAccountRadioButton);
@@ -207,17 +278,30 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
     }
 
     private void initializeFormNumberField(GridBagConstraints gbc) {
-        JLabel formNoLabel = Common.CreateLabel("Form No: ", Common.RalewayBold18, new Rectangle(670, 10, 100, 30));
-        add(formNoLabel);
 
-        JLabel formNoTextLabel = Common.CreateLabel(formNo, Common.RalewayBold18, new Rectangle(760, 10, 100, 30));
-        add(formNoTextLabel);
+        JPanel formNumberPanel = new JPanel();
+        formNumberPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        formNumberPanel.setBackground(Common.FrameBackgroundColor);
+
+        formNoLabel = new JLabel("Form No: ");
+        formNumberPanel.add(formNoLabel);
+
+        formNoTextLabel = new JLabel(formNo);
+        formNumberPanel.add(formNoTextLabel);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        contentPanel.add(formNumberPanel, gbc);
     }
 
     private void initializeNextButton(GridBagConstraints gbc) {
-        nextButton = Common.CreateButton("Next", Common.RalewayBold14, Color.BLACK, new Rectangle(570, 600, 100, 30),
-                this);
-        add(nextButton);
+        nextButton = new JButton("Next");
+        nextButton.setFocusable(false);
+        nextButton.setForeground(Color.BLACK);
+        nextButton.addActionListener(this);
+        gbc.gridx = 1;
+        gbc.gridy = 11;
+        contentPanel.add(nextButton, gbc);
     }
 
     @Override
@@ -331,17 +415,50 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         float scaleFactor = size.width / 800.0f;
         updateLabelFonts(scaleFactor);
         updateFieldsFonts(scaleFactor);
+        updateComboBoxFonts(scaleFactor);
         updateButtonsFonts(scaleFactor);
     }
 
     private void updateLabelFonts(float scaleFactor) {
         Font scaledFont22 = Common.RalewayBold22.deriveFont(22 * scaleFactor);
+        Font scaledFont18 = Common.RalewayBold18.deriveFont(18 * scaleFactor);
 
         pageNumberLabel.setFont(scaledFont22);
+        additionalDetailLabel.setFont(scaledFont22);
+        religionLabel.setFont(scaledFont18);
+        categoryLabel.setFont(scaledFont18);
+        incomeLabel.setFont(scaledFont18);
+        educationLabel.setFont(scaledFont18);
+        occupationLabel.setFont(scaledFont18);
+        panNumberLabel.setFont(scaledFont18);
+        aadharNumberLabel.setFont(scaledFont18);
+        seniorCitizenLabel.setFont(scaledFont18);
+        existingAccountLabel.setFont(scaledFont18);
+        formNoLabel.setFont(scaledFont18);
+        formNoTextLabel.setFont(scaledFont18);
+
     }
 
     private void updateFieldsFonts(float scaleFactor) {
 
+        Font scaledFont18 = Common.RalewayBold14.deriveFont(18 * scaleFactor);
+
+        panNumberTextField.setFont(scaledFont18);
+        aadharNumberTextField.setFont(scaledFont18);
+    }
+
+    private void updateComboBoxFonts(float scaleFactor) {
+        Font scaledFont14 = Common.RalewayBold14.deriveFont(14 * scaleFactor);
+
+        religionComboBox.setFont(scaledFont14);
+        categoryComboBox.setFont(scaledFont14);
+        incomeComboBox.setFont(scaledFont14);
+        educationComboBox.setFont(scaledFont14);
+        occupationComboBox.setFont(scaledFont14);
+        yesSeniorCitizenRadioButton.setFont(scaledFont14);
+        noSeniorCitizenRadioButton.setFont(scaledFont14);
+        yesExistingAccountRadioButton.setFont(scaledFont14);
+        noExisitingAccountRadioButton.setFont(scaledFont14);
     }
 
     private void updateButtonsFonts(float scaleFactor) {
