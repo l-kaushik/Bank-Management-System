@@ -1,29 +1,20 @@
 package BankManagementSystem;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.Random;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 import java.text.SimpleDateFormat;
 
 import com.toedter.calendar.JDateChooser;
 
-public class SignUp extends JFrame implements ActionListener{
+public class SignUp extends ResizableFrame implements ActionListener {
+
+    // generate random applcation number
 
     Random random = new Random();
     long first4 = (random.nextLong() % 9000L) + 1000L;
@@ -48,211 +39,542 @@ public class SignUp extends JFrame implements ActionListener{
     JRadioButton unmarriedRadioButton;
     JRadioButton othersMaritalRadioButton;
 
+    JLabel topCenterImage;
+    JLabel applicationNumberLabel;
+    JLabel pageNumberLabel;
+    JLabel personalDetailsLabel;
+    JLabel nameLabel;
+    JLabel fatherNameLabel;
+    JLabel cityLabel;
+    JLabel genderLabel;
+    JLabel maritalStatusLabel;
+    JLabel dateOfBirthLabel;
+    JLabel emaiLabel;
+    JLabel pinLabel;
+    JLabel stateLabel;
+    JLabel residentAddressLabel;
+
+    Timer resizeTimer;
+
+    JPanel contentPanel;
+
     SignUp() {
 
         Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Common.InitializeJFrame(this, "APPLICATION FORM", null, new Dimension(850, 800), JFrame.EXIT_ON_CLOSE, false,
-                new Point((int) (ScreenSize.getWidth() - 100) / 4, 20),
-                Common.FrameBackgroundColor);
 
-        // top center image
-        JLabel topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
-        topCenterImage.setBounds(25, 10, 100, 100);
-        add(topCenterImage);
+        setupFrame(ScreenSize);
+        initializeComponents(ScreenSize);
+        setVisible(true);
+    }
 
-        // show application number
-        JLabel applicationNumberLabel = Common.CreateLabel("APPLICATION FORM NO. " + first,
-                new Font("Raleway", Font.BOLD, 38), new Rectangle(160, 20, 600, 40));
-        add(applicationNumberLabel);
+    private void setupFrame(Dimension ScreenSize) {
+        // Set up JFrame
+        setTitle("Application Form");
+        setLayout(new BorderLayout()); // for adding JScrollPane
+        setSize(new Dimension((int) (ScreenSize.getWidth()) / 2, (int) (ScreenSize.getHeight() - 100)));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(true);
+        setLocationRelativeTo(null); // centers the frame
+    }
 
-        // show page number
-        JLabel pageNumberLabel = Common.CreateLabel("Page 1", Common.RalewayBold22, new Rectangle(330, 70, 600, 30));
-        add(pageNumberLabel);
+    private void initializeComponents(Dimension ScreenSize) {
+        contentPanel = new JPanel();
+        contentPanel.setLayout(new GridBagLayout());
+        contentPanel.setBackground(Common.FrameBackgroundColor);
 
-        // show personal details
-        JLabel personalDetailsLabel = Common.CreateLabel("Personal Details", Common.RalewayBold22,
-                new Rectangle(290, 90, 600, 30));
-        add(personalDetailsLabel);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 50, 10, 50);
+        gbc.weightx = 1.0; // Allow components to expand horizontally
 
-        // show name label and get name
-        JLabel nameLabel = Common.CreateLabel("Name: ", Common.RalewayBold20, new Rectangle(100, 190, 100, 30));
-        add(nameLabel);
+        initializeTopCenterImage(gbc, ScreenSize);
+        initializeApplicationNumberLabel(gbc);
+        initializePageDetailsPanel(gbc);
+        initializeNameField(gbc);
+        initializeFatherNameField(gbc);
+        initializeGenderSelectionPanel(gbc);
+        initializeDateOfBirthField(gbc);
+        initializeEmailField(gbc);
+        initializeMaritalStatusSelectionPanel(gbc);
+        initializeAddressField(gbc);
+        initializeNextButton(gbc);
 
-        nameTextField = Common.CreateTextField(Common.RalewayBold14, new Rectangle(300, 190, 400, 30));
-        add(nameTextField);
+        // Add contentPanel to JScrollPane
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        add(scrollPane, BorderLayout.CENTER);
+    }
 
-        // show father name label and get it
-        JLabel fatherNameLabel = Common.CreateLabel("Father's Name: ", Common.RalewayBold20, new Rectangle(100, 240, 200, 30));
-        add(fatherNameLabel);
+    private void initializeTopCenterImage(GridBagConstraints gbc, Dimension ScreenSize) {
+        // Top center image
+        topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
+        scaleTopCenterImage(ScreenSize);
+    }
 
-        fatherNameTextField = Common.CreateTextField(Common.RalewayBold14, new Rectangle(300, 240, 400, 30));
-        add(fatherNameTextField);
+    private void initializeApplicationNumberLabel(GridBagConstraints gbc) {
+        // Application number label
+        applicationNumberLabel = new JLabel("APPLICATION FORM NO. " + first);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        contentPanel.add(applicationNumberLabel, gbc);
+    }
 
-        // show buttons for gender selection
-        JLabel genderLabel = Common.CreateLabel("Gender: ", Common.RalewayBold20, new Rectangle(100, 290, 200, 30));
-        add(genderLabel);
+    private void initializePageDetailsPanel(GridBagConstraints gbc) {
+        // page number and page details
+        JPanel pageDetailsPanel = new JPanel(new GridLayout(2, 1, 0, 0));
+        pageDetailsPanel.setBackground(Common.FrameBackgroundColor);
+        pageNumberLabel = new JLabel("Page 1");
+        pageNumberLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        maleRadioButton = Common.CreateRadioButton("Male", Common.RalewayBold14, Common.FrameBackgroundColor,
-                new Rectangle(300, 290, 60, 30));
-        add(maleRadioButton);
+        personalDetailsLabel = new JLabel("Personal Details");
+        personalDetailsLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        femaleRadioButton = Common.CreateRadioButton("Female", Common.RalewayBold14, Common.FrameBackgroundColor,
-                new Rectangle(450, 290, 90, 30));
-        add(femaleRadioButton);
+        pageDetailsPanel.add(pageNumberLabel);
+        pageDetailsPanel.add(personalDetailsLabel);
 
-        othersGenderRadioButton = Common.CreateRadioButton("Others", Common.RalewayBold14, Common.FrameBackgroundColor,
-                new Rectangle(600, 290, 120, 30));
-        add(othersGenderRadioButton);
+        gbc.gridx = 1; // Align with the center of the layout
+        gbc.gridy = 1;
+        gbc.gridwidth = 2; // Span across 2 columns if needed for centering
+        gbc.anchor = GridBagConstraints.CENTER;
+        contentPanel.add(pageDetailsPanel, gbc);
+    }
+
+    private void initializeNameField(GridBagConstraints gbc) {
+        // Name label and text field
+        nameLabel = new JLabel("Name: ");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        contentPanel.add(nameLabel, gbc);
+
+        nameTextField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.7;
+        contentPanel.add(nameTextField, gbc);
+    }
+
+    private void initializeFatherNameField(GridBagConstraints gbc) {
+
+        // Father name
+        fatherNameLabel = new JLabel("Father's Name: ");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        contentPanel.add(fatherNameLabel, gbc);
+
+        fatherNameTextField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(fatherNameTextField, gbc);
+    }
+
+    private void initializeGenderSelectionPanel(GridBagConstraints gbc) {
+        // Gender selection
+        genderLabel = new JLabel("Gender: ");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.EAST;
+        contentPanel.add(genderLabel, gbc);
+
+        JPanel genderStatusPanel = new JPanel();
+        genderStatusPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        genderStatusPanel.setBackground(Common.FrameBackgroundColor);
+        maleRadioButton = new JRadioButton("Male");
+
+        maleRadioButton.setBackground(Common.FrameBackgroundColor);
+        maleRadioButton.setFocusable(false);
+        maleRadioButton.setBorder(new EmptyBorder(0, 0, 0, 70));
+        genderStatusPanel.add(maleRadioButton);
+
+        femaleRadioButton = new JRadioButton("Female");
+        femaleRadioButton.setBackground(Common.FrameBackgroundColor);
+        femaleRadioButton.setFocusable(false);
+        femaleRadioButton.setBorder(new EmptyBorder(0, 0, 0, 70));
+        genderStatusPanel.add(femaleRadioButton);
+
+        othersGenderRadioButton = new JRadioButton("Others");
+        othersGenderRadioButton.setBackground(Common.FrameBackgroundColor);
+        othersGenderRadioButton.setFocusable(false);
+        genderStatusPanel.add(othersGenderRadioButton);
+
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        contentPanel.add(genderStatusPanel, gbc);
 
         ButtonGroup genderButtonGroup = new ButtonGroup();
         genderButtonGroup.add(maleRadioButton);
         genderButtonGroup.add(femaleRadioButton);
         genderButtonGroup.add(othersGenderRadioButton);
+    }
 
-        // show calender to get DOB
-        JLabel dateOfBirthLabel = Common.CreateLabel("Date Of Birth: ", Common.RalewayBold20,
-                new Rectangle(100, 340, 200, 30));
-        add(dateOfBirthLabel);
+    private void initializeDateOfBirthField(GridBagConstraints gbc) {
+        // Date of birth
+        dateOfBirthLabel = new JLabel("Date Of Birth: ");
+        dateOfBirthLabel.setFont(Common.RalewayBold20);
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 1;
+        contentPanel.add(dateOfBirthLabel, gbc);
 
         dateChooser = new JDateChooser();
-        dateChooser.setForeground(new Color(105, 105, 105));
-        dateChooser.setBounds(300, 340, 400, 30);
-        add(dateChooser);
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        contentPanel.add(dateChooser, gbc);
+    }
 
-        // show and get email address
-        JLabel emaiLabel = Common.CreateLabel("Email Address: ", Common.RalewayBold20, new Rectangle(100, 390, 200, 30));
-        add(emaiLabel);
+    private void initializeEmailField(GridBagConstraints gbc) {
+        // Email address
+        emaiLabel = new JLabel("Email Address: ");
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        contentPanel.add(emaiLabel, gbc);
 
-        emailTextField = Common.CreateTextField(Common.RalewayBold14, new Rectangle(300, 390, 400, 30));
-        add(emailTextField);
+        emailTextField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(emailTextField, gbc);
+    }
 
-        // show and get marital status
-        JLabel maritalStatusLabel = Common.CreateLabel("Marital Status: ", Common.RalewayBold20,
-                new Rectangle(100, 440, 200, 30));
-        add(maritalStatusLabel);
+    private void initializeMaritalStatusSelectionPanel(GridBagConstraints gbc) { // Marital status
+        maritalStatusLabel = new JLabel("Marital Status: ");
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.gridwidth = 1;
+        contentPanel.add(maritalStatusLabel, gbc);
 
-        marriedRadioButton = Common.CreateRadioButton("Married", Common.RalewayBold14, Common.FrameBackgroundColor,
-                new Rectangle(300, 440, 90, 30));
-        add(marriedRadioButton);
+        // Create a panel for the marital status radio buttons
+        JPanel maritalStatusPanel = new JPanel();
+        maritalStatusPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        maritalStatusPanel.setBackground(Common.FrameBackgroundColor);
 
-        unmarriedRadioButton = Common.CreateRadioButton("Unmarried", Common.RalewayBold14, Common.FrameBackgroundColor,
-                new Rectangle(450, 440, 120, 30));
-        add(unmarriedRadioButton);
+        // Add radio buttons to the panel
+        marriedRadioButton = new JRadioButton("Married");
+        marriedRadioButton.setBackground(Common.FrameBackgroundColor);
+        marriedRadioButton.setFocusable(false);
+        marriedRadioButton.setBorder(new EmptyBorder(0, 0, 0, 50));
+        maritalStatusPanel.add(marriedRadioButton);
 
-        othersMaritalRadioButton = Common.CreateRadioButton("Others", Common.RalewayBold14, Common.FrameBackgroundColor,
-                new Rectangle(600, 440, 150, 30));
-        add(othersMaritalRadioButton);
+        unmarriedRadioButton = new JRadioButton("Unmarried");
+        unmarriedRadioButton.setBackground(Common.FrameBackgroundColor);
+        unmarriedRadioButton.setFocusable(false);
+        unmarriedRadioButton.setBorder(new EmptyBorder(0, 0, 0, 50));
+        maritalStatusPanel.add(unmarriedRadioButton);
+
+        othersMaritalRadioButton = new JRadioButton("Others");
+        othersMaritalRadioButton.setBackground(Common.FrameBackgroundColor);
+        othersMaritalRadioButton.setFocusable(false);
+        maritalStatusPanel.add(othersMaritalRadioButton);
+
+        // Add the panel to the GridBagLayout
+        gbc.gridx = 1;
+        gbc.gridy = 7;
+        gbc.gridwidth = 2; // Span across 3 columns
+        contentPanel.add(maritalStatusPanel, gbc);
 
         ButtonGroup maritalStatusButtonGroup = new ButtonGroup();
         maritalStatusButtonGroup.add(marriedRadioButton);
         maritalStatusButtonGroup.add(unmarriedRadioButton);
         maritalStatusButtonGroup.add(othersMaritalRadioButton);
+    }
 
-        // show and get residential address
-        JLabel residentAddressLabel = Common.CreateLabel("Address: ", Common.RalewayBold20, new Rectangle(100, 490, 200, 30));
-        add(residentAddressLabel);
+    private void initializeAddressField(GridBagConstraints gbc) {
+        initializeResidentAddressFied(gbc);
+        initializeCityField(gbc);
+        initializePinField(gbc);
+        initializeStateField(gbc);
+    }
 
-        residentAddressTextField = Common.CreateTextField(Common.RalewayBold14, new Rectangle(300, 490, 400, 30));
-        add(residentAddressTextField);
+    private void initializeResidentAddressFied(GridBagConstraints gbc) {
+        // Address
+        residentAddressLabel = new JLabel("Address: ");
+        gbc.gridx = 0;
+        gbc.gridy = 8;
+        gbc.gridwidth = 1;
+        contentPanel.add(residentAddressLabel, gbc);
 
-        // show and get city name
-        JLabel cityLabel = Common.CreateLabel("City: ", Common.RalewayBold20, new Rectangle(100, 540, 200, 30));
-        add(cityLabel);
+        residentAddressTextField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 8;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(residentAddressTextField, gbc);
+    }
 
-        cityTextField = Common.CreateTextField(Common.RalewayBold14, new Rectangle(300, 540, 400, 30));
-        add(cityTextField);
+    private void initializeCityField(GridBagConstraints gbc) {
+        // City
+        cityLabel = new JLabel("City: ");
+        gbc.gridx = 0;
+        gbc.gridy = 9;
+        contentPanel.add(cityLabel, gbc);
 
-        // show and get city name
-        JLabel pinLabel = Common.CreateLabel("Pin: ", Common.RalewayBold20, new Rectangle(100, 590, 200, 30));
-        add(pinLabel);
+        cityTextField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 9;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(cityTextField, gbc);
+    }
 
-        pinTextField = Common.CreateTextField(Common.RalewayBold14, new Rectangle(300, 590, 400, 30));
-        add(pinTextField);
+    private void initializePinField(GridBagConstraints gbc) {
+        // Pin
+        pinLabel = new JLabel("Pin: ");
 
-        // show and get state name
-        JLabel stateLabel = Common.CreateLabel("State: ", Common.RalewayBold20, new Rectangle(100, 640, 200, 30));
-        add(stateLabel);
+        gbc.gridx = 0;
+        gbc.gridy = 10;
+        contentPanel.add(pinLabel, gbc);
 
-        stateTextField = Common.CreateTextField(Common.RalewayBold14, new Rectangle(300, 640, 400, 30));
-        add(stateTextField);
+        pinTextField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 10;
+        gbc.gridwidth = 2;
+        contentPanel.add(pinTextField, gbc);
+    }
 
-        nextButton = Common.CreateButton("Next", Common.RalewayBold14, Color.BLACK, new Rectangle(620, 710, 80, 30), this);
-        add(nextButton);
+    private void initializeStateField(GridBagConstraints gbc) {
+        // State
+        stateLabel = new JLabel("State: ");
+        gbc.gridx = 0;
+        gbc.gridy = 11;
+        gbc.gridwidth = 1;
+        contentPanel.add(stateLabel, gbc);
 
-        setVisible(true);
+        stateTextField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 11;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(stateTextField, gbc);
+    }
+
+    private void initializeNextButton(GridBagConstraints gbc) {
+        nextButton = new JButton("Next");
+        nextButton.setForeground(Color.BLACK);
+        nextButton.addActionListener(this);
+        gbc.gridx = 2;
+        gbc.gridy = 12;
+        gbc.gridwidth = 1;
+        gbc.weighty = 0;
+        gbc.weightx = 0;
+        contentPanel.add(nextButton, gbc);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-            String formNo = first;
-            String name = nameTextField.getText();
-            
-            String fatherName = fatherNameTextField.getText();
-            
-            String dateOfBirth = null;
-            if(dateChooser.getDate() != null){dateOfBirth = new SimpleDateFormat("dd-MM-YYYY").format(dateChooser.getDate());}
-            
-            String gender = null;
-            if(maleRadioButton.isSelected()){gender = maleRadioButton.getText();}
-            else if(femaleRadioButton.isSelected()){gender = femaleRadioButton.getText();}
-            else if(othersGenderRadioButton.isSelected()){gender = othersGenderRadioButton.getText();}
-            
-            String email = emailTextField.getText();
-            
-            String maritalStatus = null;
-            if(marriedRadioButton.isSelected()){maritalStatus = marriedRadioButton.getText();}
-            else if(unmarriedRadioButton.isSelected()){maritalStatus = unmarriedRadioButton.getText();}
-            else if(othersMaritalRadioButton.isSelected()){maritalStatus = othersMaritalRadioButton.getText();}
-            
-            String residentAddress = residentAddressTextField.getText();
-            String pincode = pinTextField.getText();
-            String cityName = cityTextField.getText();
-            String stateName = stateTextField.getText();
+        String formNo = first;
+        String name = nameTextField.getText();
 
-            try {
-                    
-                    if(validateForm(name, fatherName, dateOfBirth, gender, email, maritalStatus, residentAddress, pincode, cityName, stateName)){
-                        MyCon con = new MyCon();
-                        
-                        String query = "INSERT INTO signup values('"+formNo+"','"+name+"','"+fatherName+"','"+dateOfBirth+"','"+gender+"','"+email+"','"+maritalStatus+"','"+residentAddress+"','"+cityName+"','"+pincode+"','"+stateName+"')";
-                        con.statement.executeUpdate(query);
+        String fatherName = fatherNameTextField.getText();
 
-                        con.close();
-                        new SignUp2(formNo);
-                        dispose();
-                }
+        String dateOfBirth = null;
+        if (dateChooser.getDate() != null) {
+            dateOfBirth = new SimpleDateFormat("dd-MM-YYYY").format(dateChooser.getDate());
+        }
+
+        String gender = null;
+        if (maleRadioButton.isSelected()) {
+            gender = maleRadioButton.getText();
+        } else if (femaleRadioButton.isSelected()) {
+            gender = femaleRadioButton.getText();
+        } else if (othersGenderRadioButton.isSelected()) {
+            gender = othersGenderRadioButton.getText();
+        }
+
+        String email = emailTextField.getText();
+
+        String maritalStatus = null;
+        if (marriedRadioButton.isSelected()) {
+            maritalStatus = marriedRadioButton.getText();
+        } else if (unmarriedRadioButton.isSelected()) {
+            maritalStatus = unmarriedRadioButton.getText();
+        } else if (othersMaritalRadioButton.isSelected()) {
+            maritalStatus = othersMaritalRadioButton.getText();
+        }
+
+        String residentAddress = residentAddressTextField.getText();
+        String pincode = pinTextField.getText();
+        String cityName = cityTextField.getText();
+        String stateName = stateTextField.getText();
+
+        try {
+
+            if (validateForm(name, fatherName, dateOfBirth, gender, email, maritalStatus, residentAddress,
+                    pincode, cityName, stateName)) {
+                MyCon con = new MyCon();
+
+                String query = "INSERT INTO signup values('" + formNo + "','" + name + "','"
+                        + fatherName + "','" + dateOfBirth + "','" + gender + "','" + email
+                        + "','" + maritalStatus + "','" + residentAddress + "','" + cityName
+                        + "','" + pincode + "','" + stateName + "')";
+                con.statement.executeUpdate(query);
+
+                con.close();
+                new SignUp2(formNo);
+                dispose();
+            }
         } catch (Exception E) {
-                E.printStackTrace();
+            E.printStackTrace();
         }
     }
 
     private static boolean validateForm(String name, String fatherName, String dateOfBirth,
-                                     String gender, String email, String maritalStatus, String residentAddress,
-                                     String pincode, String cityName, String stateName) {
+            String gender, String email, String maritalStatus, String residentAddress,
+            String pincode, String cityName, String stateName) {
 
         StringBuilder errorMessage = new StringBuilder();
 
-        if (name.isEmpty()) errorMessage.append("Name field can't be empty.\n");
-        if (fatherName.isEmpty()) errorMessage.append("Father name field can't be empty.\n");
-        if (dateOfBirth == null || dateOfBirth.isEmpty()) errorMessage.append("Date of birth can't be empty.\n");
-        if (gender == null || gender.isEmpty()) errorMessage.append("Gender must be selected.\n");
-        if (email.isEmpty()) errorMessage.append("Email field can't be empty.\n");
-        if (maritalStatus == null || maritalStatus.isEmpty()) errorMessage.append("Marital status must be selected.\n");
-        if (residentAddress.isEmpty()) errorMessage.append("Resident address can't be empty.\n");
-        if (pincode.isEmpty()) errorMessage.append("Pincode can't be empty.\n");
-        if (cityName.isEmpty()) errorMessage.append("City name can't be empty.\n");
-        if (stateName.isEmpty()) errorMessage.append("State name can't be empty.\n");
+        if (name.isEmpty())
+            errorMessage.append("Name field can't be empty.\n");
+        if (fatherName.isEmpty())
+            errorMessage.append("Father name field can't be empty.\n");
+        if (dateOfBirth == null || dateOfBirth.isEmpty())
+            errorMessage.append("Date of birth can't be empty.\n");
+        if (gender == null || gender.isEmpty())
+            errorMessage.append("Gender must be selected.\n");
+        if (email.isEmpty())
+            errorMessage.append("Email field can't be empty.\n");
+        if (maritalStatus == null || maritalStatus.isEmpty())
+            errorMessage.append("Marital status must be selected.\n");
+        if (residentAddress.isEmpty())
+            errorMessage.append("Resident address can't be empty.\n");
+        if (pincode.isEmpty())
+            errorMessage.append("Pincode can't be empty.\n");
+        if (cityName.isEmpty())
+            errorMessage.append("City name can't be empty.\n");
+        if (stateName.isEmpty())
+            errorMessage.append("State name can't be empty.\n");
 
         if (errorMessage.length() > 0) {
-            JOptionPane.showMessageDialog(null, errorMessage.toString(), "Validation Error", JOptionPane.ERROR_MESSAGE);
-            return false; 
+            JOptionPane.showMessageDialog(null, errorMessage.toString(), "Validation Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
         }
 
         return true;
     }
-    
+
+    @Override
+    protected void handleResizing() {
+
+        // prevents resizing when frame is not visible
+        if (!this.isVisible())
+            return;
+
+        Dimension size = this.getSize();
+
+        updateFonts(size);
+        updateDateChooserSize(size);
+
+        // Rescale image
+        if (topCenterImage.isValid())
+            scaleTopCenterImage(size);
+
+        // Revalidate and repaint to apply changes
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void updateDateChooserSize(Dimension size) {
+        // Calculate the preferred size based on the frame size
+        int preferredWidth = (int) (size.width / 4.0);
+        int preferredHeight = (int) (size.height / 35.0);
+
+        dateChooser.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
+    }
+
+    private void updateFonts(Dimension size) {
+        float scaleFactor = size.width / 800.0f;
+
+        updateLabelFonts(size, scaleFactor);
+        updateTextFieldFonts(size, scaleFactor);
+        updateButtonFonts(size, scaleFactor);
+    }
+
+    private void updateLabelFonts(Dimension size, float scaleFactor) {
+
+        Font scaledFont20 = Common.RalewayBold20.deriveFont(20 * scaleFactor);
+        Font scaledFont22 = Common.RalewayBold22.deriveFont(22 * scaleFactor);
+
+        // Update fonts for labels with scaling
+        applicationNumberLabel.setFont(new Font("Raleway", Font.BOLD, (int) (28 * scaleFactor)));
+        personalDetailsLabel.setFont(scaledFont22);
+        pageNumberLabel.setFont(scaledFont22);
+        nameLabel.setFont(scaledFont20);
+        fatherNameLabel.setFont(scaledFont20);
+        genderLabel.setFont(scaledFont20);
+        dateOfBirthLabel.setFont(scaledFont20);
+        emaiLabel.setFont(scaledFont20);
+        maritalStatusLabel.setFont(scaledFont20);
+        residentAddressLabel.setFont(scaledFont20);
+        cityLabel.setFont(scaledFont20);
+        pinLabel.setFont(scaledFont20);
+        stateLabel.setFont(scaledFont20);
+    }
+
+    private void updateTextFieldFonts(Dimension size, float scaleFactor) {
+
+        Font scaledFont = Common.RalewayBold14.deriveFont(scaleFactor * 14);
+
+        nameTextField.setFont(scaledFont);
+        fatherNameTextField.setFont(scaledFont);
+        emailTextField.setFont(scaledFont);
+        dateChooser.setFont(scaledFont);
+        residentAddressTextField.setFont(scaledFont);
+        cityTextField.setFont(scaledFont);
+        pinTextField.setFont(scaledFont);
+        stateTextField.setFont(scaledFont);
+    }
+
+    private void updateButtonFonts(Dimension size, float scaleFactor) {
+
+        Font scaledFont = Common.RalewayBold14.deriveFont(scaleFactor * 14);
+
+        maleRadioButton.setFont(scaledFont);
+        femaleRadioButton.setFont(scaledFont);
+        othersGenderRadioButton.setFont(scaledFont);
+        marriedRadioButton.setFont(scaledFont);
+        unmarriedRadioButton.setFont(scaledFont);
+        othersMaritalRadioButton.setFont(scaledFont);
+        nextButton.setFont(scaledFont);
+    }
+
+    private void scaleTopCenterImage(Dimension size) {
+
+        // Update GridBagConstraints properties dynamically
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Remove the old image
+        contentPanel.remove(topCenterImage);
+
+        // Create new top-center image with scaled size
+        int newImageWidth = (int) (size.width / 8);
+        int newImageHeight = (int) (size.height / 6);
+        topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", newImageWidth, newImageHeight);
+
+        // Re-add the resized image to the layout
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        contentPanel.add(topCenterImage, gbc);
+    }
+
     public static void main(String[] args) {
         new SignUp();
     }
-
 }
