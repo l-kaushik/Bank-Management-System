@@ -249,8 +249,8 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
 
     private void insertIntoDatabase(String formNo, String religion, String category, String income, String education,
             String occupation, String pan, String aadhar, String seniorCitizen, String existingAccount) {
-                
-        try (MyCon con = new MyCon()){
+
+        try (MyCon con = new MyCon()) {
 
             String query = "INSERT INTO signuptwo VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -273,13 +273,46 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         }
     }
 
+    @Override
+    protected void handleResizing() {
+        // prevents resizing when frame is not visible
+        if (!this.isVisible())
+            return;
+
+        Dimension size = this.getSize();
+
+        updateFonts(size);
+
+        // Rescale image
+        if (topCenterImage.isValid())
+            scaleTopCenterImage(size);
+
+        // Revalidate and repaint to apply changes
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void updateFonts(Dimension size) {
+        float scaleFactor = size.width / 800.0f;
+        updateLabelFonts(scaleFactor);
+        updateFieldsFonts(scaleFactor);
+        updateButtonsFonts(scaleFactor);
+    }
+
+    private void updateLabelFonts(float scaleFactor) {
+
+    }
+
+    private void updateFieldsFonts(float scaleFactor) {
+
+    }
+
+    private void updateButtonsFonts(float scaleFactor) {
+
+    }
+
     public static void main(String[] args) {
         new SignUp2("1111");
     }
 
-    @Override
-    protected void handleResizing() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'handleResizing'");
-    }
 }
