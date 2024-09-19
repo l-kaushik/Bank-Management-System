@@ -1,22 +1,12 @@
 package BankManagementSystem;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
-import javax.swing.JButton;
-import javax.swing.ButtonGroup;
+import javax.swing.*;
 
-public class SignUp2 extends JFrame implements ActionListener{
+public class SignUp2 extends ResizableFrame implements ActionListener{
 
     String formNo = null;
 
@@ -36,14 +26,22 @@ public class SignUp2 extends JFrame implements ActionListener{
 
     JButton nextButton;
 
+    private void setupFrame(Dimension screenSize) {
+        setTitle("Application Form");
+        setLayout(new BorderLayout());
+        setSize((int) (screenSize.width/2), (int) (screenSize.height/2));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(true);
+        setLocationRelativeTo(null);
+    }
+
     SignUp2(String inFormNo) {
 
         formNo = inFormNo;
 
         Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Common.InitializeJFrame(this, "APPLICATION FORM", null, new Dimension(850, 700), JFrame.EXIT_ON_CLOSE, false,
-                new Point((int) (ScreenSize.getWidth()) / 4, 40),
-                Common.FrameBackgroundColor);
+
+        setupFrame(ScreenSize);
 
         // top center image
         JLabel topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
@@ -173,11 +171,9 @@ public class SignUp2 extends JFrame implements ActionListener{
                 String category = categoryComboBox.getSelectedItem().toString();
                 String income = incomeComboBox.getSelectedItem().toString();
                 String education = educationComboBox.getSelectedItem().toString();
-                String occupation = occupationComboBox.getSelectedItem().toString();
-                
+                String occupation = occupationComboBox.getSelectedItem().toString();      
                 String pan = panNumberTextField.getText();
                 String aadhar = aadharNumberTextField.getText();
-
                 String seniorCitizen = null;
                 if(yesSeniorCitizenRadioButton.isSelected()){seniorCitizen = yesSeniorCitizenRadioButton.getText();}
                 else if(noSeniorCitizenRadioButton.isSelected()){seniorCitizen = noSeniorCitizenRadioButton.getText();}
@@ -205,7 +201,15 @@ public class SignUp2 extends JFrame implements ActionListener{
                         E.printStackTrace();
                 }
         }       
+        
+
         public static void main(String[] args) {
             new SignUp2("1111");
+        }
+
+        @Override
+        protected void handleResizing() {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'handleResizing'");
         }
 }
