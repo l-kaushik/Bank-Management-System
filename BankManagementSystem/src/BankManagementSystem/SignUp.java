@@ -3,6 +3,7 @@ package BankManagementSystem;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
 import java.util.Random;
 
 import javax.swing.*;
@@ -374,63 +375,97 @@ public class SignUp extends ResizableFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        // Extract data from fields and buttons
         String formNo = first;
         String name = nameTextField.getText();
-
         String fatherName = fatherNameTextField.getText();
-
-        String dateOfBirth = null;
-        if (dateChooser.getDate() != null) {
-            dateOfBirth = new SimpleDateFormat("dd-MM-YYYY").format(dateChooser.getDate());
-        }
-
-        String gender = null;
-        if (maleRadioButton.isSelected()) {
-            gender = maleRadioButton.getText();
-        } else if (femaleRadioButton.isSelected()) {
-            gender = femaleRadioButton.getText();
-        } else if (othersGenderRadioButton.isSelected()) {
-            gender = othersGenderRadioButton.getText();
-        }
-
+        String dateOfBirth = extractdateOfBirth();
+        String gender = extractGenderSelection();
         String email = emailTextField.getText();
-
-        String maritalStatus = null;
-        if (marriedRadioButton.isSelected()) {
-            maritalStatus = marriedRadioButton.getText();
-        } else if (unmarriedRadioButton.isSelected()) {
-            maritalStatus = unmarriedRadioButton.getText();
-        } else if (othersMaritalRadioButton.isSelected()) {
-            maritalStatus = othersMaritalRadioButton.getText();
-        }
-
+        String maritalStatus = extractMaritalSelection();
         String residentAddress = residentAddressTextField.getText();
         String pincode = pinTextField.getText();
         String cityName = cityTextField.getText();
         String stateName = stateTextField.getText();
 
+        // validate data for potential errors
+        if (!validateInputValues(name, fatherName, dateOfBirth, gender, email, maritalStatus, residentAddress,
+                pincode, cityName, stateName))
+            return;
+
+        // insert data into database
+        insertIntoDatabase(formNo, name, fatherName, dateOfBirth, gender, email,
+                maritalStatus, residentAddress, pincode, cityName, stateName);
+
+    }
+
+    private String extractdateOfBirth() {
+        if (dateChooser.getDate() != null) {
+            return new SimpleDateFormat("dd-MM-YYYY").format(dateChooser.getDate());
+        }
+        return null;
+    }
+
+    private String extractGenderSelection() {
+        if (maleRadioButton.isSelected()) {
+            return maleRadioButton.getText();
+        } else if (femaleRadioButton.isSelected()) {
+            return femaleRadioButton.getText();
+        } else if (othersGenderRadioButton.isSelected()) {
+            return othersGenderRadioButton.getText();
+        }
+
+        return null;
+    }
+
+    private String extractMaritalSelection() {
+        if (marriedRadioButton.isSelected()) {
+            return marriedRadioButton.getText();
+        } else if (unmarriedRadioButton.isSelected()) {
+            return unmarriedRadioButton.getText();
+        } else if (othersMaritalRadioButton.isSelected()) {
+            return othersMaritalRadioButton.getText();
+        }
+
+        return null;
+    }
+
+    private void insertIntoDatabase(String formNo, String name, String fatherName, String dateOfBirth, String gender,
+            String email, String maritalStatus, String residentAddress, String pincode, String cityName,
+            String stateName) {
+
         try {
+            MyCon con = new MyCon();
 
-            if (validateForm(name, fatherName, dateOfBirth, gender, email, maritalStatus, residentAddress,
-                    pincode, cityName, stateName)) {
-                MyCon con = new MyCon();
+            String query = "INSERT INTO signup VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                String query = "INSERT INTO signup values('" + formNo + "','" + name + "','"
-                        + fatherName + "','" + dateOfBirth + "','" + gender + "','" + email
-                        + "','" + maritalStatus + "','" + residentAddress + "','" + cityName
-                        + "','" + pincode + "','" + stateName + "')";
-                con.statement.executeUpdate(query);
+            PreparedStatement preparedStatement = con.connection.prepareStatement(query);
+            preparedStatement.setString(1, formNo);
+            preparedStatement.setString(2, name);
+            preparedStatement.setString(3, fatherName);
+            preparedStatement.setString(4, dateOfBirth);
+            preparedStatement.setString(5, gender);
+            preparedStatement.setString(6, email);
+            preparedStatement.setString(7, maritalStatus);
+            preparedStatement.setString(8, residentAddress);
+            preparedStatement.setString(9, cityName);
+            preparedStatement.setString(10, pincode);
+            preparedStatement.setString(11, stateName);
 
-                con.close();
-                new SignUp2(formNo);
-                dispose();
-            }
+            preparedStatement.executeUpdate();
+
+            con.close();
+            preparedStatement.close();
+            new SignUp2(formNo);
+            dispose();
+
         } catch (Exception E) {
             E.printStackTrace();
         }
     }
 
-    private static boolean validateForm(String name, String fatherName, String dateOfBirth,
+    private static boolean validateInputValues(String name, String fatherName, String dateOfBirth,
             String gender, String email, String maritalStatus, String residentAddress,
             String pincode, String cityName, String stateName) {
 
