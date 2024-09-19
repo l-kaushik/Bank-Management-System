@@ -31,13 +31,14 @@ public class Login extends ResizableFrame implements ActionListener{
     Timer resizeTimer;
 
     Login() {
-        setupFrameAndBackgroundImage();
-        initializeComponents();
+        Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        setupFrameAndBackgroundImage(ScreenSize);
+        initializeComponents(ScreenSize);
         setVisible(true);
     }
 
-    private void setupFrameAndBackgroundImage() {
-        Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private void setupFrameAndBackgroundImage(Dimension ScreenSize) {
 
         // Load background image
         backgroundIcon = new ImageIcon(ClassLoader.getSystemResource("icons/backbg.png"));
@@ -62,7 +63,7 @@ public class Login extends ResizableFrame implements ActionListener{
         setMinimumSize(new Dimension(500, 300));
     }
 
-    private void initializeComponents() {
+    private void initializeComponents(Dimension ScreenSize) {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -70,21 +71,15 @@ public class Login extends ResizableFrame implements ActionListener{
 
         // Add the top-center image (bank image)
         topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.EAST;
-        backgroundLabel.add(topCenterImage, gbc);
+        scaleTopCenterImage(ScreenSize);
 
         cardImage = Common.GetScaledImageWithLabel("icons/card.png", 100, 100);
-        cardImage.setBounds(getWidth() - 120, getHeight() - 120, 100, 100);
+        scaleCardImage(ScreenSize);
         add(cardImage);
 
         // Title label
         titleLabel = new JLabel("WELCOME TO ATM");
-        titleLabel.setFont(new Font("AvantGarde", Font.BOLD, 38));
         titleLabel.setForeground(Color.BLACK);
-
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -93,7 +88,6 @@ public class Login extends ResizableFrame implements ActionListener{
 
         // Card number label and text field
         cardNumberLabel = new JLabel("Card No: ");
-        cardNumberLabel.setFont(new Font("Ralway", Font.BOLD, 28));
         cardNumberLabel.setForeground(Color.BLACK);
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -108,7 +102,6 @@ public class Login extends ResizableFrame implements ActionListener{
 
         // Pin number label and password field
         pinLabel = new JLabel("Pin No: ");
-        pinLabel.setFont(new Font("Ralway", Font.BOLD, 28));
         pinLabel.setForeground(Color.BLACK);
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -122,7 +115,6 @@ public class Login extends ResizableFrame implements ActionListener{
 
         // Buttons for Sign In, Clear, and Sign Up
         signInButton = new JButton("SIGN IN");
-        signInButton.setFont(Common.ArialBold14);
         signInButton.setForeground(Color.BLACK);
         signInButton.addActionListener(this);
         gbc.gridx = 0;
@@ -130,7 +122,6 @@ public class Login extends ResizableFrame implements ActionListener{
         backgroundLabel.add(signInButton, gbc);
 
         clearButton = new JButton("CLEAR");
-        clearButton.setFont(Common.ArialBold14);
         clearButton.setForeground(Color.BLACK);
         clearButton.addActionListener(this);
         gbc.gridx = 1;
@@ -138,7 +129,6 @@ public class Login extends ResizableFrame implements ActionListener{
         backgroundLabel.add(clearButton, gbc);
 
         signUpButton = new JButton("SIGN UP");
-        signUpButton.setFont(Common.ArialBold14);
         signUpButton.setForeground(Color.BLACK);
         signUpButton.addActionListener(this);
         gbc.gridx = 0;
