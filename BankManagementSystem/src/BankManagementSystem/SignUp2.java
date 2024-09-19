@@ -26,6 +26,8 @@ public class SignUp2 extends ResizableFrame implements ActionListener{
 
     JButton nextButton;
 
+    JPanel contentPanel;
+
     private void setupFrame(Dimension screenSize) {
         setTitle("Application Form");
         setLayout(new BorderLayout());
@@ -33,6 +35,26 @@ public class SignUp2 extends ResizableFrame implements ActionListener{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
         setLocationRelativeTo(null);
+    }
+
+    private void initializeComponents(Dimension screenSize){
+        contentPanel = new JPanel();
+        contentPanel.setLayout(new GridBagLayout());
+        contentPanel.setBackground(Common.FrameBackgroundColor);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 50, 10, 50);
+        gbc.weightx = 1.0; // Allow components to expand horizontally
+    
+    
+        // component initialization here
+
+
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        add(scrollPane, BorderLayout.CENTER);
+    
     }
 
     SignUp2(String inFormNo) {
