@@ -3,10 +3,11 @@ package BankManagementSystem;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
 
 import javax.swing.*;
 
-public class SignUp2 extends ResizableFrame implements ActionListener{
+public class SignUp2 extends ResizableFrame implements ActionListener {
 
     String formNo = null;
 
@@ -31,13 +32,13 @@ public class SignUp2 extends ResizableFrame implements ActionListener{
     private void setupFrame(Dimension screenSize) {
         setTitle("Application Form");
         setLayout(new BorderLayout());
-        setSize((int) (screenSize.width/2), (int) (screenSize.height/2));
+        setSize((int) (screenSize.width / 2), (int) (screenSize.height / 2));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
         setLocationRelativeTo(null);
     }
 
-    private void initializeComponents(Dimension screenSize){
+    private void initializeComponents(Dimension screenSize) {
         contentPanel = new JPanel();
         contentPanel.setLayout(new GridBagLayout());
         contentPanel.setBackground(Common.FrameBackgroundColor);
@@ -46,15 +47,13 @@ public class SignUp2 extends ResizableFrame implements ActionListener{
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 50, 10, 50);
         gbc.weightx = 1.0; // Allow components to expand horizontally
-    
-    
-        // component initialization here
 
+        // component initialization here
 
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
-    
+
     }
 
     SignUp2(String inFormNo) {
@@ -186,52 +185,101 @@ public class SignUp2 extends ResizableFrame implements ActionListener{
         setVisible(true);
     }
 
-    
     @Override
     public void actionPerformed(ActionEvent e) {
-                String religion = religionComboBox.getSelectedItem().toString();
-                String category = categoryComboBox.getSelectedItem().toString();
-                String income = incomeComboBox.getSelectedItem().toString();
-                String education = educationComboBox.getSelectedItem().toString();
-                String occupation = occupationComboBox.getSelectedItem().toString();      
-                String pan = panNumberTextField.getText();
-                String aadhar = aadharNumberTextField.getText();
-                String seniorCitizen = null;
-                if(yesSeniorCitizenRadioButton.isSelected()){seniorCitizen = yesSeniorCitizenRadioButton.getText();}
-                else if(noSeniorCitizenRadioButton.isSelected()){seniorCitizen = noSeniorCitizenRadioButton.getText();}
+        String religion = religionComboBox.getSelectedItem().toString();
+        String category = categoryComboBox.getSelectedItem().toString();
+        String income = incomeComboBox.getSelectedItem().toString();
+        String education = educationComboBox.getSelectedItem().toString();
+        String occupation = occupationComboBox.getSelectedItem().toString();
+        String pan = panNumberTextField.getText();
+        String aadhar = aadharNumberTextField.getText();
+        String seniorCitizen = extractSeniorCitizenPressed();
+        String existingAccount = extractExistingAccountPressed();
 
-                String existingAccount = null;
-                if(yesExistingAccountRadioButton.isSelected()){existingAccount = yesExistingAccountRadioButton.getText();}
-                else if(noExisitingAccountRadioButton.isSelected()){existingAccount = noExisitingAccountRadioButton.getText();}
+        // validate inputted values
+        if (!validateInputValues(pan, aadhar, seniorCitizen, existingAccount))
+            return;
 
-                try {
+        // insert data into database
+        insertIntoDatabase(formNo, religion, category, income, education, occupation, pan, aadhar, seniorCitizen,
+                existingAccount);
 
-                        if(!Common.ValidateString(pan, "Pan number should not be empty.")) {return;} 
-                        if(!Common.ValidateString(aadhar, "Aadhar number should not be empty.")) {return;}
-                        if(!Common.ValidateString(seniorCitizen,"In senior citizen, any one must be selected.")) {return;}
-                        if(!Common.ValidateString(existingAccount, "In existing account, any one must be selected.")) {return;}
-                        MyCon con = new MyCon();
-                        
-                        String query = "INSERT INTO signuptwo values('"+formNo+"','"+religion+"','"+category+"','"+income+"','"+education+"','"+occupation+"','"+pan+"','"+aadhar+"','"+seniorCitizen+"','"+existingAccount+"')";
-                        con.statement.executeUpdate(query);
-                        
-                        con.close();
-                        new SignUp3(formNo);
-                        dispose();
+        // create next window and delete this one
+        new SignUp3(formNo);
+        dispose();
+        ;
+    }
 
-                } catch (Exception E) {
-                        E.printStackTrace();
-                }
-        }       
-        
+    private String extractSeniorCitizenPressed() {
+        if (yesSeniorCitizenRadioButton.isSelected()) {
+            return yesSeniorCitizenRadioButton.getText();
+        } else if (noSeniorCitizenRadioButton.isSelected()) {
+            return noSeniorCitizenRadioButton.getText();
+        }
+        return null;
+    }
 
-        public static void main(String[] args) {
-            new SignUp2("1111");
+    private String extractExistingAccountPressed() {
+        if (yesExistingAccountRadioButton.isSelected()) {
+            return yesExistingAccountRadioButton.getText();
+        } else if (noExisitingAccountRadioButton.isSelected()) {
+            return noExisitingAccountRadioButton.getText();
         }
 
-        @Override
-        protected void handleResizing() {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'handleResizing'");
+        return null;
+    }
+
+    private boolean validateInputValues(String pan, String aadhar, String seniorCitizen, String existingAccount) {
+        if (!Common.ValidateString(pan, "Pan number should not be empty.")) {
+            return false;
         }
+        if (!Common.ValidateString(aadhar, "Aadhar number should not be empty.")) {
+            return false;
+        }
+        if (!Common.ValidateString(seniorCitizen, "In senior citizen, any one must be selected.")) {
+            return false;
+        }
+        if (!Common.ValidateString(existingAccount, "In existing account, any one must be selected.")) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void insertIntoDatabase(String formNo, String religion, String category, String income, String education,
+            String occupation, String pan, String aadhar, String seniorCitizen, String existingAccount) {
+                
+        try (MyCon con = new MyCon()){
+
+            String query = "INSERT INTO signuptwo VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement preparedStatement = con.connection.prepareStatement(query);
+            preparedStatement.setString(1, formNo);
+            preparedStatement.setString(2, religion);
+            preparedStatement.setString(3, category);
+            preparedStatement.setString(4, income);
+            preparedStatement.setString(5, education);
+            preparedStatement.setString(6, occupation);
+            preparedStatement.setString(7, pan);
+            preparedStatement.setString(8, aadhar);
+            preparedStatement.setString(9, seniorCitizen);
+            preparedStatement.setString(10, existingAccount);
+
+            preparedStatement.executeUpdate();
+
+        } catch (Exception E) {
+            E.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        new SignUp2("1111");
+    }
+
+    @Override
+    protected void handleResizing() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'handleResizing'");
+    }
 }
