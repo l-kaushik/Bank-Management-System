@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
 
 import java.util.Random;
 
-public class SignUp3 extends JFrame implements ActionListener{
+public class SignUp3 extends ResizableFrame implements ActionListener{
 
     String formNo = null;
 
@@ -227,6 +227,11 @@ public class SignUp3 extends JFrame implements ActionListener{
         } catch (Exception E) {
                 E.getStackTrace();
         }
+    }
+
+    @Override
+    protected void handleResizing() {
+
     }
 
     public static void main(String[] args) {
