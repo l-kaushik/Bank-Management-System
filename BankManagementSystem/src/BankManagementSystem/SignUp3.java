@@ -3,12 +3,14 @@ package BankManagementSystem;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.swing.*;
 
 import java.util.Random;
 
-public class SignUp3 extends ResizableFrame implements ActionListener{
+public class SignUp3 extends ResizableFrame implements ActionListener {
 
     String formNo = null;
 
@@ -30,7 +32,6 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
 
     JPanel contentPanel;
 
-    
     SignUp3(String informNo) {
 
         formNo = informNo;
@@ -86,7 +87,7 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
         JLabel formNoTextLabel = Common.CreateLabel(formNo, Common.RalewayBold14, new Rectangle(760, 10, 100, 30));
         add(formNoTextLabel);
     }
-    
+
     private void initializeAccountDetailsLabel(GridBagConstraints gbc) {
         // show account detail on page
         JLabel accountDetailsLabel = Common.CreateLabel("Account Details", Common.RalewayBold22,
@@ -160,46 +161,50 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
                 new Rectangle(100, 450, 200, 30));
         add(serviceLabel);
 
-        ATMCardCheckBox = Common.CreateCheckBox("ATM Card", Common.FrameBackgroundColor, Common.RalewayBold14, 
+        ATMCardCheckBox = Common.CreateCheckBox("ATM Card", Common.FrameBackgroundColor, Common.RalewayBold14,
                 new Rectangle(100, 500, 200, 30));
         add(ATMCardCheckBox);
 
-        internetBankingCheckBox = Common.CreateCheckBox("Internet Banking", Common.FrameBackgroundColor, Common.RalewayBold14, 
+        internetBankingCheckBox = Common.CreateCheckBox("Internet Banking", Common.FrameBackgroundColor,
+                Common.RalewayBold14,
                 new Rectangle(350, 500, 200, 30));
         add(internetBankingCheckBox);
-        
-        mobileBankingCheckBox = Common.CreateCheckBox("Mobile Banking", Common.FrameBackgroundColor, Common.RalewayBold14, 
+
+        mobileBankingCheckBox = Common.CreateCheckBox("Mobile Banking", Common.FrameBackgroundColor,
+                Common.RalewayBold14,
                 new Rectangle(100, 550, 200, 30));
         add(mobileBankingCheckBox);
-        
-        emailAlertsCheckBox = Common.CreateCheckBox("Email Alerts", Common.FrameBackgroundColor, Common.RalewayBold14, 
+
+        emailAlertsCheckBox = Common.CreateCheckBox("Email Alerts", Common.FrameBackgroundColor, Common.RalewayBold14,
                 new Rectangle(350, 550, 200, 30));
         add(emailAlertsCheckBox);
-        
-        chequeBookCheckBox = Common.CreateCheckBox("Cheque Book", Common.FrameBackgroundColor, Common.RalewayBold14, 
+
+        chequeBookCheckBox = Common.CreateCheckBox("Cheque Book", Common.FrameBackgroundColor, Common.RalewayBold14,
                 new Rectangle(100, 600, 200, 30));
         add(chequeBookCheckBox);
 
-        eStatementCheckBox = Common.CreateCheckBox("E-Statement", Common.FrameBackgroundColor, Common.RalewayBold14, 
+        eStatementCheckBox = Common.CreateCheckBox("E-Statement", Common.FrameBackgroundColor, Common.RalewayBold14,
                 new Rectangle(350, 600, 200, 30));
         add(eStatementCheckBox);
     }
 
     private void initializeAcceptTermsLabel(GridBagConstraints gbc) {
-        legalStaementCheckBox = Common.CreateCheckBox("I here by declares that the above entered details correct to the best of my knowledge.",
+        legalStaementCheckBox = Common.CreateCheckBox(
+                "I here by declares that the above entered details correct to the best of my knowledge.",
                 Common.FrameBackgroundColor, new Font("Raleway", Font.BOLD, 12), new Rectangle(100, 650, 600, 20));
         legalStaementCheckBox.setSelected(true);
         add(legalStaementCheckBox);
     }
 
     private void initializeSubmitButton(GridBagConstraints gbc) {
-        submitButton = Common.CreateButton("Submit",Common.RalewayBold14, Color.BLACK, 
+        submitButton = Common.CreateButton("Submit", Common.RalewayBold14, Color.BLACK,
                 new Rectangle(250, 700, 100, 30), this);
         add(submitButton);
     }
+
     private void initializeCancelButton(GridBagConstraints gbc) {
 
-        cancelButton = Common.CreateButton("Cancel",Common.RalewayBold14, Color.BLACK, 
+        cancelButton = Common.CreateButton("Cancel", Common.RalewayBold14, Color.BLACK,
                 new Rectangle(420, 700, 100, 30), this);
         add(cancelButton);
     }
@@ -207,62 +212,148 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if(e.getSource() == cancelButton){
-                // show a dialog box of all information will be removed and remove data from database
-                System.exit(0);
+        if (e.getSource() == cancelButton) {
+            // show a dialog box of all information will be removed and remove data from
+            // database
+            System.exit(0);
         }
 
-        String accountType = null;
-        if(savingAccountRadioButton.isSelected()){accountType = savingAccountRadioButton.getText();}
-        if(currentAccountRadioButton.isSelected()){accountType = currentAccountRadioButton.getText();}
-        if(fixedDepopsiteRadioButton.isSelected()){accountType = fixedDepopsiteRadioButton.getText();}
-        if(recurringDepositeRadioButton.isSelected()){accountType = recurringDepositeRadioButton.getText();}
-        
+        submitButtonAction();
+
+    }
+
+    private void submitButtonAction() {
+        String accountType = extractAccountTypeSelection();
+        String cardNo = generateCardNumber();
+        String pin = generatePinNumber();
+        String facilites = extractFacilitiesSelected();
+
+        if (!validateForm(accountType))
+            return;
+
+        insertIntoDatabase(accountType, cardNo, pin, facilites);
+
+        new Deposit(pin);
+        dispose();
+    }
+
+    private String extractAccountTypeSelection() {
+        if (savingAccountRadioButton.isSelected()) {
+            return savingAccountRadioButton.getText();
+        } else if (currentAccountRadioButton.isSelected()) {
+            return currentAccountRadioButton.getText();
+        } else if (fixedDepopsiteRadioButton.isSelected()) {
+            return fixedDepopsiteRadioButton.getText();
+        } else if (recurringDepositeRadioButton.isSelected()) {
+            return recurringDepositeRadioButton.getText();
+        }
+
+        return null;
+    }
+
+    private String generateCardNumber() {
         Random random = new Random();
         long first7 = (random.nextLong() % 90000000L) + 1409963000000000L;
         String cardNo = "" + Math.abs(first7);
-        
-        long first3 = (random.nextLong() % 9000L) + 1000L;
-        String pin = "" + Math.abs(first3); 
 
+        return cardNo;
+    }
+
+    private String generatePinNumber() {
+        Random random = new Random();
+        long first3 = (random.nextLong() % 9000L) + 1000L;
+        String pin = "" + Math.abs(first3);
+
+        return pin;
+    }
+
+    private String extractFacilitiesSelected() {
         String facilites = "";
-        if(ATMCardCheckBox.isSelected()){facilites += ATMCardCheckBox.getText() + ", ";}
-        if(internetBankingCheckBox.isSelected()){facilites += internetBankingCheckBox.getText() + ", ";}
-        if(mobileBankingCheckBox.isSelected()){facilites += mobileBankingCheckBox.getText() + ", ";}
-        if(emailAlertsCheckBox.isSelected()){facilites += emailAlertsCheckBox.getText() + ", ";}
-        if(chequeBookCheckBox.isSelected()){facilites += chequeBookCheckBox.getText() + ", ";}
-        if(eStatementCheckBox.isSelected()){facilites += eStatementCheckBox.getText() + ", ";}
+        if (ATMCardCheckBox.isSelected()) {
+            facilites += ATMCardCheckBox.getText() + ", ";
+        }
+        if (internetBankingCheckBox.isSelected()) {
+            facilites += internetBankingCheckBox.getText() + ", ";
+        }
+        if (mobileBankingCheckBox.isSelected()) {
+            facilites += mobileBankingCheckBox.getText() + ", ";
+        }
+        if (emailAlertsCheckBox.isSelected()) {
+            facilites += emailAlertsCheckBox.getText() + ", ";
+        }
+        if (chequeBookCheckBox.isSelected()) {
+            facilites += chequeBookCheckBox.getText() + ", ";
+        }
+        if (eStatementCheckBox.isSelected()) {
+            facilites += eStatementCheckBox.getText() + ", ";
+        }
 
         // removing additional comma and space
-        if(!facilites.isEmpty()){facilites = facilites.substring(0, facilites.length() - 2);}
+        if (!facilites.isEmpty()) {
+            facilites = facilites.substring(0, facilites.length() - 2);
+        }
 
-        try {
-                // validate data
-                if(!Common.ValidateString(accountType, "In account type, you must select any one option.")){return;}
-                
-                // button events
-                if(e.getSource() == submitButton){
-                        if(!legalStaementCheckBox.isSelected()) {
-                                Common.ValidateString(null, "Check the box to assure that entered information is legit.");
-                                return;
-                        }
-                        
-                        MyCon con = new MyCon();
-        
-                        String queryForSignupTable3 = "INSERT INTO signupthree values('"+formNo+"','"+accountType+"','"+cardNo+"','"+pin+"','"+facilites+"')";
-                        String queryForLoginTable = "INSERT INTO login values('"+formNo+"','"+cardNo+"','"+pin+"')";
-                        con.statement.executeUpdate(queryForSignupTable3);
-                        con.statement.executeUpdate(queryForLoginTable);
+        return facilites;
+    }
 
-                        JOptionPane.showMessageDialog(null, "Card Number: "+cardNo+"\nPin: "+pin, "Card information",JOptionPane.INFORMATION_MESSAGE);
-                        
-                        con.close();
-                        new Deposit(pin);
-                        dispose();
-                }
+    private boolean validateForm(String accountType) {
+        if (!Common.ValidateString(accountType, "In account type, you must select any one option.")) {
+            return false;
+        }
+        if (!legalStaementCheckBox.isSelected()) {
+            Common.ValidateString(null, "Check the box to assure that entered information is legit.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void insertIntoDatabase(String accountType, String cardNo, String pin, String facilites) {
+
+        try (MyCon con = new MyCon()) {
+
+            insertIntoSignupTable3(con, formNo, accountType, cardNo, pin, facilites);
+            insertIntoLoginTable(con, formNo, cardNo, pin);
+
+            JOptionPane.showMessageDialog(null, "Card Number: " + cardNo + "\nPin: " + pin, "Card information",
+                    JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception E) {
-                E.getStackTrace();
+            E.getStackTrace();
+        }
+    }
+
+    private void insertIntoSignupTable3(MyCon con, String formNo, String accountType, String cardNo, String pin,
+            String facilities) {
+        String queryForSignupTable3 = "INSERT INTO signupthree VALUES(?, ?, ?, ?, ?)";
+
+        try (PreparedStatement preaparedStatementForSignupTable3 = con.connection
+                .prepareStatement(queryForSignupTable3)) {
+            preaparedStatementForSignupTable3.setString(1, formNo);
+            preaparedStatementForSignupTable3.setString(2, accountType);
+            preaparedStatementForSignupTable3.setString(3, cardNo);
+            preaparedStatementForSignupTable3.setString(4, pin);
+            preaparedStatementForSignupTable3.setString(5, facilities);
+
+            preaparedStatementForSignupTable3.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertIntoLoginTable(MyCon con, String formNo, String cardNo, String pin) {
+        String queryForLoginTable = "INSERT INTO login VALUES(?, ?, ?)";
+
+        try (PreparedStatement preaparedStatementForLoginTable = con.connection.prepareStatement(queryForLoginTable)) {
+            preaparedStatementForLoginTable.setString(1, formNo);
+            preaparedStatementForLoginTable.setString(2, cardNo);
+            preaparedStatementForLoginTable.setString(3, pin);
+
+            preaparedStatementForLoginTable.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
