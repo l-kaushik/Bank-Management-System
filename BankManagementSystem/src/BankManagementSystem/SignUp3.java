@@ -30,6 +30,18 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
 
     JPanel contentPanel;
 
+    
+    SignUp3(String informNo) {
+
+        formNo = informNo;
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        setupFrame(screenSize);
+        initializeComponents(screenSize);
+        setVisible(true);
+    }
+
     private void setupFrame(Dimension screenSize) {
         setTitle("Application Form");
         setLayout(new BorderLayout());
@@ -56,32 +68,33 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    SignUp3(String informNo) {
-
-        formNo = informNo;
-
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        setupFrame(screenSize);
-
-        initializeComponents(screenSize);
-
-
+    private void initializeTopCenterImage(GridBagConstraints gbc) {
         // top center image
         JLabel topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
         topCenterImage.setBounds(150, 5, 100, 100);
         add(topCenterImage);
+    }
 
+    private void initializePageAndFormNumberLabel(GridBagConstraints gbc) {
         // show page number
         JLabel pageNumberLabel = Common.CreateLabel("Page 3", Common.RalewayBold22, new Rectangle(280, 40, 400, 40));
         add(pageNumberLabel);
 
+        JLabel formNoLabel = Common.CreateLabel("Form No: ", Common.RalewayBold14, new Rectangle(670, 10, 100, 30));
+        add(formNoLabel);
+
+        JLabel formNoTextLabel = Common.CreateLabel(formNo, Common.RalewayBold14, new Rectangle(760, 10, 100, 30));
+        add(formNoTextLabel);
+    }
+    
+    private void initializeAccountDetailsLabel(GridBagConstraints gbc) {
         // show account detail on page
         JLabel accountDetailsLabel = Common.CreateLabel("Account Details", Common.RalewayBold22,
                 new Rectangle(280, 70, 400, 40));
         add(accountDetailsLabel);
+    }
 
-        // show additional detail on page
+    private void initializeAccountTypeSelection(GridBagConstraints gbc) {
         JLabel accountTypeLabel = Common.CreateLabel("Account Type: ", Common.RalewayBold18,
                 new Rectangle(100, 140, 200, 30));
         add(accountTypeLabel);
@@ -107,6 +120,9 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
         accountTypeButtonGroup.add(currentAccountRadioButton);
         accountTypeButtonGroup.add(fixedDepopsiteRadioButton);
         accountTypeButtonGroup.add(recurringDepositeRadioButton);
+    }
+
+    private void initializeCardNumberLabels(GridBagConstraints gbc) {
 
         JLabel cardNumberLabel = Common.CreateLabel("Card Number: ", Common.RalewayBold18,
                 new Rectangle(100, 300, 200, 30));
@@ -123,7 +139,9 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
         JLabel cardNumberInfoLabel2 = Common.CreateLabel("(It would appear on atm card/cheque Book and Statements)",
                 new Font("Raleway", Font.BOLD, 12), new Rectangle(330, 330, 500, 20));
         add(cardNumberInfoLabel2);
+    }
 
+    private void initializePinNumberLabels(GridBagConstraints gbc) {
         JLabel pinNumberLabel = Common.CreateLabel("PIN: ", Common.RalewayBold18,
                 new Rectangle(100, 370, 200, 30));
         add(pinNumberLabel);
@@ -135,7 +153,9 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
         JLabel pinNumberFormatInfoLabel = Common.CreateLabel("(4-digit Password)",
                 new Font("Raleway", Font.BOLD, 12), new Rectangle(100, 400, 200, 20));
         add(pinNumberFormatInfoLabel);
+    }
 
+    private void initializeServiceRequiredSelection(GridBagConstraints gbc) {
         JLabel serviceLabel = Common.CreateLabel("Services Required: ", Common.RalewayBold18,
                 new Rectangle(100, 450, 200, 30));
         add(serviceLabel);
@@ -163,27 +183,25 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
         eStatementCheckBox = Common.CreateCheckBox("E-Statement", Common.FrameBackgroundColor, Common.RalewayBold14, 
                 new Rectangle(350, 600, 200, 30));
         add(eStatementCheckBox);
+    }
 
+    private void initializeAcceptTermsLabel(GridBagConstraints gbc) {
         legalStaementCheckBox = Common.CreateCheckBox("I here by declares that the above entered details correct to the best of my knowledge.",
                 Common.FrameBackgroundColor, new Font("Raleway", Font.BOLD, 12), new Rectangle(100, 650, 600, 20));
         legalStaementCheckBox.setSelected(true);
         add(legalStaementCheckBox);
-        
-        JLabel formNoLabel = Common.CreateLabel("Form No: ", Common.RalewayBold14, new Rectangle(670, 10, 100, 30));
-        add(formNoLabel);
+    }
 
-        JLabel formNoTextLabel = Common.CreateLabel(formNo, Common.RalewayBold14, new Rectangle(760, 10, 100, 30));
-        add(formNoTextLabel);
-
+    private void initializeSubmitButton(GridBagConstraints gbc) {
         submitButton = Common.CreateButton("Submit",Common.RalewayBold14, Color.BLACK, 
                 new Rectangle(250, 700, 100, 30), this);
         add(submitButton);
+    }
+    private void initializeCancelButton(GridBagConstraints gbc) {
 
         cancelButton = Common.CreateButton("Cancel",Common.RalewayBold14, Color.BLACK, 
                 new Rectangle(420, 700, 100, 30), this);
         add(cancelButton);
-        
-        setVisible(true);
     }
 
     @Override
