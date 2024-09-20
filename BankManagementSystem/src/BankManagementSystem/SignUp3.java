@@ -28,6 +28,8 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
     JButton submitButton;
     JButton cancelButton;
 
+    JPanel contentPanel;
+
     private void setupFrame(Dimension screenSize) {
         setTitle("Application Form");
         setLayout(new BorderLayout());
@@ -37,6 +39,23 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
         setLocationRelativeTo(null);
     }
 
+    private void initializeComponents(Dimension screenSize) {
+        contentPanel = new JPanel();
+        contentPanel.setLayout(new GridBagLayout());
+        contentPanel.setBackground(Common.FrameBackgroundColor);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 50, 10, 50);
+        gbc.weightx = 1.0;
+
+        // components initialization here
+
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        add(scrollPane, BorderLayout.CENTER);
+    }
+
     SignUp3(String informNo) {
 
         formNo = informNo;
@@ -44,6 +63,8 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         setupFrame(screenSize);
+
+        initializeComponents(screenSize);
 
 
         // top center image
