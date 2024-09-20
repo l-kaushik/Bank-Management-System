@@ -368,8 +368,8 @@ public class SignUp extends ResizableFrame implements ActionListener {
         gbc.gridx = 2;
         gbc.gridy = 12;
         gbc.gridwidth = 1;
-        gbc.weighty = 0;
-        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
         contentPanel.add(nextButton, gbc);
     }
 
