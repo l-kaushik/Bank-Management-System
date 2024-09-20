@@ -57,7 +57,7 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
     private void setupFrame(Dimension screenSize) {
         setTitle("Application Form");
         setLayout(new BorderLayout());
-        setSize((int) (screenSize.width / 2), (int) (screenSize.height / 2));
+        setSize((int) (screenSize.width / 2), (int) (screenSize.height * 0.7));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
         setLocationRelativeTo(null);
@@ -70,12 +70,12 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 50, 10, 10);
+        gbc.insets = new Insets(10, 50, 10, 50);
         gbc.weightx = 1.0; // Allow components to expand horizontally
 
         // component initialization here
         initializeTopCenterImage(gbc, screenSize);
-        initializePageNumberLabel(gbc);
+        initializePageAndFormNumberLabel(gbc);
         initializeAdditionDetailLabel(gbc);
         initializeReligionSelection(gbc);
         initializeCategorySelection(gbc);
@@ -86,7 +86,6 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         initializeAadharField(gbc);
         initializeSeniorCitizenSelection(gbc);
         initializeExistingAccountSelection(gbc);
-        initializeFormNumberField(gbc);
         initializeNextButton(gbc);
 
         JScrollPane scrollPane = new JScrollPane(contentPanel);
@@ -101,15 +100,29 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         scaleTopCenterImage(screenSize);
     }
 
-    private void initializePageNumberLabel(GridBagConstraints gbc) {
+    private void initializePageAndFormNumberLabel(GridBagConstraints gbc) {
         // show page number
+        JPanel pageAndFormNumberPanel = new JPanel();
+        pageAndFormNumberPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        pageAndFormNumberPanel.setBackground(Common.FrameBackgroundColor);
+
+
         pageNumberLabel = new JLabel("Page 2");
+        pageAndFormNumberPanel.add(pageNumberLabel);
+
+        formNoLabel = new JLabel("Form No: ");
+        formNoLabel.setBorder(new EmptyBorder(0, 50, 0, 0));
+        pageAndFormNumberPanel.add(formNoLabel);
+
+        formNoTextLabel = new JLabel(formNo);
+        pageAndFormNumberPanel.add(formNoTextLabel);
+
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        contentPanel.add(pageNumberLabel, gbc);
+        contentPanel.add(pageAndFormNumberPanel, gbc);
     }
 
     private void initializeAdditionDetailLabel(GridBagConstraints gbc) {
@@ -117,6 +130,7 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         additionalDetailLabel = new JLabel("Additional Details");
         gbc.gridx = 1;
         gbc.gridy = 1;
+        gbc.gridwidth = 1;
         contentPanel.add(additionalDetailLabel, gbc);
     }
 
@@ -275,23 +289,6 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         ButtonGroup existingAccountButtonGroup = new ButtonGroup();
         existingAccountButtonGroup.add(yesExistingAccountRadioButton);
         existingAccountButtonGroup.add(noExisitingAccountRadioButton);
-    }
-
-    private void initializeFormNumberField(GridBagConstraints gbc) {
-
-        JPanel formNumberPanel = new JPanel();
-        formNumberPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        formNumberPanel.setBackground(Common.FrameBackgroundColor);
-
-        formNoLabel = new JLabel("Form No: ");
-        formNumberPanel.add(formNoLabel);
-
-        formNoTextLabel = new JLabel(formNo);
-        formNumberPanel.add(formNoTextLabel);
-
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        contentPanel.add(formNumberPanel, gbc);
     }
 
     private void initializeNextButton(GridBagConstraints gbc) {
@@ -455,14 +452,16 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         incomeComboBox.setFont(scaledFont14);
         educationComboBox.setFont(scaledFont14);
         occupationComboBox.setFont(scaledFont14);
+    }
+
+    private void updateButtonsFonts(float scaleFactor) {
+        Font scaledFont14 = Common.RalewayBold14.deriveFont(14 * scaleFactor);
+
         yesSeniorCitizenRadioButton.setFont(scaledFont14);
         noSeniorCitizenRadioButton.setFont(scaledFont14);
         yesExistingAccountRadioButton.setFont(scaledFont14);
         noExisitingAccountRadioButton.setFont(scaledFont14);
-    }
-
-    private void updateButtonsFonts(float scaleFactor) {
-
+        nextButton.setFont(scaledFont14);
     }
 
     private void scaleTopCenterImage(Dimension size) {
