@@ -1,21 +1,10 @@
 package BankManagementSystem;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JRadioButton;
-import javax.swing.JButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import java.util.Random;
 
@@ -39,14 +28,23 @@ public class SignUp3 extends ResizableFrame implements ActionListener{
     JButton submitButton;
     JButton cancelButton;
 
+    private void setupFrame(Dimension screenSize) {
+        setTitle("Application Form");
+        setLayout(new BorderLayout());
+        setSize((int) (screenSize.width / 2), (int) (screenSize.height * 0.7));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(true);
+        setLocationRelativeTo(null);
+    }
 
     SignUp3(String informNo) {
 
         formNo = informNo;
 
-        Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Common.InitializeJFrame(this, "APPLICATION FORM", null, new Dimension(850, 800), JFrame.EXIT_ON_CLOSE, false,
-                new Point((int) (ScreenSize.getWidth()) / 4, 15), Common.FrameBackgroundColor);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        setupFrame(screenSize);
+
 
         // top center image
         JLabel topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
