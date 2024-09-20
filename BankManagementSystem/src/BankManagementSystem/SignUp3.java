@@ -32,6 +32,8 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
 
     JPanel contentPanel;
 
+    JLabel topCenterImage;
+
     SignUp3(String informNo) {
 
         formNo = informNo;
@@ -63,17 +65,17 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
         gbc.weightx = 1.0;
 
         // components initialization here
+        initializeTopCenterImage(gbc, screenSize);
 
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    private void initializeTopCenterImage(GridBagConstraints gbc) {
+    private void initializeTopCenterImage(GridBagConstraints gbc, Dimension screenSize) {
         // top center image
-        JLabel topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
-        topCenterImage.setBounds(150, 5, 100, 100);
-        add(topCenterImage);
+        topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", 100, 100);
+        scaleTopCenterImage(screenSize);
     }
 
     private void initializePageAndFormNumberLabel(GridBagConstraints gbc) {
@@ -359,7 +361,60 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
 
     @Override
     protected void handleResizing() {
+        // prevents resizing when frame is not visible
+        if (!this.isVisible())
+            return;
 
+        Dimension size = this.getSize();
+
+        updateFonts(size);
+
+        // Rescale image
+        if (topCenterImage.isValid())
+            scaleTopCenterImage(size);
+
+        // Revalidate and repaint to apply changes
+        this.revalidate();
+        this.repaint();
+    }
+    private void updateFonts(Dimension size) {
+        float scaleFactor = size.width / 800.0f;
+        updateLabelFonts(scaleFactor);
+        updateButtonsFonts(scaleFactor);
+    }
+
+    private void updateLabelFonts(float scaleFactor) {
+        Font scaledFont22 = Common.RalewayBold22.deriveFont(22 * scaleFactor);
+        Font scaledFont18 = Common.RalewayBold18.deriveFont(18 * scaleFactor);
+
+    }
+
+    private void updateButtonsFonts(float scaleFactor) {
+        Font scaledFont14 = Common.RalewayBold14.deriveFont(14 * scaleFactor);
+
+    }
+
+    private void scaleTopCenterImage(Dimension size) {
+
+        // Update GridBagConstraints properties dynamically
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Remove the old image
+        contentPanel.remove(topCenterImage);
+
+        // Create new top-center image with scaled size
+        int newImageWidth = (int) (size.width / 8);
+        int newImageHeight = (int) (size.height / 6);
+        topCenterImage = Common.GetScaledImageWithLabel("icons/bank.png", newImageWidth, newImageHeight);
+
+        // Re-add the resized image to the layout
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        contentPanel.add(topCenterImage, gbc);
     }
 
     public static void main(String[] args) {
