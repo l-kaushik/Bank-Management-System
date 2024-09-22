@@ -3,8 +3,10 @@ package BankManagementSystem;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.MediaTracker;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -62,22 +64,33 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         backgroundImageLabel.setLayout(new GridBagLayout());
     }
 
-    Withdrawal(String inPin) {
+    private void initializeComponents() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10); 
 
-        pin = inPin;
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        // components initialization here
+        initializeWithdrawalAmountLabel(gbc);
+        // initializeAmountLabel(gbc);
+        // initializeAmountTextField(gbc);
+        // initializeWithdrawalButton(gbc);
+        // initializeBackButton(gbc);
 
-        setupFrame(screenSize);
-        setupBackgroundImage(screenSize);
-
+    }
+    
+    private void initializeWithdrawalAmountLabel(GridBagConstraints gbc) {
         JLabel withdrawalAmountLabel = Common.CreateLabel("MAXIMUM WITHDRAWAL IS RS.10,000", Color.WHITE,
                 Common.SystemBold16, new Rectangle(460, 180, 700, 35));
         backgroundImageLabel.add(withdrawalAmountLabel);
+    }
 
+    private void initializeAmountLabel(GridBagConstraints gbc) {
         JLabel amountLabel = Common.CreateLabel("PLEASE ENTER YOUR AMOUNT", Color.WHITE,
                 Common.SystemBold16, new Rectangle(460, 220, 400, 35));
         backgroundImageLabel.add(amountLabel);
+    }
 
+    private void initializeAmountTextField(GridBagConstraints gbc) {
         amounTextField = Common.CreateTextField(Common.RalewayBold22, new Rectangle(460, 270, 320, 25));
 
         // Add a KeyListener to only allow numeric input
@@ -91,16 +104,30 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
                 }
             }
         });
-
         backgroundImageLabel.add(amounTextField);
+    }
+
+    private void initializeWithdrawalButton(GridBagConstraints gbc) {
 
         withdrawalButton = Common.CreateButton("WITHDRAWAL", Common.RalewayBold14, Color.BLACK,
                 new Rectangle(700, 362, 150, 35), this);
         backgroundImageLabel.add(withdrawalButton);
+    }
 
+    private void initializeBackButton(GridBagConstraints gbc) {
         backButton = Common.CreateButton("BACK", Common.RalewayBold14, Color.BLACK,
                 new Rectangle(700, 406, 150, 35), this);
         backgroundImageLabel.add(backButton);
+    }
+
+    Withdrawal(String inPin) {
+
+        pin = inPin;
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        setupFrame(screenSize);
+        setupBackgroundImage(screenSize);
+        initializeComponents();
 
         add(backgroundImageLabel, BorderLayout.CENTER);
         setVisible(true);
