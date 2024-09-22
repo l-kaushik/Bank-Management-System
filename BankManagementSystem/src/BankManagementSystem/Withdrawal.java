@@ -10,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -87,56 +88,85 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     private void initWithdrawal() {
         String amount = amounTextField.getText();
         Date date = new Date();
-        
-        if (!Common.ValidateString(amount, "Please enter the amount you want to withdrawal."))
-        return;
 
-        if(Integer.parseInt(amount) > 10000){
-            JOptionPane.showMessageDialog(this, "The maximum withdrawal limit is 10,000", "Withdrawal Error", JOptionPane.ERROR_MESSAGE);
+        // perform data validation
+        if (!validateAmount(amount))
             return;
+
+        performDatabaseOperations(amount, date);
+    }
+
+    private boolean validateAmount(String amount) {
+        if (!Common.ValidateString(amount, "Please enter the amount you want to withdrawal."))
+            return false;
+
+        if (Integer.parseInt(amount) > 10000) {
+            JOptionPane.showMessageDialog(this, "The maximum withdrawal limit is 10,000", "Withdrawal Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
         }
-        
+
+        return true;
+    }
+
+    private void performDatabaseOperations(String amount, Date date) {
+        try (MyCon con = new MyCon()) {
+            int balance = calculateBalance(con);
+            if (!isSufficientBalance(balance, amount)) {
+                JOptionPane.showMessageDialog(this, "Insufficient Balance");
+                return;
+            }
+            insertWithdrawalTransaction(con, amount, date);
+            JOptionPane.showMessageDialog(this, "Rs. " + amount + " Withdrawn Successfully.");
+            dispose();
+            new AtmWindow(pin);
+        } catch (Exception e) {
+            handleDatabaseProcessingException(e);
+        }
+    }
+
+    private int calculateBalance(MyCon con) throws SQLException {
         String queryFetchData = "SELECT * FROM bank WHERE pin = ?";
-        String queryInsertData = "INSERT INTO bank VALUES(?, ?, ?, ?)";
         int balance = 0;
 
-        try (MyCon con = new MyCon()) {
-            PreparedStatement preparedStatementFetchData = con.connection.prepareStatement(queryFetchData);
+        try (PreparedStatement preparedStatementFetchData = con.connection.prepareStatement(queryFetchData)) {
             preparedStatementFetchData.setString(1, pin);
+            try (ResultSet resultSet = preparedStatementFetchData.executeQuery()) {
+                while (resultSet.next()) {
+                    int transactionAmount = Integer.parseInt(resultSet.getString("amount"));
+                    String transactionType = resultSet.getString("type");
+                    balance += "Deposit".equals(transactionType) ? transactionAmount : -transactionAmount;
+                }
+            }
+        }
+        return balance;
+    }
 
-            PreparedStatement preparedStatementInsertData = con.connection.prepareStatement(queryInsertData);
+    private boolean isSufficientBalance(int balance, String amount) {
+        return balance >= Integer.parseInt(amount);
+    }
+
+    private void insertWithdrawalTransaction(MyCon con, String amount, Date date) throws SQLException {
+        String queryInsertData = "INSERT INTO bank (pin, date, type, amount) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatementInsertData = con.connection.prepareStatement(queryInsertData)) {
             preparedStatementInsertData.setString(1, pin);
             preparedStatementInsertData.setString(2, date.toString());
             preparedStatementInsertData.setString(3, "Withdrawal");
             preparedStatementInsertData.setString(4, amount);
-
-            // calculating the current balance from transaction history
-            try(ResultSet resultSet = preparedStatementFetchData.executeQuery()){
-                while(resultSet.next()){
-                    if(resultSet.getString("type").equals("Deposit")){
-                        balance += Integer.parseInt(resultSet.getString("amount"));
-                    }
-                    else{
-                        balance -= Integer.parseInt(resultSet.getString("amount"));
-                    }
-                }
-            }
-
-            if(balance < Integer.parseInt(amount)){
-                JOptionPane.showMessageDialog(this, "Insufficient Balance");
-                return;
-            }
-
             preparedStatementInsertData.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Rs. " + amount + " Withdrawn Successfully.");
-            preparedStatementFetchData.close();
-            preparedStatementInsertData.close();
-            dispose();
-            new AtmWindow(pin);
-
-        } catch (Exception E) {
-            E.printStackTrace();
         }
+    }
+
+    private void handleDatabaseProcessingException(Exception e) {
+        if (e instanceof SQLException) {
+            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
+        } else if (e instanceof NumberFormatException) {
+            JOptionPane.showMessageDialog(this, "Invalid amount format.");
+        } else {
+            JOptionPane.showMessageDialog(this, "An unexpected error occurred: " + e.getMessage());
+        }
+        e.printStackTrace();
     }
 
     @Override
@@ -145,7 +175,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new Withdrawal("");
+        new Withdrawal("1111");
     }
 
 }
