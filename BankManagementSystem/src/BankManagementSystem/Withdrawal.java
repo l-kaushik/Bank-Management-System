@@ -71,7 +71,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         // components initialization here
         initializeWithdrawalAmountLabel(screenSize);
         initializeAmountLabel(screenSize);
-        // initializeAmountTextField(gbc);
+        initializeAmountTextField(screenSize);
         // initializeWithdrawalButton(gbc);
         // initializeBackButton(gbc);
 
@@ -80,19 +80,17 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     private void initializeWithdrawalAmountLabel(Dimension screenSize) {
         withdrawalAmountLabel = new JLabel("MAXIMUM WITHDRAWAL IS RS.10,000");
         withdrawalAmountLabel.setForeground(Color.WHITE);
-        updateWithdrawalAmountLabelLocation(screenSize);
         backgroundImageLabel.add(withdrawalAmountLabel);
     }
 
     private void initializeAmountLabel(Dimension screenSize) {
         amountLabel = new JLabel("PLEASE ENTER YOUR AMOUNT");
         amountLabel.setForeground(Color.WHITE);
-        updateAmountLabelLocation(screenSize);
         backgroundImageLabel.add(amountLabel);
     }
 
-    private void initializeAmountTextField(GridBagConstraints gbc) {
-        amounTextField = Common.CreateTextField(Common.RalewayBold22, new Rectangle(460, 270, 320, 25));
+    private void initializeAmountTextField(Dimension screenSize) {
+        amounTextField = new JTextField();
 
         // Add a KeyListener to only allow numeric input
         amounTextField.addKeyListener(new KeyAdapter() {
@@ -242,6 +240,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
 
         updateFonts(size);
         updateLabelsLocations(size);
+        updateAmountTextFieldLocation(size);
         scaleBackgroundImage(size);
 
         // Revalidate and repaint to apply changes
@@ -253,6 +252,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         float scaleFactor = size.width / 1400.0f;
 
         updateLabelFonts(scaleFactor);
+        updateAmountTextFieldFont(scaleFactor);
     }
 
     private void updateLabelFonts(float scaleFactor) {
@@ -260,6 +260,12 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
 
         withdrawalAmountLabel.setFont(scaledFont16);
         amountLabel.setFont(scaledFont16);
+    }
+
+    private void updateAmountTextFieldFont(float scaleFactor) {
+        Font scaledFont22 = new Font("Raleway", Font.BOLD, (int) (22 * scaleFactor));
+
+        amounTextField.setFont(scaledFont22);
     }
 
     private void updateLabelsLocations(Dimension size) {
@@ -281,6 +287,14 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         int width = 400;
         int height = 35;
         amountLabel.setBounds(x, y, width, height);
+    }
+
+    private void updateAmountTextFieldLocation(Dimension size) {
+        int x = (int) (size.width/ 3.35);
+        int y = (int) (size.height / 4);
+        int width = 320;
+        int height = 25;
+        amounTextField.setBounds(x, y, width, height);
     }
 
     private void scaleBackgroundImage(Dimension size) {
