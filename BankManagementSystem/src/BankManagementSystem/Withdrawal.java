@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
-public class Withdrawal extends JFrame implements ActionListener {
+public class Withdrawal extends ResizableFrame implements ActionListener {
 
     String pin = null;
 
@@ -137,6 +137,11 @@ public class Withdrawal extends JFrame implements ActionListener {
         } catch (Exception E) {
             E.printStackTrace();
         }
+    }
+
+    @Override
+    protected void handleResizing() {
+
     }
 
     public static void main(String[] args) {
