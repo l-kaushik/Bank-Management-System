@@ -3,6 +3,7 @@ package BankManagementSystem;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -38,6 +39,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     JButton backButton;
 
     JLabel backgroundImageLabel;
+    JLabel withdrawalAmountLabel;
 
     ImageIcon backgroundIcon;
     Image backgroundImage;
@@ -61,26 +63,23 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         backgroundImage = backgroundIcon.getImage().getScaledInstance((int) (screenSize.getWidth()),
                 (int) screenSize.getHeight(), Image.SCALE_SMOOTH);
         backgroundImageLabel = new JLabel(new ImageIcon(backgroundImage));
-        backgroundImageLabel.setLayout(new GridBagLayout());
+        backgroundImageLabel.setLayout(null);
     }
 
-    private void initializeComponents() {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 10, 10, 10); 
-
+    private void initializeComponents(Dimension screenSize) {
         // components initialization here
-        initializeWithdrawalAmountLabel(gbc);
+        initializeWithdrawalAmountLabel(screenSize);
         // initializeAmountLabel(gbc);
         // initializeAmountTextField(gbc);
         // initializeWithdrawalButton(gbc);
         // initializeBackButton(gbc);
 
     }
-    
-    private void initializeWithdrawalAmountLabel(GridBagConstraints gbc) {
-        JLabel withdrawalAmountLabel = Common.CreateLabel("MAXIMUM WITHDRAWAL IS RS.10,000", Color.WHITE,
-                Common.SystemBold16, new Rectangle(460, 180, 700, 35));
+
+    private void initializeWithdrawalAmountLabel(Dimension screenSize) {
+        withdrawalAmountLabel = new JLabel("MAXIMUM WITHDRAWAL IS RS.10,000");
+        withdrawalAmountLabel.setForeground(Color.WHITE);
+        updateWithdrawalAmountLabelLocation(screenSize);
         backgroundImageLabel.add(withdrawalAmountLabel);
     }
 
@@ -127,7 +126,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
 
         setupFrame(screenSize);
         setupBackgroundImage(screenSize);
-        initializeComponents();
+        initializeComponents(screenSize);
 
         add(backgroundImageLabel, BorderLayout.CENTER);
         setVisible(true);
@@ -239,11 +238,37 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
 
         Dimension size = this.getSize(); // Get the current window size
 
+        updateFonts(size);
+        updateLabelsLocations(size);
         scaleBackgroundImage(size);
 
         // Revalidate and repaint to apply changes
         this.revalidate();
         this.repaint();
+    }
+
+    private void updateFonts(Dimension size) {
+        float scaleFactor = size.width / 1400.0f;
+
+        updateLabelFonts(scaleFactor);
+    }
+
+    private void updateLabelFonts(float scaleFactor) {
+        Font scaledFont16 = new Font("System", Font.BOLD, (int) (16 * scaleFactor));
+
+        withdrawalAmountLabel.setFont(scaledFont16);
+    }
+
+    private void updateLabelsLocations(Dimension size) {
+        updateWithdrawalAmountLabelLocation(size);
+    }
+
+    private void updateWithdrawalAmountLabelLocation(Dimension size) {
+        int x = (int) (size.width/ 3.35);
+        int y = (int) (size.height / 6);
+        int width = 700;
+        int height = 35;
+        withdrawalAmountLabel.setBounds(x, y, width, height);
     }
 
     private void scaleBackgroundImage(Dimension size) {
