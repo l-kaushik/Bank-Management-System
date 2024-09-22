@@ -40,6 +40,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
 
     JLabel backgroundImageLabel;
     JLabel withdrawalAmountLabel;
+    JLabel amountLabel;
 
     ImageIcon backgroundIcon;
     Image backgroundImage;
@@ -69,7 +70,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     private void initializeComponents(Dimension screenSize) {
         // components initialization here
         initializeWithdrawalAmountLabel(screenSize);
-        // initializeAmountLabel(gbc);
+        initializeAmountLabel(screenSize);
         // initializeAmountTextField(gbc);
         // initializeWithdrawalButton(gbc);
         // initializeBackButton(gbc);
@@ -83,9 +84,10 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         backgroundImageLabel.add(withdrawalAmountLabel);
     }
 
-    private void initializeAmountLabel(GridBagConstraints gbc) {
-        JLabel amountLabel = Common.CreateLabel("PLEASE ENTER YOUR AMOUNT", Color.WHITE,
-                Common.SystemBold16, new Rectangle(460, 220, 400, 35));
+    private void initializeAmountLabel(Dimension screenSize) {
+        amountLabel = new JLabel("PLEASE ENTER YOUR AMOUNT");
+        amountLabel.setForeground(Color.WHITE);
+        updateAmountLabelLocation(screenSize);
         backgroundImageLabel.add(amountLabel);
     }
 
@@ -257,10 +259,12 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         Font scaledFont16 = new Font("System", Font.BOLD, (int) (16 * scaleFactor));
 
         withdrawalAmountLabel.setFont(scaledFont16);
+        amountLabel.setFont(scaledFont16);
     }
 
     private void updateLabelsLocations(Dimension size) {
         updateWithdrawalAmountLabelLocation(size);
+        updateAmountLabelLocation(size);
     }
 
     private void updateWithdrawalAmountLabelLocation(Dimension size) {
@@ -269,6 +273,14 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         int width = 700;
         int height = 35;
         withdrawalAmountLabel.setBounds(x, y, width, height);
+    }
+
+    private void updateAmountLabelLocation(Dimension size) {
+        int x = (int) (size.width/ 3.35);
+        int y = (int) (size.height / 4.9);
+        int width = 400;
+        int height = 35;
+        amountLabel.setBounds(x, y, width, height);
     }
 
     private void scaleBackgroundImage(Dimension size) {
