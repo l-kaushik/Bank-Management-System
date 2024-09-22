@@ -1,9 +1,11 @@
 package BankManagementSystem;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -28,12 +30,22 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     JButton withdrawalButton;
     JButton backButton;
 
+    private void setupFrame(Dimension screeSize) {
+        setTitle("Withdrawal Money");
+        setLayout(new BorderLayout());
+        setSize(screeSize.width, screeSize.height);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(true);
+        setLocationRelativeTo(null);
+    }
+
+
     Withdrawal(String inPin) {
 
         pin = inPin;
+        Dimension screenSize  = Toolkit.getDefaultToolkit().getScreenSize();
 
-        Common.InitializeJFrame(this, "Withdrawal Money", null, new Dimension(1550, 1080), JFrame.EXIT_ON_CLOSE, false,
-                new Point(0, 0));
+        setupFrame(screenSize);
 
         JLabel backgroundImageLabel = Common.GetScaledImageWithLabel("icons/atm2.png", 1550, 830);
         backgroundImageLabel.setBounds(0, 0, 1550, 830);
