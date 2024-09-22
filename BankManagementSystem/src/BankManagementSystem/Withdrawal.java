@@ -97,16 +97,18 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     }
 
     private boolean validateAmount(String amount) {
-        if (!Common.ValidateString(amount, "Please enter the amount you want to withdrawal."))
-            return false;
 
-        if (Integer.parseInt(amount) > 10000) {
+        try {
+            if (Integer.parseInt(amount) > 10000) {
+                throw new IllegalArgumentException("Exceeds maximum withdrawal limit");
+            }
+            return true; 
+        } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, "The maximum withdrawal limit is 10,000", "Withdrawal Error",
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        return true;
     }
 
     private void performDatabaseOperations(String amount, Date date) {
