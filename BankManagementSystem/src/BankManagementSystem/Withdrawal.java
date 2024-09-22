@@ -3,6 +3,9 @@ package BankManagementSystem;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.MediaTracker;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -19,6 +22,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class Withdrawal extends ResizableFrame implements ActionListener {
@@ -30,6 +35,11 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     JButton withdrawalButton;
     JButton backButton;
 
+    JLabel backgroundImageLabel;
+
+    ImageIcon backgroundIcon;
+    Image backgroundImage;
+
     private void setupFrame(Dimension screeSize) {
         setTitle("Withdrawal Money");
         setLayout(new BorderLayout());
@@ -39,17 +49,26 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         setLocationRelativeTo(null);
     }
 
+    private void setupBackgroundImage(Dimension screenSize) {
+
+        backgroundIcon = new ImageIcon(ClassLoader.getSystemResource("icons/atm2.png"));
+        if (backgroundIcon.getImageLoadStatus() == MediaTracker.ERRORED) {
+            System.out.println("Error loading the image.");
+        }
+
+        backgroundImage = backgroundIcon.getImage().getScaledInstance((int) (screenSize.getWidth()),
+                (int) screenSize.getHeight(), Image.SCALE_SMOOTH);
+        backgroundImageLabel = new JLabel(new ImageIcon(backgroundImage));
+        backgroundImageLabel.setLayout(new GridBagLayout());
+    }
 
     Withdrawal(String inPin) {
 
         pin = inPin;
-        Dimension screenSize  = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         setupFrame(screenSize);
-
-        JLabel backgroundImageLabel = Common.GetScaledImageWithLabel("icons/atm2.png", 1550, 830);
-        backgroundImageLabel.setBounds(0, 0, 1550, 830);
-        add(backgroundImageLabel);
+        setupBackgroundImage(screenSize);
 
         JLabel withdrawalAmountLabel = Common.CreateLabel("MAXIMUM WITHDRAWAL IS RS.10,000", Color.WHITE,
                 Common.SystemBold16, new Rectangle(460, 180, 700, 35));
@@ -83,6 +102,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
                 new Rectangle(700, 406, 150, 35), this);
         backgroundImageLabel.add(backButton);
 
+        add(backgroundImageLabel, BorderLayout.CENTER);
         setVisible(true);
     }
 
@@ -114,7 +134,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
             if (Integer.parseInt(amount) > 10000) {
                 throw new IllegalArgumentException("Exceeds maximum withdrawal limit");
             }
-            return true; 
+            return true;
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, "The maximum withdrawal limit is 10,000", "Withdrawal Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -186,6 +206,39 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     @Override
     protected void handleResizing() {
 
+        // prevents resizing when frame is not visible
+        if (!this.isVisible())
+            return;
+
+        Dimension size = this.getSize(); // Get the current window size
+
+        scaleBackgroundImage(size);
+
+        // Revalidate and repaint to apply changes
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void scaleBackgroundImage(Dimension size) {
+        // Offload image scaling to a background thread
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() {
+                // Heavy operation: scaling the background image
+                backgroundImage = backgroundIcon.getImage().getScaledInstance(size.width, size.height,
+                        Image.SCALE_SMOOTH);
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                // Once the image is scaled, update the GUI
+                backgroundImageLabel.setIcon(new ImageIcon(backgroundImage));
+                backgroundImageLabel.setPreferredSize(new Dimension(size.width, size.height));
+                backgroundImageLabel.revalidate();
+            }
+        }.execute();
     }
 
     public static void main(String[] args) {
