@@ -45,6 +45,20 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     ImageIcon backgroundIcon;
     Image backgroundImage;
 
+    
+    Withdrawal(String inPin) {
+
+        pin = inPin;
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        setupFrame(screenSize);
+        setupBackgroundImage(screenSize);
+        initializeComponents(screenSize);
+
+        add(backgroundImageLabel, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
     private void setupFrame(Dimension screeSize) {
         setTitle("Withdrawal Money");
         setLayout(new BorderLayout());
@@ -72,8 +86,8 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         initializeWithdrawalAmountLabel(screenSize);
         initializeAmountLabel(screenSize);
         initializeAmountTextField(screenSize);
-        // initializeWithdrawalButton(gbc);
-        // initializeBackButton(gbc);
+        initializeWithdrawalButton(screenSize);
+        initializeBackButton(screenSize);
 
     }
 
@@ -106,30 +120,21 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         backgroundImageLabel.add(amounTextField);
     }
 
-    private void initializeWithdrawalButton(GridBagConstraints gbc) {
+    private void initializeWithdrawalButton(Dimension screenSize) {
 
-        withdrawalButton = Common.CreateButton("WITHDRAWAL", Common.RalewayBold14, Color.BLACK,
-                new Rectangle(700, 362, 150, 35), this);
+        withdrawalButton = new JButton("WITHDRAWAL");
+        withdrawalButton.setForeground(Color.BLACK);
+        withdrawalButton.addActionListener(this);
+        withdrawalButton.setFocusable(false);
         backgroundImageLabel.add(withdrawalButton);
     }
 
-    private void initializeBackButton(GridBagConstraints gbc) {
-        backButton = Common.CreateButton("BACK", Common.RalewayBold14, Color.BLACK,
-                new Rectangle(700, 406, 150, 35), this);
+    private void initializeBackButton(Dimension screenSize) {
+        backButton = new JButton("BACK");
+        backButton.setForeground(Color.BLACK);
+        backButton.addActionListener(this);
+        backButton.setFocusable(false);
         backgroundImageLabel.add(backButton);
-    }
-
-    Withdrawal(String inPin) {
-
-        pin = inPin;
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        setupFrame(screenSize);
-        setupBackgroundImage(screenSize);
-        initializeComponents(screenSize);
-
-        add(backgroundImageLabel, BorderLayout.CENTER);
-        setVisible(true);
     }
 
     @Override
@@ -241,6 +246,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         updateFonts(size);
         updateLabelsLocations(size);
         updateAmountTextFieldLocation(size);
+        updateButtons(size);
         scaleBackgroundImage(size);
 
         // Revalidate and repaint to apply changes
@@ -253,6 +259,7 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
 
         updateLabelFonts(scaleFactor);
         updateAmountTextFieldFont(scaleFactor);
+        updateButtonFonts(scaleFactor);
     }
 
     private void updateLabelFonts(float scaleFactor) {
@@ -266,6 +273,13 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
         Font scaledFont22 = new Font("Raleway", Font.BOLD, (int) (22 * scaleFactor));
 
         amounTextField.setFont(scaledFont22);
+    }
+
+    private void updateButtonFonts(float scaleFactor) {
+        Font scaleFont14 = Common.RalewayBold14.deriveFont(14 * scaleFactor);
+
+        withdrawalButton.setFont(scaleFont14);
+        backButton.setFont(scaleFont14);
     }
 
     private void updateLabelsLocations(Dimension size) {
@@ -290,11 +304,32 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     }
 
     private void updateAmountTextFieldLocation(Dimension size) {
-        int x = (int) (size.width/ 3.35);
+        int x = (int) (size.width / 3.35);
         int y = (int) (size.height / 4);
-        int width = 320;
-        int height = 25;
+        int width = (int) (size.width / 4.84);
+        int height = (int) (size.width / 40);
         amounTextField.setBounds(x, y, width, height);
+    }
+
+    private void updateButtons(Dimension size) {
+        updateWithdrawalButtonLocation(size);
+        updateBackButtonLocation(size);
+    }
+
+    private void updateWithdrawalButtonLocation(Dimension size) {
+        int x = (int) (size.width / 2.25);
+        int y = (int) (size.height / 2.4);
+        int width = (int) (size.width / 10);
+        int height = (int) (size.height / 25);
+        withdrawalButton.setBounds(x, y, width, height);
+    }
+
+    private void updateBackButtonLocation(Dimension size) {
+        int x = (int) (size.width / 2.25);
+        int y = (int) (size.height / 2.1 );
+        int width = (int) (size.width / 10);
+        int height = (int) (size.height / 25);
+        backButton.setBounds(x, y, width, height);
     }
 
     private void scaleBackgroundImage(Dimension size) {
