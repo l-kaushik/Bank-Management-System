@@ -77,14 +77,14 @@ public class Withdrawal extends ResizableFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == withdrawalButton) {
-            withdrawal();
+            initWithdrawal();
         } else if (e.getSource() == backButton) {
             new AtmWindow(pin);
             dispose();
         }
     }
 
-    private void withdrawal() {
+    private void initWithdrawal() {
         String amount = amounTextField.getText();
         Date date = new Date();
         
