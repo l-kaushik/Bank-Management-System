@@ -7,14 +7,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 public class FastCash extends JFrame implements ActionListener {
 
@@ -81,58 +78,16 @@ public class FastCash extends JFrame implements ActionListener {
         }
 
         String amount = ((JButton) e.getSource()).getText().substring(4);
-        withdrawal(amount);
 
-        dispose();
-        new AtmWindow(pin);
-
-    }
-
-    private void withdrawal(String amount) {
-        Date date = new Date();
-
-        String queryFetchData = "SELECT * FROM bank WHERE pin = ?";
-        String queryInsertData = "INSERT INTO bank VALUES(?, ?, ?, ?)";
-        int balance = 0;
-
-        try (MyCon con = new MyCon()) {
-            PreparedStatement preparedStatementFetchData = con.connection.prepareStatement(queryFetchData);
-            preparedStatementFetchData.setString(1, pin);
-
-            PreparedStatement preparedStatementInsertData = con.connection.prepareStatement(queryInsertData);
-            preparedStatementInsertData.setString(1, pin);
-            preparedStatementInsertData.setString(2, date.toString());
-            preparedStatementInsertData.setString(3, "Withdrawal");
-            preparedStatementInsertData.setString(4, amount);
-
-            // calculating the current balance from transaction history
-            try (ResultSet resultSet = preparedStatementFetchData.executeQuery()) {
-                while (resultSet.next()) {
-                    if (resultSet.getString("type").equals("Deposit")) {
-                        balance += Integer.parseInt(resultSet.getString("amount"));
-                    } else {
-                        balance -= Integer.parseInt(resultSet.getString("amount"));
-                    }
-                }
-            }
-
-            if (balance < Integer.parseInt(amount)) {
-                JOptionPane.showMessageDialog(this, "Insufficient Balance");
-                return;
-            }
-
-            preparedStatementInsertData.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Rs. " + amount + " Withdrawn Successfully.");
-
-            preparedStatementFetchData.close();
-            preparedStatementInsertData.close();
-        } catch (Exception E) {
-            E.printStackTrace();
+        if(WithdrawalFacade.performDatabaseOperations(pin, amount)) {
+            dispose();
+            new AtmWindow(pin);
         }
+
     }
 
     public static void main(String[] args) {
-        new FastCash("");
+        new FastCash("1111");
     }
 
 }
