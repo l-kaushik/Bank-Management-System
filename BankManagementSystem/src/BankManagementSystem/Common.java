@@ -1,30 +1,15 @@
 package BankManagementSystem;
 
-import java.awt.LayoutManager;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.ActionListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
+import javax.swing.*;
 
 public class Common {
     /*
      * This class contains all the common functionalities that this project might
      * need in most of classes.
      */
+    public static Font ArialBold14 = new Font("Arial", Font.BOLD, 14);
 
     public static Color FrameBackgroundColor = new Color(222, 255, 228);
 
@@ -43,7 +28,11 @@ public class Common {
         object.setSize(size);
         object.setDefaultCloseOperation(defaultCloseOperation);
         object.setResizable(isResizeable);
-        object.setLocation(locationOnScreen);
+
+        if(locationOnScreen != null)
+            object.setLocation(locationOnScreen);
+        else
+            object.setLocationRelativeTo(null);
     }
 
     public static void InitializeJFrame(JFrame object, String title, LayoutManager manager, Dimension size,
@@ -137,5 +126,11 @@ public class Common {
             return false; 
         }
         return true;
+    }
+
+    public static void setButtonAttributes(JButton object, Color foregroundColor, ActionListener actionListener ) {
+        object.setForeground(foregroundColor);
+        object.addActionListener(actionListener);
+        object.setFocusable(false);
     }
 }
