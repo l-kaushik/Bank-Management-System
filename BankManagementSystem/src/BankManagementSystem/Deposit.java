@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -70,40 +72,58 @@ public class Deposit extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            String amount = amounTextField.getText();
-            Date date = new Date();
 
-            if (e.getSource() == depositButton) {
-                if (!Common.ValidateString(amount, "Please enter the amount you want to deposit."))
-                    return;
-                else {
-                    MyCon con = new MyCon();
-                        
-                    /*
-                    * instead of using pin and putting deposit as a text, get the account type,
-                    * user id from database and then store it in table
-                    */
-                        
-                    con.statement.executeUpdate(
-                            "INSERT INTO bank VALUES('" + pin + "', '" + date + "','Deposit','" + amount + "')");
-                    JOptionPane.showMessageDialog(null, "Rs. " + amount + " Deposited Successfully", "Deposit Success",
+        if (e.getSource() == depositButton) {
+            depositAction();
+        } else if (e.getSource() == backButton) {
+            new AtmWindow(pin);
+            dispose();
+        }
+    }
+
+    private void depositAction() {
+        String amount = amounTextField.getText();
+        Date date = new Date();
+
+        if (!validateAmount(amount))
+            return;
+
+        insertIntoDatabase(amount, date);
+    }
+
+    private boolean validateAmount(String amount) {
+        return Common.ValidateString(amount, "Amount cannot be empty");
+    }
+
+    private void insertIntoDatabase(String amount, Date date) {
+
+        try (MyCon con = new MyCon()) {
+
+            String query = "INSERT INTO bank (pin, date, type, amount) VALUES (?, ?, ?, ?)";
+            
+            PreparedStatement preparedStatement = con.connection.prepareStatement(query);
+
+            preparedStatement.setString(1, pin);
+            preparedStatement.setString(2, date.toString());
+            preparedStatement.setString(3, "Deposit");
+            preparedStatement.setString(4, amount);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+
+            JOptionPane.showMessageDialog(null, "Rs. " + amount + " Deposited Successfully", "Deposit Success",
                     JOptionPane.INFORMATION_MESSAGE);
 
-                    con.close();
-                    new AtmWindow(pin);
-                    dispose();
-                }
-            }
-            else if(e.getSource() == backButton){
-                new AtmWindow(pin);
-                dispose();
-            }
+            new AtmWindow(pin);
+            dispose();
 
-        } catch (Exception E) {
-            E.printStackTrace();
-        }
-
+        } catch (Exception e) {
+            if (e instanceof SQLException) {
+                JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
+            }else {
+                JOptionPane.showMessageDialog(this, "An unexpected error occurred: " + e.getMessage());
+            }
+            e.printStackTrace();
+        } 
     }
 
     public static void main(String[] args) {
