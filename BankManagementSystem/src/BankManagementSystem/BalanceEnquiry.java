@@ -2,47 +2,39 @@ package BankManagementSystem;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-class BalanceEnquiry extends JFrame implements ActionListener {
+class BalanceEnquiry extends ResizableATM implements ActionListener {
 
     String pin = null;
 
     JButton backButton;
 
+    JLabel currentBalanceLabel;
     JLabel amountLabel;
 
     BalanceEnquiry(String inPin) {
 
+        super("Balance Enquiry");
+
         pin = inPin;
 
-        Common.InitializeJFrame(this, "BalanceEnquiry Money", null, new Dimension(1550, 1080), JFrame.EXIT_ON_CLOSE,
-                false,
-                new Point(0, 0));
-
-        JLabel backgroundImageLabel = Common.GetScaledImageWithLabel("icons/atm2.png", 1550, 830);
-        backgroundImageLabel.setBounds(0, 0, 1550, 830);
-        add(backgroundImageLabel);
-
-        JLabel currentBalanceLabel = Common.CreateLabel("Your Current Balance is Rs. ", Color.WHITE,
-                Common.SystemBold16, new Rectangle(430, 180, 700, 35));
+        currentBalanceLabel = new JLabel("Your Current Balance is Rs. ");
+        currentBalanceLabel.setForeground(Color.WHITE);
         backgroundImageLabel.add(currentBalanceLabel);
 
-        amountLabel = Common.CreateLabel("", Color.WHITE,
-                Common.SystemBold16, new Rectangle(430, 220, 400, 35));
+        amountLabel = new JLabel("");
+        amountLabel.setForeground(Color.WHITE);
         backgroundImageLabel.add(amountLabel);
 
-        backButton = Common.CreateButton("BACK", Common.RalewayBold14, Color.BLACK,
-                new Rectangle(700, 406, 150, 35), this);
+        backButton = new JButton("BACK");
+        Common.setButtonAttributes(backButton, Color.BLACK, this);
         backgroundImageLabel.add(backButton);
 
         setBalance(amountLabel);
@@ -81,6 +73,54 @@ class BalanceEnquiry extends JFrame implements ActionListener {
             new AtmWindow(pin);
             this.dispose();
         }
+    }
+
+    @Override
+    protected void handleResizing() {
+
+        super.handleResizing();
+
+        if (!isVisible())
+            return;
+
+        Dimension size = getSize();
+
+        updateCurrentBalanceLabel(size);
+        updateAmountLabel(size);
+        updateBackButton(size);
+
+    }
+
+    private void updateCurrentBalanceLabel(Dimension size) {
+
+        currentBalanceLabel.setFont(Common.SystemBold16.deriveFont(size.width / 1400.0f * 16));
+
+        int x = (int) (size.width / 3.6);
+        int y = (int) (size.height / 6);
+        int width = (int) (size.width / 2.21);
+        int height = (int) (size.height / 10);
+        currentBalanceLabel.setBounds(x, y, width, height);
+
+    }
+
+    private void updateAmountLabel(Dimension size) {
+        amountLabel.setFont(Common.SystemBold16.deriveFont(size.width / 1400.0f * 16));
+
+        int x = (int) (size.width / 3.6);
+        int y = (int) (size.height / 4.5);
+        int width = (int) (size.width / 2.21);
+        int height = (int) (size.height / 10);
+        amountLabel.setBounds(x, y, width, height);
+    }
+
+    private void updateBackButton(Dimension size) {
+        backButton.setFont(Common.RalewayBold14.deriveFont(size.width / 1400.0f * 14));
+
+        int x = (int) (size.width / 2.25);
+        int y = (int) (size.height / 2.1);
+        int width = (int) (size.width / 10);
+        int height = (int) (size.height / 25);
+        backButton.setBounds(x, y, width, height);
     }
 
     public static void main(String[] args) {
