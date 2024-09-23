@@ -3,14 +3,11 @@ package BankManagementSystem;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class AtmWindow extends ResizableATM implements ActionListener {
@@ -24,6 +21,8 @@ public class AtmWindow extends ResizableATM implements ActionListener {
     JButton pinChangeButton;
     JButton balanceEnquiryButton;
     JButton exitButton;
+
+    JLabel selectTransactionLabel;
 
     AtmWindow(String inPin) {
 
@@ -45,56 +44,58 @@ public class AtmWindow extends ResizableATM implements ActionListener {
         initializeFastCastButton(screenSize);
         initializeMiniStatementButton(screenSize);
         initializePinChangeButton(screenSize);
-        initializeBalanceEnquiry(screenSize);
+        initializeBalanceEnquiryButton(screenSize);
         initializeExitButton(screenSize);
     }
 
     private void initializeSelectTransactionLabel(Dimension screenSize) {
-        JLabel selectTransactionLabel = Common.CreateLabel("Please Select Your Transaction", Color.WHITE,
-                Common.SystemBold28, new Rectangle(430, 180, 700, 35));
+        selectTransactionLabel = new JLabel("Please Select Your Transaction");
+        selectTransactionLabel.setForeground(Color.WHITE);
         backgroundImageLabel.add(selectTransactionLabel);
     }
 
     private void initializeDepositButton(Dimension screenSize) {
-        depositButton = Common.CreateButton("DEPOSIT", Common.RalewayBold14, Color.BLACK,
-                new Rectangle(410, 270, 150, 35), this);
+        depositButton = new JButton("DEPOSIT");
+        depositButton.setForeground(Color.BLACK);
+        depositButton.addActionListener(this);
+        depositButton.setFocusable(false);
         backgroundImageLabel.add(depositButton);
     }
 
     private void initializeCasthWithdrawalButton(Dimension screenSize) {
-        cashWithdrawlButton = Common.CreateButton("CASH WITHDRAWL", Common.RalewayBold14, Color.BLACK,
-                new Rectangle(680, 270, 170, 35), this);
+        cashWithdrawlButton = new JButton("CASH WITHDRAWL");
+        Common.setButtonAttributes(cashWithdrawlButton, Color.BLACK, this);
         backgroundImageLabel.add(cashWithdrawlButton);
     }
 
     private void initializeFastCastButton(Dimension screenSize) {
-        fastCashButton = Common.CreateButton("FAST CASH", Common.RalewayBold14, Color.BLACK,
-                new Rectangle(410, 315, 150, 35), this);
+        fastCashButton = new JButton("FAST CASH");
+        Common.setButtonAttributes(fastCashButton, Color.BLACK, this);
         backgroundImageLabel.add(fastCashButton);
     }
 
     private void initializeMiniStatementButton(Dimension screenSize) {
-        miniStatementButton = Common.CreateButton("MINI STATEMENT", Common.RalewayBold14, Color.BLACK,
-                new Rectangle(680, 315, 170, 35), this);
+        miniStatementButton = new JButton("MINI STATEMENT");
+        Common.setButtonAttributes(miniStatementButton, Color.BLACK, this);
         backgroundImageLabel.add(miniStatementButton);
     }
 
     private void initializePinChangeButton(Dimension screenSize) {
 
-        pinChangeButton = Common.CreateButton("PIN CHANGE", Common.RalewayBold14, Color.BLACK,
-                new Rectangle(410, 360, 150, 35), this);
+        pinChangeButton = new JButton("PIN CHANGE");
+        Common.setButtonAttributes(pinChangeButton, Color.BLACK, this);
         backgroundImageLabel.add(pinChangeButton);
     }
 
-    private void initializeBalanceEnquiry(Dimension screenSize) {
-        balanceEnquiryButton = Common.CreateButton("BALANCE ENQUIRY", new Font("Raleway", Font.BOLD, 13), Color.BLACK,
-                new Rectangle(680, 360, 170, 35), this);
+    private void initializeBalanceEnquiryButton(Dimension screenSize) {
+        balanceEnquiryButton = new JButton("BALANCE ENQUIRY");
+        Common.setButtonAttributes(balanceEnquiryButton, Color.BLACK, this);
         backgroundImageLabel.add(balanceEnquiryButton);
     }
 
     private void initializeExitButton(Dimension screenSize) {
-        exitButton = Common.CreateButton("EXIT", Common.RalewayBold14, Color.BLACK, new Rectangle(680, 405, 170, 35),
-                this);
+        exitButton = new JButton("EXIT");
+        Common.setButtonAttributes(exitButton, Color.BLACK, this);
         backgroundImageLabel.add(exitButton);
     }
 
@@ -134,6 +135,115 @@ public class AtmWindow extends ResizableATM implements ActionListener {
         super.handleResizing();
 
         if(!isVisible()) return;
+
+        Dimension size = getSize();
+
+        updateFonts(size);
+        updateLabelsLocation(size);
+        updateButtonsLocation(size);
+    }
+
+    private void updateFonts(Dimension size) {
+        float scaleFactor = size.width / 1400.0f;
+
+        updateLabelsFont(scaleFactor);
+        updateButtonsFont(scaleFactor);
+    }
+
+    private void updateLabelsFont(float scaleFactor) {
+        Font scaledFont24 = new Font("System", Font.BOLD, (int) (24 * scaleFactor));
+
+        selectTransactionLabel.setFont(scaledFont24);   
+    }
+
+    private void updateButtonsFont(float scaleFactor) {
+        Font scaledFont14 = Common.RalewayBold14.deriveFont(14 * scaleFactor);
+
+        depositButton.setFont(scaledFont14);
+        cashWithdrawlButton.setFont(scaledFont14);
+        fastCashButton.setFont(scaledFont14);
+        miniStatementButton.setFont(scaledFont14);
+        pinChangeButton.setFont(scaledFont14);
+        balanceEnquiryButton.setFont(scaledFont14);
+        exitButton.setFont(scaledFont14);
+    }
+
+    private void updateLabelsLocation(Dimension size) {
+        updateSelectTransactionLabelLocation(size);
+    }
+
+    private void updateSelectTransactionLabelLocation(Dimension size) {
+        int x = (int) (size.width / 3.6);
+        int y = (int) (size.height / 6);
+        int width = (int) (size.width / 2.21);
+        int height = (int) (size.height / 10);
+        selectTransactionLabel.setBounds(x, y, width, height);
+    }
+
+    private void updateButtonsLocation(Dimension size) {
+        updateDepositButtonLocation(size);
+        updateCashWithdrawalButtonLocation(size);
+        updateFastCashButtonLocation(size);
+        updateMiniStatementButtonLocation(size);
+        updatePinChangeButtonLocation(size);
+        updateBalanceEnquiryButtonLocation(size);
+        updateExitButtonLocation(size);
+    }
+
+    private void updateDepositButtonLocation(Dimension size) {
+        int x = (int) (size.width / 3.78);
+        int y = (int) (size.height / 3.3);
+        int width = (int) (size.width / 10);
+        int height = (int) (size.height / 25);
+        depositButton.setBounds(x, y, width, height);
+    }
+
+    private void updateCashWithdrawalButtonLocation(Dimension size) {
+        int x = (int) (size.width / 2.4);
+        int y = (int) (size.height / 3.3);
+        int width = (int) (size.width / 8);
+        int height = (int) (size.height / 25);
+        cashWithdrawlButton.setBounds(x, y, width, height);
+    }
+
+    private void updateFastCashButtonLocation(Dimension size) {
+        int x = (int) (size.width / 3.78);
+        int y = (int) (size.height / 2.8);
+        int width = (int) (size.width / 10);
+        int height = (int) (size.height / 25);
+        fastCashButton.setBounds(x, y, width, height);
+    }
+
+    private void updateMiniStatementButtonLocation(Dimension size) {
+        int x = (int) (size.width / 2.4);
+        int y = (int) (size.height / 2.8);
+        int width = (int) (size.width / 8);
+        int height = (int) (size.height / 25);
+        miniStatementButton.setBounds(x, y, width, height);
+    }
+
+    private void updatePinChangeButtonLocation(Dimension size) {
+        int x = (int) (size.width / 3.78);
+        int y = (int) (size.height / 2.4);
+        int width = (int) (size.width / 10);
+        int height = (int) (size.height / 25);
+        pinChangeButton.setBounds(x, y, width, height);
+    }
+
+    private void updateBalanceEnquiryButtonLocation(Dimension size) {
+        int x = (int) (size.width / 2.4);
+        int y = (int) (size.height / 2.4);
+        int width = (int) (size.width / 8);
+        int height = (int) (size.height / 25);
+        balanceEnquiryButton.setBounds(x, y, width, height);
+    }
+
+    private void updateExitButtonLocation(Dimension size) {
+        int x = (int) (size.width / 2.4);
+        int y = (int) (size.height / 2.1);
+        int width = (int) (size.width / 8);
+        int height = (int) (size.height / 25);;
+        exitButton.setBounds(x, y, width, height);
     }
 
     public static void main(String[] args) {
