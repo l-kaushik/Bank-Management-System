@@ -55,7 +55,6 @@ public class ResizableATM extends ResizableFrame {
 
         if(!isVisible()) return;
 
-        System.out.println("Here");
         scaleBackgroundImage();
     }
 
