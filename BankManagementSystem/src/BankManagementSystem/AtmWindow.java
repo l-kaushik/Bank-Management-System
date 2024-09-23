@@ -3,7 +3,6 @@ package BankManagementSystem;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -29,32 +28,31 @@ public class AtmWindow extends ResizableATM implements ActionListener {
         super("ATM");
 
         pin = inPin;
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        initializeComponents(screenSize);
+        initializeComponents();
 
         setVisible(true);
     }
 
-    private void initializeComponents(Dimension screenSize) {
+    private void initializeComponents() {
 
-        initializeSelectTransactionLabel(screenSize);
-        initializeDepositButton(screenSize);
-        initializeCasthWithdrawalButton(screenSize);
-        initializeFastCastButton(screenSize);
-        initializeMiniStatementButton(screenSize);
-        initializePinChangeButton(screenSize);
-        initializeBalanceEnquiryButton(screenSize);
-        initializeExitButton(screenSize);
+        initializeSelectTransactionLabel();
+        initializeDepositButton();
+        initializeCasthWithdrawalButton();
+        initializeFastCastButton();
+        initializeMiniStatementButton();
+        initializePinChangeButton();
+        initializeBalanceEnquiryButton();
+        initializeExitButton();
     }
 
-    private void initializeSelectTransactionLabel(Dimension screenSize) {
+    private void initializeSelectTransactionLabel() {
         selectTransactionLabel = new JLabel("Please Select Your Transaction");
         selectTransactionLabel.setForeground(Color.WHITE);
         backgroundImageLabel.add(selectTransactionLabel);
     }
 
-    private void initializeDepositButton(Dimension screenSize) {
+    private void initializeDepositButton() {
         depositButton = new JButton("DEPOSIT");
         depositButton.setForeground(Color.BLACK);
         depositButton.addActionListener(this);
@@ -62,38 +60,38 @@ public class AtmWindow extends ResizableATM implements ActionListener {
         backgroundImageLabel.add(depositButton);
     }
 
-    private void initializeCasthWithdrawalButton(Dimension screenSize) {
+    private void initializeCasthWithdrawalButton() {
         cashWithdrawlButton = new JButton("CASH WITHDRAWL");
         Common.setButtonAttributes(cashWithdrawlButton, Color.BLACK, this);
         backgroundImageLabel.add(cashWithdrawlButton);
     }
 
-    private void initializeFastCastButton(Dimension screenSize) {
+    private void initializeFastCastButton() {
         fastCashButton = new JButton("FAST CASH");
         Common.setButtonAttributes(fastCashButton, Color.BLACK, this);
         backgroundImageLabel.add(fastCashButton);
     }
 
-    private void initializeMiniStatementButton(Dimension screenSize) {
+    private void initializeMiniStatementButton() {
         miniStatementButton = new JButton("MINI STATEMENT");
         Common.setButtonAttributes(miniStatementButton, Color.BLACK, this);
         backgroundImageLabel.add(miniStatementButton);
     }
 
-    private void initializePinChangeButton(Dimension screenSize) {
+    private void initializePinChangeButton() {
 
         pinChangeButton = new JButton("PIN CHANGE");
         Common.setButtonAttributes(pinChangeButton, Color.BLACK, this);
         backgroundImageLabel.add(pinChangeButton);
     }
 
-    private void initializeBalanceEnquiryButton(Dimension screenSize) {
+    private void initializeBalanceEnquiryButton() {
         balanceEnquiryButton = new JButton("BALANCE ENQUIRY");
         Common.setButtonAttributes(balanceEnquiryButton, Color.BLACK, this);
         backgroundImageLabel.add(balanceEnquiryButton);
     }
 
-    private void initializeExitButton(Dimension screenSize) {
+    private void initializeExitButton() {
         exitButton = new JButton("EXIT");
         Common.setButtonAttributes(exitButton, Color.BLACK, this);
         backgroundImageLabel.add(exitButton);
