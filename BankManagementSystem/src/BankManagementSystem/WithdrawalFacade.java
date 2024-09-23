@@ -9,7 +9,9 @@ import java.util.Date;
 
 public class WithdrawalFacade {
 
-    static public boolean performDatabaseOperations(String pin, String amount, Date date) {
+    static public boolean performDatabaseOperations(String pin, String amount) {
+        Date date = new Date();
+        
         try (MyCon con = new MyCon()) {
             int balance = calculateBalance(con, pin);
             if (!isSufficientBalance(balance, amount)) {
