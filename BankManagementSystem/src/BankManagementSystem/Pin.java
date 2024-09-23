@@ -82,7 +82,7 @@ public class Pin extends ResizableATM implements ActionListener {
             String pin2 = new String(secondPasswordField.getPassword());
 
             // pin validation
-            pinValidation(pin1, pin2);
+           if(!pinValidation(pin1, pin2)) return;
 
             // update pin in database
             updateTables(pin1, pin2);
@@ -94,21 +94,23 @@ public class Pin extends ResizableATM implements ActionListener {
         }
     }
 
-    private void pinValidation(String pin1, String pin2) {
+    private boolean pinValidation(String pin1, String pin2) {
         if (!Common.ValidateString(pin1, "Please enter your PIN, in the first box."))
-            return;
+            return false;
         if (!Common.ValidateString(pin2, "Please enter your PIN, in the second box."))
-            return;
+            return false;
         if (!pin1.equals(pin2)) {
             JOptionPane.showMessageDialog(this, "Entered PINs are not matching.", "PIN mismatched",
                     JOptionPane.ERROR_MESSAGE);
-            return;
+            return false;
         }
         if (pin.equals(pin1)) {
             JOptionPane.showMessageDialog(this, "Cannot use old pin.", "PIN mismatched",
                     JOptionPane.ERROR_MESSAGE);
-            return;
+            return false;
         }
+
+        return true;
     }
 
     private void updateTables(String pin1, String pin2) {
