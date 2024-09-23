@@ -9,9 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 
 import javax.swing.JLabel;
@@ -118,7 +115,10 @@ public class Withdrawal extends ResizableATM implements ActionListener {
         if (!validateAmount(amount))
             return;
 
-        performDatabaseOperations(amount, date);
+        if(WithdrawalFacade.performDatabaseOperations(pin, amount, date)) {
+            dispose();
+            new AtmWindow(pin);
+        }
     }
 
     private boolean validateAmount(String amount) {
@@ -134,66 +134,6 @@ public class Withdrawal extends ResizableATM implements ActionListener {
             return false;
         }
 
-    }
-
-    private void performDatabaseOperations(String amount, Date date) {
-        try (MyCon con = new MyCon()) {
-            int balance = calculateBalance(con);
-            if (!isSufficientBalance(balance, amount)) {
-                JOptionPane.showMessageDialog(this, "Insufficient Balance");
-                return;
-            }
-            insertWithdrawalTransaction(con, amount, date);
-            JOptionPane.showMessageDialog(this, "Rs. " + amount + " Withdrawn Successfully.");
-            dispose();
-            new AtmWindow(pin);
-        } catch (Exception e) {
-            handleDatabaseProcessingException(e);
-        }
-    }
-
-    private int calculateBalance(MyCon con) throws SQLException {
-        String queryFetchData = "SELECT * FROM bank WHERE pin = ?";
-        int balance = 0;
-
-        try (PreparedStatement preparedStatementFetchData = con.connection.prepareStatement(queryFetchData)) {
-            preparedStatementFetchData.setString(1, pin);
-            try (ResultSet resultSet = preparedStatementFetchData.executeQuery()) {
-                while (resultSet.next()) {
-                    int transactionAmount = Integer.parseInt(resultSet.getString("amount"));
-                    String transactionType = resultSet.getString("type");
-                    balance += "Deposit".equals(transactionType) ? transactionAmount : -transactionAmount;
-                }
-            }
-        }
-        return balance;
-    }
-
-    private boolean isSufficientBalance(int balance, String amount) {
-        return balance >= Integer.parseInt(amount);
-    }
-
-    private void insertWithdrawalTransaction(MyCon con, String amount, Date date) throws SQLException {
-        String queryInsertData = "INSERT INTO bank (pin, date, type, amount) VALUES (?, ?, ?, ?)";
-
-        try (PreparedStatement preparedStatementInsertData = con.connection.prepareStatement(queryInsertData)) {
-            preparedStatementInsertData.setString(1, pin);
-            preparedStatementInsertData.setString(2, date.toString());
-            preparedStatementInsertData.setString(3, "Withdrawal");
-            preparedStatementInsertData.setString(4, amount);
-            preparedStatementInsertData.executeUpdate();
-        }
-    }
-
-    private void handleDatabaseProcessingException(Exception e) {
-        if (e instanceof SQLException) {
-            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
-        } else if (e instanceof NumberFormatException) {
-            JOptionPane.showMessageDialog(this, "Invalid amount format.");
-        } else {
-            JOptionPane.showMessageDialog(this, "An unexpected error occurred: " + e.getMessage());
-        }
-        e.printStackTrace();
     }
 
     @Override
