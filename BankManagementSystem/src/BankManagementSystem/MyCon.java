@@ -5,18 +5,21 @@ import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import java.nio.file.*;
+
 public class MyCon implements AutoCloseable {
 
-    // add a way to check if folder is present or not, if not then create one
-
-    String folderPath = "BankManagementSystem/src/Databases";
-    String fileName = "SQLiteTest1.db";
-    String filePath = folderPath + "/" + fileName;
+    static final String folderPath = "BankManagementSystem/src/Databases";
+    static final String fileName = "SQLiteTest1.db";
+    static final String filePath = folderPath + "/" + fileName;
 
     Connection connection;
     Statement statement;
 
     MyCon() {
+
+        createPathIfNotExists();
+
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:" + filePath);
@@ -74,6 +77,18 @@ public class MyCon implements AutoCloseable {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void createPathIfNotExists() {
+        Path path = Paths.get(folderPath);
+
+        if(Files.notExists(path)) {
+            try{
+                Files.createDirectories(path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
