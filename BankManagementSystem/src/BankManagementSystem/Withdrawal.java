@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Date;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -109,13 +108,12 @@ public class Withdrawal extends ResizableATM implements ActionListener {
 
     private void initWithdrawal() {
         String amount = amounTextField.getText();
-        Date date = new Date();
 
         // perform data validation
         if (!validateAmount(amount))
             return;
 
-        if(WithdrawalFacade.performDatabaseOperations(pin, amount, date)) {
+        if(WithdrawalFacade.performDatabaseOperations(pin, amount)) {
             dispose();
             new AtmWindow(pin);
         }
