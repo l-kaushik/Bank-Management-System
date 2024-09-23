@@ -12,7 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class AtmWindow extends JFrame implements ActionListener {
+public class AtmWindow extends ResizableATM implements ActionListener {
 
     String pin;
 
@@ -26,14 +26,9 @@ public class AtmWindow extends JFrame implements ActionListener {
 
     AtmWindow(String inPin) {
 
+        super("ATM");
+
         pin = inPin;
-
-        Common.InitializeJFrame(this, "Deposit Money", null, new Dimension(1550, 1080), JFrame.EXIT_ON_CLOSE, false,
-                new Point(0, 0));
-
-        JLabel backgroundImageLabel = Common.GetScaledImageWithLabel("icons/atm2.png", 1550, 830);
-        backgroundImageLabel.setBounds(0, 0, 1550, 830);
-        add(backgroundImageLabel);
 
         JLabel selectTransactionLabel = Common.CreateLabel("Please Select Your Transaction", Color.WHITE,
                 Common.SystemBold28, new Rectangle(430, 180, 700, 35));
@@ -99,6 +94,13 @@ public class AtmWindow extends JFrame implements ActionListener {
             System.exit(0);   
         }
 
+    }
+
+    @Override
+    protected void handleResizing() {
+        super.handleResizing();
+
+        if(!isVisible()) return;
     }
 
     public static void main(String[] args) {
