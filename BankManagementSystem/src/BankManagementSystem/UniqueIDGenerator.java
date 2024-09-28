@@ -40,13 +40,11 @@ public class UniqueIDGenerator {
             
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    preparedStatement.close();
-                    return false;
+                    return true;
                 }
             }
 
-            preparedStatement.close();
-            return true;
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
         }
