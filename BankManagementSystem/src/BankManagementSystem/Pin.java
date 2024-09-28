@@ -104,12 +104,6 @@ public class Pin extends ResizableATM implements ActionListener {
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        // if (pin.equals(pin1)) {
-        //     JOptionPane.showMessageDialog(this, "Cannot use old pin.", "PIN mismatched",
-        //             JOptionPane.ERROR_MESSAGE);
-        //     return false;
-        // }
-
         return true;
     }
 
