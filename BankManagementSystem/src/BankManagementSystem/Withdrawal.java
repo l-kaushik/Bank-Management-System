@@ -17,7 +17,7 @@ import javax.swing.JButton;
 
 public class Withdrawal extends ResizableATM implements ActionListener {
 
-    String pin = null;
+    String UID = null;
 
     JTextField amounTextField;
 
@@ -27,11 +27,11 @@ public class Withdrawal extends ResizableATM implements ActionListener {
     JLabel withdrawalAmountLabel;
     JLabel amountLabel;
     
-    Withdrawal(String inPin) {
+    Withdrawal(String inUID) {
 
         super("Withdrawal Money"); // sets the title for frame
 
-        pin = inPin;
+        UID = inUID;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         initializeComponents(screenSize);
@@ -101,7 +101,7 @@ public class Withdrawal extends ResizableATM implements ActionListener {
         if (e.getSource() == withdrawalButton) {
             initWithdrawal();
         } else if (e.getSource() == backButton) {
-            new AtmWindow(pin);
+            new AtmWindow(UID);
             dispose();
         }
     }
@@ -113,9 +113,9 @@ public class Withdrawal extends ResizableATM implements ActionListener {
         if (!validateAmount(amount))
             return;
 
-        if(WithdrawalFacade.performDatabaseOperations(pin, amount)) {
+        if(WithdrawalFacade.performDatabaseOperations(UID, amount)) {
             dispose();
-            new AtmWindow(pin);
+            new AtmWindow(UID);
         }
     }
 

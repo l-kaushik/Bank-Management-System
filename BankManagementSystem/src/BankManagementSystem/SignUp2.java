@@ -10,7 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 public class SignUp2 extends ResizableFrame implements ActionListener {
 
-    String formNo = null;
+    String UID = null;
 
     JComboBox<String> religionComboBox;
     JComboBox<String> categoryComboBox;
@@ -42,11 +42,10 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
     JLabel seniorCitizenLabel;
     JLabel existingAccountLabel;
     JLabel formNoLabel;
-    JLabel formNoTextLabel;
 
-    SignUp2(String inFormNo) {
+    SignUp2(String inUID) {
 
-        formNo = inFormNo;
+        UID = inUID;
         Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         setupFrame(ScreenSize);
@@ -110,12 +109,9 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         pageNumberLabel = new JLabel("Page 2");
         pageAndFormNumberPanel.add(pageNumberLabel);
 
-        formNoLabel = new JLabel("Form No: ");
+        formNoLabel = new JLabel("Form No: 1122");
         formNoLabel.setBorder(new EmptyBorder(0, 50, 0, 0));
         pageAndFormNumberPanel.add(formNoLabel);
-
-        formNoTextLabel = new JLabel(formNo);
-        pageAndFormNumberPanel.add(formNoTextLabel);
 
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -321,11 +317,11 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
             return;
 
         // insert data into database
-        insertIntoDatabase(formNo, religion, category, income, education, occupation, pan, aadhar, seniorCitizen,
+        insertIntoDatabase(UID, religion, category, income, education, occupation, pan, aadhar, seniorCitizen,
                 existingAccount);
 
         // create next window and delete this one
-        new SignUp3(formNo);
+        new SignUp3(UID);
         dispose();
         ;
     }
@@ -366,7 +362,7 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         return true;
     }
 
-    private void insertIntoDatabase(String formNo, String religion, String category, String income, String education,
+    private void insertIntoDatabase(String UID, String religion, String category, String income, String education,
             String occupation, String pan, String aadhar, String seniorCitizen, String existingAccount) {
 
         try (MyCon con = new MyCon()) {
@@ -374,7 +370,7 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
             String query = "INSERT INTO signuptwo VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement preparedStatement = con.connection.prepareStatement(query);
-            preparedStatement.setString(1, formNo);
+            preparedStatement.setString(1, UID);
             preparedStatement.setString(2, religion);
             preparedStatement.setString(3, category);
             preparedStatement.setString(4, income);
@@ -435,7 +431,6 @@ public class SignUp2 extends ResizableFrame implements ActionListener {
         seniorCitizenLabel.setFont(scaledFont18);
         existingAccountLabel.setFont(scaledFont18);
         formNoLabel.setFont(scaledFont18);
-        formNoTextLabel.setFont(scaledFont18);
 
     }
 

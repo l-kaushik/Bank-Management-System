@@ -12,18 +12,18 @@ import javax.swing.JLabel;
 
 class BalanceEnquiry extends ResizableATM implements ActionListener {
 
-    String pin = null;
+    String UID = null;
 
     JButton backButton;
 
     JLabel currentBalanceLabel;
     JLabel amountLabel;
 
-    BalanceEnquiry(String inPin) {
+    BalanceEnquiry(String inUID) {
 
         super("Balance Enquiry");
 
-        pin = inPin;
+        UID = inUID;
 
         currentBalanceLabel = new JLabel("Your Current Balance is Rs. ");
         currentBalanceLabel.setForeground(Color.WHITE);
@@ -45,9 +45,9 @@ class BalanceEnquiry extends ResizableATM implements ActionListener {
     private void setBalance(JLabel amountLabel) {
         int balance = 0;
         try (MyCon con = new MyCon()) {
-            String fetchQuery = "SELECT * FROM bank WHERE pin = ?";
+            String fetchQuery = "SELECT * FROM bank WHERE UID = ?";
             PreparedStatement preparedStatementFetchData = con.connection.prepareStatement(fetchQuery);
-            preparedStatementFetchData.setString(1, pin);
+            preparedStatementFetchData.setString(1, UID);
 
             try (ResultSet resultSet = preparedStatementFetchData.executeQuery()) {
                 while (resultSet.next()) {
@@ -70,7 +70,7 @@ class BalanceEnquiry extends ResizableATM implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == backButton) {
-            new AtmWindow(pin);
+            new AtmWindow(UID);
             this.dispose();
         }
     }

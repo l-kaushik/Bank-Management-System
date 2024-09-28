@@ -20,7 +20,7 @@ import javax.swing.JButton;
 
 public class Deposit extends ResizableATM implements ActionListener {
 
-    String pin = null;
+    String UID = null;
 
     JLabel depositAmountLabel;
     JTextField amounTextField;
@@ -28,10 +28,10 @@ public class Deposit extends ResizableATM implements ActionListener {
     JButton depositButton;
     JButton backButton;
 
-    Deposit(String inPin) {
+    Deposit(String inUID) {
         super("Depost Money");
 
-        pin = inPin;
+        UID = inUID;
 
         initializeComponents();
         setVisible(true);
@@ -80,7 +80,7 @@ public class Deposit extends ResizableATM implements ActionListener {
         if (e.getSource() == depositButton) {
             depositAction();
         } else if (e.getSource() == backButton) {
-            new AtmWindow(pin);
+            new AtmWindow(UID);
             dispose();
         }
     }
@@ -103,11 +103,11 @@ public class Deposit extends ResizableATM implements ActionListener {
 
         try (MyCon con = new MyCon()) {
 
-            String query = "INSERT INTO bank (pin, date, type, amount) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO bank (UID, date, type, amount) VALUES (?, ?, ?, ?)";
             
             PreparedStatement preparedStatement = con.connection.prepareStatement(query);
 
-            preparedStatement.setString(1, pin);
+            preparedStatement.setString(1, UID);
             preparedStatement.setString(2, date.toString());
             preparedStatement.setString(3, "Deposit");
             preparedStatement.setString(4, amount);
@@ -117,7 +117,7 @@ public class Deposit extends ResizableATM implements ActionListener {
             JOptionPane.showMessageDialog(null, "Rs. " + amount + " Deposited Successfully", "Deposit Success",
                     JOptionPane.INFORMATION_MESSAGE);
 
-            new AtmWindow(pin);
+            new AtmWindow(UID);
             dispose();
 
         } catch (Exception e) {

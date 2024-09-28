@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 
 public class AtmWindow extends ResizableATM implements ActionListener {
 
-    String pin;
+    String UID;
 
     JButton depositButton;
     JButton cashWithdrawlButton;
@@ -23,11 +23,11 @@ public class AtmWindow extends ResizableATM implements ActionListener {
 
     JLabel selectTransactionLabel;
 
-    AtmWindow(String inPin) {
+    AtmWindow(String inUID) {
 
         super("ATM");
 
-        pin = inPin;
+        UID = inUID;
 
         initializeComponents();
 
@@ -100,26 +100,26 @@ public class AtmWindow extends ResizableATM implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == depositButton){
-            new Deposit(pin);
+            new Deposit(UID);
             dispose();
         }
         else if(e.getSource() == cashWithdrawlButton){
-            new Withdrawal(pin);
+            new Withdrawal(UID);
             dispose();
         }
         else if(e.getSource() == fastCashButton){
-            new FastCash(pin);
+            new FastCash(UID);
             dispose();
         } 
         else if(e.getSource() == miniStatementButton){
-            new MiniStatement(pin);
+            new MiniStatement(UID);
         }        
         else if(e.getSource() == pinChangeButton){
-            new Pin(pin);
+            new Pin(UID);
             dispose();
         }        
         else if(e.getSource() == balanceEnquiryButton){
-            new BalanceEnquiry(pin);
+            new BalanceEnquiry(UID);
             dispose();
         }        
         else if(e.getSource() == exitButton){

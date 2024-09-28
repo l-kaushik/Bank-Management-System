@@ -21,12 +21,12 @@ import javax.swing.JLabel;
 
 public class MiniStatement extends JFrame implements ActionListener {
 
-    String pin;
+    String UID;
 
     JButton exitButton;
 
-    MiniStatement(String inPin) {
-        pin = inPin;
+    MiniStatement(String inUID) {
+        UID = inUID;
 
         Common.InitializeJFrame(this, "Mini Statement", null, new Dimension(400, 600), JFrame.EXIT_ON_CLOSE, false,
                 new Point(20, 20), new Color(255, 204, 204));
@@ -57,10 +57,10 @@ public class MiniStatement extends JFrame implements ActionListener {
 
     private void setCardNumberLabel(JLabel cardNumberLabel) {
         try (MyCon con = new MyCon()) {
-            String query = "SELECT * FROM login WHERE pin = ?";
+            String query = "SELECT * FROM login WHERE UID = ?";
 
             PreparedStatement preparedStatement = con.connection.prepareStatement(query);
-            preparedStatement.setString(1, pin);
+            preparedStatement.setString(1, UID);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
@@ -78,12 +78,12 @@ public class MiniStatement extends JFrame implements ActionListener {
     }
 
     // Fetch balance entries from the database
-    private List<Map<String, String>> fetchBalanceEntries(String pin) {
+    private List<Map<String, String>> fetchBalanceEntries(String UID) {
         List<Map<String, String>> balanceEntries = new ArrayList<>();
         try (MyCon con = new MyCon()) {
-            String query = "SELECT * FROM bank WHERE pin = ?";
+            String query = "SELECT * FROM bank WHERE UID = ?";
             PreparedStatement preparedStatement = con.connection.prepareStatement(query);
-            preparedStatement.setString(1, pin);
+            preparedStatement.setString(1, UID);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
@@ -106,6 +106,7 @@ public class MiniStatement extends JFrame implements ActionListener {
     private void updateBalanceLabel(JLabel balanceLabel, List<Map<String, String>> balanceEntries) {
         StringBuilder balanceHtml = new StringBuilder("<html>");
         for (int i = balanceEntries.size() - 1; i >= balanceEntries.size() - 8; i--) { // Reverse order
+            if ( i < 0) break;
             Map<String, String> entry = balanceEntries.get(i);
             String type = entry.get("type");
             balanceHtml.append(entry.get("date")).append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
@@ -135,7 +136,7 @@ public class MiniStatement extends JFrame implements ActionListener {
 
     // Main method to set the balance labels
     private void setBalanceLabel(JLabel balanceLabel, JLabel totalBalanceLabel) {
-        List<Map<String, String>> balanceEntries = fetchBalanceEntries(pin);
+        List<Map<String, String>> balanceEntries = fetchBalanceEntries(UID);
         updateBalanceLabel(balanceLabel, balanceEntries);
         updateTotalBalance(totalBalanceLabel, balanceEntries);
     }

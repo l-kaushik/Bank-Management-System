@@ -187,7 +187,8 @@ public class Login extends ResizableFrame implements ActionListener{
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    new AtmWindow(pin);
+                    String UID = resultSet.getString("UID");
+                    new AtmWindow(UID);
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Invalid card number or pin.");

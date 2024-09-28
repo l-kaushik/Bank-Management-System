@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 
 public class FastCash extends ResizableATM implements ActionListener {
 
-    String pin;
+    String UID;
 
     JButton oneHundredsButton;
     JButton fiveHundredsButton;
@@ -23,10 +23,10 @@ public class FastCash extends ResizableATM implements ActionListener {
 
     JLabel selectTransactionLabel;
 
-    FastCash(String inPin) {
+    FastCash(String inUID) {
         super("Fast Cash");
 
-        pin = inPin;
+        UID = inUID;
         initializeComponents();
         setVisible(true);
     }
@@ -98,15 +98,15 @@ public class FastCash extends ResizableATM implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == backtButton) {
-            new AtmWindow(pin);
+            new AtmWindow(UID);
             dispose();
         }
 
         String amount = ((JButton) e.getSource()).getText().substring(4);
 
-        if(WithdrawalFacade.performDatabaseOperations(pin, amount)) {
+        if(WithdrawalFacade.performDatabaseOperations(UID, amount)) {
             dispose();
-            new AtmWindow(pin);
+            new AtmWindow(UID);
         }
 
     }

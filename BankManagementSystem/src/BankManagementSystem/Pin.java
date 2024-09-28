@@ -14,7 +14,7 @@ import javax.swing.JPasswordField;
 
 public class Pin extends ResizableATM implements ActionListener {
 
-    String pin;
+    String UID;
 
     JButton backButton;
     JButton changeButton;
@@ -26,11 +26,11 @@ public class Pin extends ResizableATM implements ActionListener {
     JPasswordField firstPasswordField;
     JPasswordField secondPasswordField;
 
-    Pin(String inPin) {
+    Pin(String inUID) {
 
         super("Balance Enquiry");
 
-        pin = inPin;
+        UID = inUID;
 
         initializeComponents();
         setVisible(true);
@@ -89,7 +89,7 @@ public class Pin extends ResizableATM implements ActionListener {
         }
 
         if (e.getSource() == backButton) {
-            new AtmWindow(pin);
+            new AtmWindow(UID);
             dispose();
         }
     }
@@ -104,11 +104,11 @@ public class Pin extends ResizableATM implements ActionListener {
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if (pin.equals(pin1)) {
-            JOptionPane.showMessageDialog(this, "Cannot use old pin.", "PIN mismatched",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
+        // if (pin.equals(pin1)) {
+        //     JOptionPane.showMessageDialog(this, "Cannot use old pin.", "PIN mismatched",
+        //             JOptionPane.ERROR_MESSAGE);
+        //     return false;
+        // }
 
         return true;
     }
@@ -116,14 +116,14 @@ public class Pin extends ResizableATM implements ActionListener {
     private void updateTables(String pin1, String pin2) {
         try (MyCon con = new MyCon()) {
 
-            String[] tableNames = { "bank", "login", "signupthree" };
-            String baseQuery = "UPDATE %s SET pin = ? WHERE pin = ?";
+            String[] tableNames = { "login", "signupthree" };
+            String baseQuery = "UPDATE %s SET pin = ? WHERE UID = ?";
 
             for (String table : tableNames) {
                 String query = String.format(baseQuery, table);
                 PreparedStatement preparedStatement = con.connection.prepareStatement(query);
                 preparedStatement.setString(1, pin1);
-                preparedStatement.setString(2, pin);
+                preparedStatement.setString(2, UID);
 
                 preparedStatement.executeUpdate();
                 preparedStatement.close();

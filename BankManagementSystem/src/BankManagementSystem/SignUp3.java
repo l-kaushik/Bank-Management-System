@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class SignUp3 extends ResizableFrame implements ActionListener {
 
-    String formNo = null;
+    String UID = null;
 
     JRadioButton savingAccountRadioButton;
     JRadioButton fixedDepopsiteRadioButton;
@@ -48,9 +48,9 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
 
 
 
-    SignUp3(String informNo) {
+    SignUp3(String inUID) {
 
-        formNo = informNo;
+        UID = inUID;
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -108,7 +108,7 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
         pageNumberLabel = new JLabel("Page 3");
         topDetailsPanel.add(pageNumberLabel);
 
-        formNoLabel = new JLabel("Form No: " + formNo);
+        formNoLabel = new JLabel("Form No: 1123");
         formNoLabel.setBorder(new EmptyBorder(0, 50, 0, 0));
         topDetailsPanel.add(formNoLabel);
 
@@ -401,7 +401,7 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
 
         insertIntoDatabase(accountType, cardNo, pin, facilites);
 
-        new Deposit(pin);
+        new Deposit(UID);
         dispose();
     }
 
@@ -480,8 +480,8 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
 
         try (MyCon con = new MyCon()) {
 
-            insertIntoSignupTable3(con, formNo, accountType, cardNo, pin, facilites);
-            insertIntoLoginTable(con, formNo, cardNo, pin);
+            insertIntoSignupTable3(con, UID, accountType, cardNo, pin, facilites);
+            insertIntoLoginTable(con, UID, cardNo, pin);
 
             JOptionPane.showMessageDialog(null, "Card Number: " + cardNo + "\nPin: " + pin, "Card information",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -491,13 +491,13 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
         }
     }
 
-    private void insertIntoSignupTable3(MyCon con, String formNo, String accountType, String cardNo, String pin,
+    private void insertIntoSignupTable3(MyCon con, String UID, String accountType, String cardNo, String pin,
             String facilities) {
         String queryForSignupTable3 = "INSERT INTO signupthree VALUES(?, ?, ?, ?, ?)";
 
         try (PreparedStatement preaparedStatementForSignupTable3 = con.connection
                 .prepareStatement(queryForSignupTable3)) {
-            preaparedStatementForSignupTable3.setString(1, formNo);
+            preaparedStatementForSignupTable3.setString(1, UID);
             preaparedStatementForSignupTable3.setString(2, accountType);
             preaparedStatementForSignupTable3.setString(3, cardNo);
             preaparedStatementForSignupTable3.setString(4, pin);
@@ -510,11 +510,11 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
         }
     }
 
-    private void insertIntoLoginTable(MyCon con, String formNo, String cardNo, String pin) {
+    private void insertIntoLoginTable(MyCon con, String UID, String cardNo, String pin) {
         String queryForLoginTable = "INSERT INTO login VALUES(?, ?, ?)";
 
         try (PreparedStatement preaparedStatementForLoginTable = con.connection.prepareStatement(queryForLoginTable)) {
-            preaparedStatementForLoginTable.setString(1, formNo);
+            preaparedStatementForLoginTable.setString(1, UID);
             preaparedStatementForLoginTable.setString(2, cardNo);
             preaparedStatementForLoginTable.setString(3, pin);
 

@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
-import java.util.Random;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,11 +14,7 @@ import com.toedter.calendar.JDateChooser;
 
 public class SignUp extends ResizableFrame implements ActionListener {
 
-    // generate random applcation number
-
-    Random random = new Random();
-    long first4 = (random.nextLong() % 9000L) + 1000L;
-    String first = " " + Math.abs(first4);
+    String UID = UniqueIDGenerator.generateUID();
 
     JButton nextButton;
 
@@ -114,7 +109,7 @@ public class SignUp extends ResizableFrame implements ActionListener {
 
     private void initializeApplicationNumberLabel(GridBagConstraints gbc) {
         // Application number label
-        applicationNumberLabel = new JLabel("APPLICATION FORM NO. " + first);
+        applicationNumberLabel = new JLabel("APPLICATION FORM NO. 1121");
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 3;
@@ -377,7 +372,6 @@ public class SignUp extends ResizableFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         // Extract data from fields and buttons
-        String formNo = first;
         String name = nameTextField.getText();
         String fatherName = fatherNameTextField.getText();
         String dateOfBirth = extractdateOfBirth();
@@ -395,7 +389,7 @@ public class SignUp extends ResizableFrame implements ActionListener {
             return;
 
         // insert data into database
-        insertIntoDatabase(formNo, name, fatherName, dateOfBirth, gender, email,
+        insertIntoDatabase(name, fatherName, dateOfBirth, gender, email,
                 maritalStatus, residentAddress, pincode, cityName, stateName);
 
     }
@@ -431,7 +425,7 @@ public class SignUp extends ResizableFrame implements ActionListener {
         return null;
     }
 
-    private void insertIntoDatabase(String formNo, String name, String fatherName, String dateOfBirth, String gender,
+    private void insertIntoDatabase(String name, String fatherName, String dateOfBirth, String gender,
             String email, String maritalStatus, String residentAddress, String pincode, String cityName,
             String stateName) {
 
@@ -441,7 +435,7 @@ public class SignUp extends ResizableFrame implements ActionListener {
             String query = "INSERT INTO signup VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement preparedStatement = con.connection.prepareStatement(query);
-            preparedStatement.setString(1, formNo);
+            preparedStatement.setString(1, UID);
             preparedStatement.setString(2, name);
             preparedStatement.setString(3, fatherName);
             preparedStatement.setString(4, dateOfBirth);
@@ -457,7 +451,7 @@ public class SignUp extends ResizableFrame implements ActionListener {
 
             con.close();
             preparedStatement.close();
-            new SignUp2(formNo);
+            new SignUp2(UID);
             dispose();
 
         } catch (Exception E) {
@@ -465,12 +459,17 @@ public class SignUp extends ResizableFrame implements ActionListener {
         }
     }
 
-    private static boolean validateInputValues(String name, String fatherName, String dateOfBirth,
+    private boolean validateInputValues(String name, String fatherName, String dateOfBirth,
             String gender, String email, String maritalStatus, String residentAddress,
             String pincode, String cityName, String stateName) {
 
         StringBuilder errorMessage = new StringBuilder();
 
+        if (UID.isEmpty()){
+            JOptionPane.showMessageDialog(null, "Failed to generate UID, Try again later.", "UID Generation Failed",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         if (name.isEmpty())
             errorMessage.append("Name field can't be empty.\n");
         if (fatherName.isEmpty())
