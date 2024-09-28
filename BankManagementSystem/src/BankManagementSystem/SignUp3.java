@@ -493,15 +493,13 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
 
     private void insertIntoSignupTable3(MyCon con, String UID, String accountType, String cardNo, String pin,
             String facilities) {
-        String queryForSignupTable3 = "INSERT INTO signupthree VALUES(?, ?, ?, ?, ?)";
+        String queryForSignupTable3 = "INSERT INTO signupthree VALUES(?, ?, ?)";
 
         try (PreparedStatement preaparedStatementForSignupTable3 = con.connection
                 .prepareStatement(queryForSignupTable3)) {
             preaparedStatementForSignupTable3.setString(1, UID);
             preaparedStatementForSignupTable3.setString(2, accountType);
-            preaparedStatementForSignupTable3.setString(3, cardNo);
-            preaparedStatementForSignupTable3.setString(4, pin);
-            preaparedStatementForSignupTable3.setString(5, facilities);
+            preaparedStatementForSignupTable3.setString(3, facilities);
 
             preaparedStatementForSignupTable3.executeUpdate();
 
