@@ -116,7 +116,7 @@ public class Pin extends ResizableATM implements ActionListener {
     private void updateTables(String pin1, String pin2) {
         try (MyCon con = new MyCon()) {
 
-            String[] tableNames = { "login", "signupthree" };
+            String[] tableNames = { "login"};
             String baseQuery = "UPDATE %s SET pin = ? WHERE UID = ?";
 
             for (String table : tableNames) {
