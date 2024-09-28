@@ -161,19 +161,21 @@ public class Login extends ResizableFrame implements ActionListener{
         String cardNumber = cardNumberTextField.getText();
         String pin = new String(passwordField.getPassword());
 
-        validateInputValues(cardNumber, pin);
-        verifyDataWithDatabase(cardNumber, pin);
+        if(validateInputValues(cardNumber, pin))
+            verifyDataWithDatabase(cardNumber, pin);
     }
 
-    private void validateInputValues(String cardNumber, String pin) {
+    private boolean validateInputValues(String cardNumber, String pin) {
         if (cardNumber.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Enter your card number");
-            return;
+            return false;
         }
         if (pin.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Enter your pin number");
-            return;
+            return false;
         }
+
+        return true;
     }
 
     private void verifyDataWithDatabase(String cardNumber, String pin) {
