@@ -71,8 +71,6 @@ public class MyCon implements AutoCloseable {
             String createSignupTable3 = "CREATE TABLE IF NOT EXISTS signupthree (" +
                     "UID TEXT PRIMARY KEY, " +
                     "account_type TEXT, " +
-                    "card_number TEXT, " +
-                    "pin TEXT, " +
                     "facility TEXT)";
             statement.execute(createSignupTable3);
 
