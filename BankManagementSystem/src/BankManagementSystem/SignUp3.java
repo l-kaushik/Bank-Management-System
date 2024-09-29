@@ -394,12 +394,19 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
         String accountType = extractAccountTypeSelection();
         String cardNo = generateCardNumber();
         String pin = generatePinNumber();
+        byte[] pinSalt = PinHashing.generateSalt();
+        String pinSaltString = PinHashing.byteToString(pinSalt);
+        byte[] hashedPin = PinHashing.hashStringWithSalt(pin, pinSalt);
+        String hashedPinString = PinHashing.byteToString(hashedPin);
         String facilites = extractFacilitiesSelected();
 
         if (!validateForm(accountType))
             return;
+        
+        insertIntoDatabase(accountType, cardNo, hashedPinString, pinSaltString, facilites);
 
-        insertIntoDatabase(accountType, cardNo, pin, facilites);
+        JOptionPane.showMessageDialog(null, "Card Number: " + cardNo + "\nPin: " + pin, "Card information",
+        JOptionPane.INFORMATION_MESSAGE);
 
         new Deposit(UID);
         dispose();
@@ -476,23 +483,18 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
         return true;
     }
 
-    private void insertIntoDatabase(String accountType, String cardNo, String pin, String facilites) {
+    private void insertIntoDatabase(String accountType, String cardNo, String hashedPinString, String pinSaltString, String facilites) {
 
         try (MyCon con = new MyCon()) {
 
-            insertIntoSignupTable3(con, UID, accountType, cardNo, pin, facilites);
-            insertIntoLoginTable(con, UID, cardNo, pin);
-
-            JOptionPane.showMessageDialog(null, "Card Number: " + cardNo + "\nPin: " + pin, "Card information",
-                    JOptionPane.INFORMATION_MESSAGE);
-
+            insertIntoSignupTable3(con, UID, accountType, facilites);
+            insertIntoLoginTable(con, UID, cardNo, hashedPinString, pinSaltString);
         } catch (Exception E) {
             E.getStackTrace();
         }
     }
 
-    private void insertIntoSignupTable3(MyCon con, String UID, String accountType, String cardNo, String pin,
-            String facilities) {
+    private void insertIntoSignupTable3(MyCon con, String UID, String accountType, String facilities) {
         String queryForSignupTable3 = "INSERT INTO signupthree VALUES(?, ?, ?)";
 
         try (PreparedStatement preaparedStatementForSignupTable3 = con.connection
@@ -508,13 +510,14 @@ public class SignUp3 extends ResizableFrame implements ActionListener {
         }
     }
 
-    private void insertIntoLoginTable(MyCon con, String UID, String cardNo, String pin) {
-        String queryForLoginTable = "INSERT INTO login VALUES(?, ?, ?)";
+    private void insertIntoLoginTable(MyCon con, String UID, String cardNo, String hashedPinString, String pinSaltString) {
+        String queryForLoginTable = "INSERT INTO login VALUES(?, ?, ?, ?)";
 
         try (PreparedStatement preaparedStatementForLoginTable = con.connection.prepareStatement(queryForLoginTable)) {
             preaparedStatementForLoginTable.setString(1, UID);
             preaparedStatementForLoginTable.setString(2, cardNo);
-            preaparedStatementForLoginTable.setString(3, pin);
+            preaparedStatementForLoginTable.setString(3, hashedPinString);
+            preaparedStatementForLoginTable.setString(4, pinSaltString);
 
             preaparedStatementForLoginTable.executeUpdate();
 
