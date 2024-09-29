@@ -84,7 +84,7 @@ public class FastCash extends ResizableATM implements ActionListener {
     }
 
     private void initializeTenThousandsButton() {
-        tenThousandsButton = new JButton("Rs. 10,000");
+        tenThousandsButton = new JButton("Rs. 10000");
         Common.setButtonAttributes(tenThousandsButton, Color.BLACK, this);
         backgroundImageLabel.add(tenThousandsButton);
     }
