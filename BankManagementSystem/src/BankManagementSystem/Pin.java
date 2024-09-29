@@ -84,8 +84,14 @@ public class Pin extends ResizableATM implements ActionListener {
             // pin validation
            if(!pinValidation(pin1, pin2)) return;
 
+
+           byte[] pinSaltInBytes = PinHashing.generateSalt();
+           byte[] hashedPinInBytes = PinHashing.hashStringWithSalt(pin1, pinSaltInBytes);
+           String pinSalt = PinHashing.byteToString(pinSaltInBytes);
+           String hashedPin = PinHashing.byteToString(hashedPinInBytes);
+
             // update pin in database
-            updateTables(pin1, pin2);
+            updateTables(hashedPin, pinSalt);
         }
 
         if (e.getSource() == backButton) {
@@ -107,17 +113,18 @@ public class Pin extends ResizableATM implements ActionListener {
         return true;
     }
 
-    private void updateTables(String pin1, String pin2) {
+    private void updateTables(String hashedPin, String pinSalt) {
         try (MyCon con = new MyCon()) {
 
             String[] tableNames = { "login"};
-            String baseQuery = "UPDATE %s SET pin = ? WHERE UID = ?";
+            String baseQuery = "UPDATE %s SET pin = ?, pin_salt = ? WHERE UID = ?";
 
             for (String table : tableNames) {
                 String query = String.format(baseQuery, table);
                 PreparedStatement preparedStatement = con.connection.prepareStatement(query);
-                preparedStatement.setString(1, pin1);
-                preparedStatement.setString(2, UID);
+                preparedStatement.setString(1, hashedPin);
+                preparedStatement.setString(2, pinSalt);
+                preparedStatement.setString(3, UID);
 
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
@@ -126,7 +133,7 @@ public class Pin extends ResizableATM implements ActionListener {
             JOptionPane.showMessageDialog(this, "PIN changed successfully", "PIN Change Success",
                     JOptionPane.INFORMATION_MESSAGE);
 
-            new AtmWindow(pin1);
+            new AtmWindow(UID);
             dispose();
         } catch (Exception E) {
             E.printStackTrace();
