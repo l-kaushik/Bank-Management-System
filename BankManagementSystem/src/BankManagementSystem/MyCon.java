@@ -77,10 +77,10 @@ public class MyCon implements AutoCloseable {
             String createLoginTable = "CREATE TABLE IF NOT EXISTS login(" +
                     "UID TEXT PRIMARY KEY, " +
                     "card_number TEXT, " +
-                    "pin TEXT)"; // find a better way to store pin
+                    "pin TEXT, " +
+                    "pin_salt TEXT)"; 
             statement.execute(createLoginTable);
 
-            // generate a unique id for every user and use that instead of pin
             String createBankTable = "CREATE TABLE IF NOT EXISTS bank(" +
                     "UID TEXT," +
                     "date TEXT, " +
