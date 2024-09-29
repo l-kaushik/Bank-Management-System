@@ -179,19 +179,26 @@ public class Login extends ResizableFrame implements ActionListener{
     }
 
     private void verifyDataWithDatabase(String cardNumber, String pin) {
-        String query = "SELECT * FROM login WHERE card_number = ? AND pin = ? ";
+        String query = "SELECT * FROM login WHERE card_number = ?";
 
         try (MyCon con = new MyCon();
                 PreparedStatement preparedStatement = con.connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, cardNumber);
-            preparedStatement.setString(2, pin);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     String UID = resultSet.getString("UID");
-                    new AtmWindow(UID);
-                    dispose();
+                    String storedPin = resultSet.getString("pin");
+                    String storedSalt = resultSet.getString("pin_salt");
+
+                    if(verifyPassword(pin, storedPin, storedSalt)) {
+
+                        new AtmWindow(UID);
+                        dispose();
+                    }else {
+                        JOptionPane.showMessageDialog(this, "Invalid card number or pin.");
+                    }
                 } else {
                     JOptionPane.showMessageDialog(this, "Invalid card number or pin.");
                 }
@@ -201,6 +208,13 @@ public class Login extends ResizableFrame implements ActionListener{
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean verifyPassword(String pin, String storedPin, String storedSalt) {
+        byte[] hashedPin = PinHashing.hashStringWithSalt(pin, PinHashing.stringToByte(storedSalt));
+        String hashedPinString = PinHashing.byteToString(hashedPin);
+
+        return hashedPinString.equals(storedPin);
     }
 
     @Override
