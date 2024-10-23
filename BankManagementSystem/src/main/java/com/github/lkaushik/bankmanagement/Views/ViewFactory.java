@@ -9,18 +9,16 @@ import javafx.stage.Stage;
 public class ViewFactory {
     // Client Views
     private AnchorPane dashboardView;
+    private AnchorPane transactionsView;
 
     public ViewFactory() {}
 
     public AnchorPane getDashboardView() {
-        if(dashboardView == null){
-            try{
-                dashboardView = new FXMLLoader(getClass().getResource("/FXML/Client/Dashboard.fxml")).load();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return dashboardView;
+        return createView(dashboardView, "Client/Dashboard.fxml");
+    }
+
+    public AnchorPane getTransactionsView() {
+        return createView(transactionsView, "Client/Transactions.fxml");
     }
 
     public void showLoginWindow() {
@@ -51,5 +49,16 @@ public class ViewFactory {
         stage.setScene(scene);
         stage.setTitle("Trust Us Bank");
         stage.show();
+    }
+
+    private AnchorPane createView(AnchorPane view, String resourcePath) {
+        if(view == null){
+            try{
+                view = new FXMLLoader(getClass().getResource("/FXML/" + resourcePath)).load();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return view;
     }
 }
