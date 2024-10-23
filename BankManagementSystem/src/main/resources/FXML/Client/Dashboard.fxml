@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="750.0" prefWidth="850.0" styleClass="dashboard" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.lkaushik.bankmanagement.bankmanagementsystem.Controllers.Client.DashboardController">
+<AnchorPane prefHeight="750.0" prefWidth="850.0" styleClass="dashboard" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.lkaushik.bankmanagement.Controllers.Client.DashboardController">
     <Text fx:id="user_name" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="user_name" text="Hi, Patrick" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="30.0" />
     <Label fx:id="login_date" styleClass="date_lbl" text="Today, 2024-22-10" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="27.0" />
     <Text layoutX="811.0" layoutY="118.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="section_title" text="Accounts Summary" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="90.0" />
