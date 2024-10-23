@@ -36,6 +36,10 @@ public class ViewFactory {
 
     }
 
+    public void closeStage(Stage stage) {
+        stage.close();
+    }
+
     private void createStage(FXMLLoader loader) {
         Scene scene = null;
         try{
