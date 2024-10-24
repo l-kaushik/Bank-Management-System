@@ -1,6 +1,8 @@
 package com.github.lkaushik.bankmanagement.Views;
 
 import com.github.lkaushik.bankmanagement.Controllers.Client.ClientController;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -8,10 +10,17 @@ import javafx.stage.Stage;
 
 public class ViewFactory {
     // Client Views
+    private final StringProperty clientSelectedMenuItem;
     private AnchorPane dashboardView;
     private AnchorPane transactionsView;
 
-    public ViewFactory() {}
+    public ViewFactory() {
+        this.clientSelectedMenuItem = new SimpleStringProperty("");
+    }
+
+    public StringProperty getSelectedMenuItem() {
+        return clientSelectedMenuItem;
+    }
 
     public AnchorPane getDashboardView() {
         return createView(dashboardView, "Client/Dashboard.fxml");
