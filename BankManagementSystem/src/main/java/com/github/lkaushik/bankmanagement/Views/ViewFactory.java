@@ -13,10 +13,15 @@ public class ViewFactory {
     private final StringProperty clientSelectedMenuItem;
     private AnchorPane dashboardView;
     private AnchorPane transactionsView;
+    private AnchorPane accountsView;
 
     public ViewFactory() {
         this.clientSelectedMenuItem = new SimpleStringProperty("");
     }
+
+    /*
+    * Client Views Sections
+    */
 
     public StringProperty getSelectedMenuItem() {
         return clientSelectedMenuItem;
@@ -28,6 +33,10 @@ public class ViewFactory {
 
     public AnchorPane getTransactionsView() {
         return createView(transactionsView, "Client/Transactions.fxml");
+    }
+
+    public AnchorPane getAccountsView() {
+        return createView(accountsView, "Client/Accounts.fxml");
     }
 
     public void showLoginWindow() {
