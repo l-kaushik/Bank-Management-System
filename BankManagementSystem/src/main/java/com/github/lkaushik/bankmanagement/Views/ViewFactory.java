@@ -1,5 +1,6 @@
 package com.github.lkaushik.bankmanagement.Views;
 
+import com.github.lkaushik.bankmanagement.Controllers.Admin.AdminController;
 import com.github.lkaushik.bankmanagement.Controllers.Client.ClientController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -15,8 +16,13 @@ public class ViewFactory {
     private AnchorPane transactionsView;
     private AnchorPane accountsView;
 
+    // Admin Views
+    private final StringProperty adminSelectedMenuItem;
+    private AnchorPane createClientView;
+
     public ViewFactory() {
         this.clientSelectedMenuItem = new SimpleStringProperty("");
+        this.adminSelectedMenuItem = new SimpleStringProperty("");
     }
 
     /*
@@ -39,17 +45,35 @@ public class ViewFactory {
         return createView(accountsView, "Client/Accounts.fxml");
     }
 
-    public void showLoginWindow() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Login.fxml"));
-        createStage(loader);
-    }
-
     public void showClientWindow() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Client/Client.fxml"));
         ClientController clientController = new ClientController();
         loader.setController(clientController);
         createStage(loader);
+    }
 
+    /*
+    * Admin Views Section
+    * */
+
+    public StringProperty getAdminSelectedMenuItem() {
+        return adminSelectedMenuItem;
+    }
+
+    public AnchorPane getCreateClientView() {
+        return createView(createClientView, "Admin/CreateClient.fxml");
+    }
+
+    public void showAdminWindow() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML/Admin/Admin.fxml"));
+        AdminController adminController = new AdminController();
+        loader.setController(adminController);
+        createStage(loader);
+    }
+
+    public void showLoginWindow() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Login.fxml"));
+        createStage(loader);
     }
 
     public void closeStage(Stage stage) {
