@@ -1,6 +1,7 @@
 package com.github.lkaushik.bankmanagement.Controllers.Client;
 
 import com.github.lkaushik.bankmanagement.Models.Model;
+import com.github.lkaushik.bankmanagement.Views.ClientMenuOptions;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 
@@ -27,10 +28,10 @@ public class ClientMenuController implements Initializable {
     }
 
     private void onTransactions() {
-        Model.getInstance().getViewFactory().getSelectedMenuItem().set("Transactions");
+        Model.getInstance().getViewFactory().getSelectedMenuItem().set(ClientMenuOptions.TRANSACTIONS);
     }
     private void onDashboard() {
-        Model.getInstance().getViewFactory().getSelectedMenuItem().set("Dashboard");
+        Model.getInstance().getViewFactory().getSelectedMenuItem().set(ClientMenuOptions.DASHBOARD);
     }
-    private void onAccounts() { Model.getInstance().getViewFactory().getSelectedMenuItem().set("Accounts"); }
+    private void onAccounts() { Model.getInstance().getViewFactory().getSelectedMenuItem().set(ClientMenuOptions.ACCOUNTS); }
 }

@@ -1,6 +1,7 @@
 package com.github.lkaushik.bankmanagement.Controllers.Admin;
 
 import com.github.lkaushik.bankmanagement.Models.Model;
+import com.github.lkaushik.bankmanagement.Views.AdminMenuOptions;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 
@@ -21,6 +22,6 @@ public class AdminMenuController implements Initializable {
     private void addListeners() {}
 
     private void onCreateClient() {
-        Model.getInstance().getViewFactory().getAdminSelectedMenuItem().set("CreateClient");
+        Model.getInstance().getViewFactory().getAdminSelectedMenuItem().set(AdminMenuOptions.CREATE_CLIENT);
     }
 }

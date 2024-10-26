@@ -1,6 +1,7 @@
 package com.github.lkaushik.bankmanagement.Controllers.Client;
 
 import com.github.lkaushik.bankmanagement.Models.Model;
+import com.github.lkaushik.bankmanagement.Views.ClientMenuOptions;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
 
@@ -15,8 +16,8 @@ public class ClientController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Model.getInstance().getViewFactory().getSelectedMenuItem().addListener((observableValue, oldVal, newVal) -> {
             switch (newVal) {
-                case "Transactions" -> client_parent.setCenter(Model.getInstance().getViewFactory().getTransactionsView());
-                case "Accounts" -> client_parent.setCenter(Model.getInstance().getViewFactory().getAccountsView());
+                case TRANSACTIONS -> client_parent.setCenter(Model.getInstance().getViewFactory().getTransactionsView());
+                case ACCOUNTS -> client_parent.setCenter(Model.getInstance().getViewFactory().getAccountsView());
                 default -> client_parent.setCenter(Model.getInstance().getViewFactory().getDashboardView());
             }
         });
