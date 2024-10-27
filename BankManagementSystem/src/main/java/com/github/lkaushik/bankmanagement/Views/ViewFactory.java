@@ -22,6 +22,7 @@ public class ViewFactory {
     private final ObjectProperty<AdminMenuOptions> adminSelectedMenuItem;
     private AnchorPane createClientView;
     private AnchorPane clientsView;
+    private AnchorPane depositView;
 
     public ViewFactory() {
         this.loginAccountType = AccountType.CLIENT;
@@ -78,6 +79,10 @@ public class ViewFactory {
 
     public AnchorPane getClientsView() {
         return createView(clientsView, "Admin/Clients.fxml");
+    }
+
+    public AnchorPane getDepositView() {
+        return createView(depositView, "Admin/Deposit.fxml");
     }
 
     public void showAdminWindow() {
