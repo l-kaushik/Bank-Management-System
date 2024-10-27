@@ -21,6 +21,7 @@ public class ViewFactory {
     // Admin Views
     private final ObjectProperty<AdminMenuOptions> adminSelectedMenuItem;
     private AnchorPane createClientView;
+    private AnchorPane clientsView;
 
     public ViewFactory() {
         this.loginAccountType = AccountType.CLIENT;
@@ -73,6 +74,10 @@ public class ViewFactory {
 
     public AnchorPane getCreateClientView() {
         return createView(createClientView, "Admin/CreateClient.fxml");
+    }
+
+    public AnchorPane getClientsView() {
+        return createView(clientsView, "Admin/Clients.fxml");
     }
 
     public void showAdminWindow() {
