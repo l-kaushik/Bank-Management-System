@@ -15,6 +15,16 @@ public class Client {
     private final ObjectProperty<Account> savingsAccount;
     private final ObjectProperty<LocalDate> dateCreated;
 
+    // default constructor
+    public Client() {
+        this.firstName = new SimpleStringProperty(this, "First Name", "");
+        this.lastName = new SimpleStringProperty(this, "Last Name", "");
+        this.payeeAddress = new SimpleStringProperty(this, "Payee Address", "");
+        this.checkingAccount = new SimpleObjectProperty<>(this, "Checking Account", null);
+        this.savingsAccount = new SimpleObjectProperty<>(this, "Saving Account", null);
+        this.dateCreated = new SimpleObjectProperty<>(this, "Date Created", null);
+    }
+
     public Client(String fName, String lName, String pAddress, Account cAccount, Account sAccount, LocalDate date) {
         this.firstName = new SimpleStringProperty(this, "First Name", fName);
         this.lastName = new SimpleStringProperty(this, "Last Name", lName);
