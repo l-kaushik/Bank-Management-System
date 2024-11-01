@@ -32,10 +32,10 @@ public class DatabaseDriver {
         return resultSet;
     }
 
-    public ResultSet getClientSavingsAccountData(String owner) {
+    private ResultSet getAccountData(String owner, String tableName) {
         PreparedStatement preparedStatement;
         ResultSet resultSet = null;
-        String query = "SELECT * FROM SavingsAccounts WHERE Owner = ?";
+        String query = "SELECT * FROM " + tableName + " WHERE Owner = ?";
         try {
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, owner);
@@ -44,6 +44,14 @@ public class DatabaseDriver {
             e.printStackTrace();
         }
         return resultSet;
+    }
+
+    public ResultSet getClientSavingsAccountData(String owner) {
+        return getAccountData(owner, "SavingsAccounts");
+    }
+
+    public ResultSet getClientCheckingAccountData(String owner) {
+        return getAccountData(owner, "CheckingAccounts");
     }
 
     /*
