@@ -36,7 +36,7 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         savingsAccount = (SavingsAccount) Model.getInstance().getClient().savingAccountProperty().getValue();
-//        checkingAccount = (CheckingAccount) Model.getInstance().getClient().checkingAccountProperty().getValue();
+        checkingAccount = (CheckingAccount) Model.getInstance().getClient().checkingAccountProperty().getValue();
 
         updateStaticData();
         updateDynamicData();
@@ -48,6 +48,8 @@ public class DashboardController implements Initializable {
         login_date.setText(getCurrentDate());
         String[] savingsAccountNumberParts = savingsAccount.accountNumberProperty().getValue().split(" ");
         savings_acc_num.setText(savingsAccountNumberParts[savingsAccountNumberParts.length - 1]);
+        String[] checkingAccountNumberParts = checkingAccount.accountNumberProperty().getValue().split(" ");
+        checking_acc_num.setText(checkingAccountNumberParts[checkingAccountNumberParts.length - 1]);
     }
 
     private void updateDynamicData() {
@@ -57,6 +59,9 @@ public class DashboardController implements Initializable {
         double balance = savingsAccount.balanceProperty().getValue();
         String formattedBalance = indiaCurrencyFormat.format(balance).replace("₹", "₹ ");
         savings_bal.setText(formattedBalance);
+        balance = checkingAccount.balanceProperty().getValue();
+        formattedBalance = indiaCurrencyFormat.format(balance).replace("₹", "₹ ");
+        checking_bal.setText(formattedBalance);
 
         // income expenses
         // transactions
