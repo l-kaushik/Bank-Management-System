@@ -32,6 +32,20 @@ public class DatabaseDriver {
         return resultSet;
     }
 
+    public ResultSet getClientSavingsAccountData(String owner) {
+        PreparedStatement preparedStatement;
+        ResultSet resultSet = null;
+        String query = "SELECT * FROM SavingsAccounts WHERE Owner = ?";
+        try {
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, owner);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultSet;
+    }
+
     /*
     * Admin Section
     * */
