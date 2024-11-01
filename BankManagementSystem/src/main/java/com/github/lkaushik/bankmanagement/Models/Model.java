@@ -1,6 +1,7 @@
 package com.github.lkaushik.bankmanagement.Models;
 
 import com.github.lkaushik.bankmanagement.Views.AccountType;
+import com.github.lkaushik.bankmanagement.Views.ClientAccountType;
 import com.github.lkaushik.bankmanagement.Views.ViewFactory;
 
 import java.sql.ResultSet;
@@ -56,8 +57,8 @@ public class Model {
                 String[] dateParts = resultSet.getString("Date").split("-");
                 LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
                 this.client.dateProperty().set(date);
-                this.client.savingAccountProperty().set(getSavingsAccountsData(pAddress));
-//                this.client.checkingAccountProperty().set(get);
+                this.client.savingAccountProperty().set(getAccountsData(pAddress, ClientAccountType.SAVINGS));
+                this.client.checkingAccountProperty().set(getAccountsData(pAddress, ClientAccountType.CHECKING));
                 this.clientLoginSuccessFlag = true;
             }
         } catch (Exception e) {
@@ -65,20 +66,30 @@ public class Model {
         }
     }
 
-    private SavingsAccount getSavingsAccountsData(String pAddress) {
-        SavingsAccount savingsAccount = null;
-        ResultSet resultSet = databaseDriver.getClientSavingsAccountData(pAddress);
+    private Account getAccountsData(String pAddress, ClientAccountType accountType) {
+        Account account = null;
+        ResultSet resultSet;
         try {
+            resultSet = (accountType == ClientAccountType.SAVINGS) ?
+                    databaseDriver.getClientSavingsAccountData(pAddress) :
+                    databaseDriver.getClientCheckingAccountData(pAddress);
+
             if(resultSet.isBeforeFirst()) {
                 String accountNumber = resultSet.getString("AccountNumber");
                 double balance = resultSet.getDouble("Balance");
-                double withdrawalLimit = resultSet.getDouble("WithdrawalLimit");
-                savingsAccount = new SavingsAccount(pAddress, accountNumber, balance, withdrawalLimit);
+
+                if (accountType == ClientAccountType.SAVINGS) {
+                    double withdrawalLimit = resultSet.getDouble("WithdrawalLimit");
+                    account = new SavingsAccount(pAddress, accountNumber, balance, withdrawalLimit);
+                } else if (accountType == ClientAccountType.CHECKING) {
+                    int transactionLimit = resultSet.getInt("TransactionLimit");
+                    account = new CheckingAccount(pAddress, accountNumber, balance, transactionLimit);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return savingsAccount;
+        return account;
     }
 
 }
