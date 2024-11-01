@@ -1,6 +1,7 @@
 package com.github.lkaushik.bankmanagement.Controllers.Client;
 
 import com.github.lkaushik.bankmanagement.Models.CheckingAccount;
+import com.github.lkaushik.bankmanagement.Models.CurrencyFormatter;
 import com.github.lkaushik.bankmanagement.Models.Model;
 import com.github.lkaushik.bankmanagement.Models.SavingsAccount;
 import javafx.beans.property.DoubleProperty;
@@ -54,14 +55,8 @@ public class DashboardController implements Initializable {
 
     private void updateDynamicData() {
         // Updates the changeable data.
-        NumberFormat indiaCurrencyFormat = NumberFormat.getCurrencyInstance(Locale.of("en", "IN"));
-
-        double balance = savingsAccount.balanceProperty().getValue();
-        String formattedBalance = indiaCurrencyFormat.format(balance).replace("₹", "₹ ");
-        savings_bal.setText(formattedBalance);
-        balance = checkingAccount.balanceProperty().getValue();
-        formattedBalance = indiaCurrencyFormat.format(balance).replace("₹", "₹ ");
-        checking_bal.setText(formattedBalance);
+        savings_bal.setText(CurrencyFormatter.formattedCurrency(savingsAccount.balanceProperty().getValue()));
+        checking_bal.setText(CurrencyFormatter.formattedCurrency(checkingAccount.balanceProperty().getValue()));
 
         // income expenses
         // transactions
