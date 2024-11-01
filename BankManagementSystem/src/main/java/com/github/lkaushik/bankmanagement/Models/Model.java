@@ -47,8 +47,6 @@ public class Model {
     public Client getClient() {return client;}
 
     public void evaluateClientCred(String pAddress, String password) {
-        CheckingAccount checkingAccount;
-        SavingsAccount savingsAccount;
         ResultSet resultSet = getDatabaseDriver().getClientData(pAddress, password);
         try {
             if(resultSet.isBeforeFirst()) {
@@ -58,11 +56,29 @@ public class Model {
                 String[] dateParts = resultSet.getString("Date").split("-");
                 LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
                 this.client.dateProperty().set(date);
+                this.client.savingAccountProperty().set(getSavingsAccountsData(pAddress));
+//                this.client.checkingAccountProperty().set(get);
                 this.clientLoginSuccessFlag = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private SavingsAccount getSavingsAccountsData(String pAddress) {
+        SavingsAccount savingsAccount = null;
+        ResultSet resultSet = databaseDriver.getClientSavingsAccountData(pAddress);
+        try {
+            if(resultSet.isBeforeFirst()) {
+                String accountNumber = resultSet.getString("AccountNumber");
+                double balance = resultSet.getDouble("Balance");
+                double withdrawalLimit = resultSet.getDouble("WithdrawalLimit");
+                savingsAccount = new SavingsAccount(pAddress, accountNumber, balance, withdrawalLimit);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return savingsAccount;
     }
 
 }
