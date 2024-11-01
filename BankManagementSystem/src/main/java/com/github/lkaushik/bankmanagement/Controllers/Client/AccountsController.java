@@ -1,5 +1,9 @@
 package com.github.lkaushik.bankmanagement.Controllers.Client;
 
+import com.github.lkaushik.bankmanagement.Models.CheckingAccount;
+import com.github.lkaushik.bankmanagement.Models.CurrencyFormatter;
+import com.github.lkaushik.bankmanagement.Models.Model;
+import com.github.lkaushik.bankmanagement.Models.SavingsAccount;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -24,6 +28,25 @@ public class AccountsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        addSavingAccountDetails();
+        addCheckingAccountDetails();
+    }
 
+    private void addCheckingAccountDetails() {
+        CheckingAccount checkingAccount = (CheckingAccount) Model.getInstance().getClient().checkingAccountProperty().getValue();
+
+        ch_acc_num.setText(checkingAccount.accountNumberProperty().getValue());
+        ch_acc_bal.setText(CurrencyFormatter.formattedCurrency(checkingAccount.balanceProperty().getValue()));
+        ch_acc_date.setText(Model.getInstance().getClient().dateProperty().getValue().toString());
+        transaction_limit.setText(checkingAccount.transactionLimitProperty().getValue().toString());
+    }
+
+    private void addSavingAccountDetails() {
+        SavingsAccount savingsAccount = (SavingsAccount) Model.getInstance().getClient().savingAccountProperty().getValue();
+
+        sv_acc_num.setText(savingsAccount.accountNumberProperty().getValue());
+        sv_acc_bal.setText(CurrencyFormatter.formattedCurrency(savingsAccount.balanceProperty().getValue()));
+        sv_acc_date.setText(Model.getInstance().getClient().dateProperty().getValue().toString());
+        withdrawal_limit.setText(CurrencyFormatter.formattedCurrency(savingsAccount.withdrawalLimitProperty().getValue()));
     }
 }
