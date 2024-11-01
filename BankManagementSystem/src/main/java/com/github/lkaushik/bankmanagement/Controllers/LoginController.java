@@ -34,7 +34,6 @@ public class LoginController implements Initializable {
 
         if(Model.getInstance().getViewFactory().getLoginAccountType() == AccountType.CLIENT) {
             // Evaluate Login Credentials
-            // check for empty values too
             Model.getInstance().evaluateClientCred(payee_address_fld.getText(), password_fld.getText());
             if(Model.getInstance().getClientLoginSuccessFlag()) {
                 Model.getInstance().getViewFactory().showClientWindow();
