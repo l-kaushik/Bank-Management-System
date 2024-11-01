@@ -1,13 +1,18 @@
 package com.github.lkaushik.bankmanagement.Controllers.Client;
 
+import com.github.lkaushik.bankmanagement.Models.CheckingAccount;
 import com.github.lkaushik.bankmanagement.Models.Model;
+import com.github.lkaushik.bankmanagement.Models.SavingsAccount;
+import javafx.beans.property.DoubleProperty;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class DashboardController implements Initializable {
@@ -25,8 +30,14 @@ public class DashboardController implements Initializable {
     public TextArea message_fld;
     public Button send_money_btn;
 
+    private SavingsAccount savingsAccount;
+    private CheckingAccount checkingAccount;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        savingsAccount = (SavingsAccount) Model.getInstance().getClient().savingAccountProperty().getValue();
+//        checkingAccount = (CheckingAccount) Model.getInstance().getClient().checkingAccountProperty().getValue();
+
         updateStaticData();
         updateDynamicData();
     }
@@ -35,12 +46,18 @@ public class DashboardController implements Initializable {
         // Updates the unchangeable data.
         user_name.setText("Hi, " + Model.getInstance().getClient().firstNameProperty().getValue());
         login_date.setText(getCurrentDate());
-        // account numbers
+        String[] savingsAccountNumberParts = savingsAccount.accountNumberProperty().getValue().split(" ");
+        savings_acc_num.setText(savingsAccountNumberParts[savingsAccountNumberParts.length - 1]);
     }
 
     private void updateDynamicData() {
         // Updates the changeable data.
-        // Current balance
+        NumberFormat indiaCurrencyFormat = NumberFormat.getCurrencyInstance(Locale.of("en", "IN"));
+
+        double balance = savingsAccount.balanceProperty().getValue();
+        String formattedBalance = indiaCurrencyFormat.format(balance).replace("₹", "₹ ");
+        savings_bal.setText(formattedBalance);
+
         // income expenses
         // transactions
     }
