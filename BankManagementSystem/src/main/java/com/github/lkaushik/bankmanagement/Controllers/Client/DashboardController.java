@@ -44,6 +44,8 @@ public class DashboardController implements Initializable {
 
         updateStaticData();
         updateDynamicData();
+
+        send_money_btn.setOnAction(event -> sendMoney());
     }
 
     private void updateStaticData() {
@@ -91,5 +93,12 @@ public class DashboardController implements Initializable {
                 .filter(transaction -> Objects.equals(transaction.senderProperty().getValue(), Model.getInstance().getClient().payeeAddressProperty().getValue()))
                 .mapToDouble(transaction -> transaction.amountProperty().getValue())
                 .sum();
+    }
+
+    private void sendMoney() {
+        Model.getInstance().initiateSendMoney(payee_fld.getText(), amount_fld.getText(), message_fld.getText());
+        payee_fld.setText("");
+        amount_fld.setText("");
+        message_fld.setText("");
     }
 }
