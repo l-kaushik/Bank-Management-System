@@ -1,6 +1,7 @@
 package com.github.lkaushik.bankmanagement.Models;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 public class DatabaseDriver {
     private Connection conn;
@@ -68,6 +69,112 @@ public class DatabaseDriver {
         }
         return resultSet;
     }
+
+    private void updateTransactionTable(String sender, String receiver, double amount, String message) {
+        String query = "INSERT INTO Transactions (Sender, Receiver, Amount, Date, Message) VALUES (?, ?, ?, ?, ?)";
+        try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, sender);
+            preparedStatement.setString(2, receiver);
+            preparedStatement.setDouble(3, amount);
+            preparedStatement.setString(4, String.valueOf(LocalDate.now()));
+            preparedStatement.setString(5, message);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void transferFundsFromChecking(String sender, String receiver, double amount, String message, double senderCheckingBalance, double receiverCheckingBalance) {
+        try {
+            // start transaction
+            conn.setAutoCommit(false);
+
+            updateTransactionTable(sender, receiver,amount, message);
+            updateCheckingAccount(sender, senderCheckingBalance - amount);
+            updateCheckingAccount(receiver, receiverCheckingBalance + amount);
+
+            // save all changes
+            conn.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
+        } finally {
+           resetAutoCommit();
+        }
+    }
+
+    public void transferFundsFromSavings(String sender, String receiver, double amount, String message, double senderCheckingBalance, double senderSavingsBalance, double receiverCheckingBalance) {
+        try {
+            // start transaction
+            conn.setAutoCommit(false);
+
+            updateTransactionTable(sender, receiver,amount, message);
+            updateCheckingAccount(sender, 0.0);
+            updateSavingsAccounts(sender,  senderSavingsBalance - (amount - senderCheckingBalance));
+            updateCheckingAccount(receiver, receiverCheckingBalance + amount);
+
+            // save all changes
+            conn.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
+        } finally {
+            resetAutoCommit();
+        }
+    }
+
+    private void rollbackTransaction() {
+        try {
+            if (conn != null) {
+                conn.rollback();
+            }
+        } catch (SQLException rollbackException) {
+            rollbackException.printStackTrace();
+        }
+    }
+
+    private void resetAutoCommit() {
+        try {
+            if (conn != null) {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isClient(String pAddress) {
+        String query = "SELECT * FROM Clients WHERE PayeeAddress = ?";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, pAddress);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.isBeforeFirst(); // Returns true if there’s at least one row
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void updateCheckingAccount(String owner, double balance) {
+        updateAccount(owner, balance, "CheckingAccounts");
+    }
+
+    public void updateSavingsAccounts(String owner, double balance) {
+        updateAccount(owner, balance, "SavingsAccounts");
+    }
+
+    private void updateAccount(String owner, double balance, String tableName) {
+        String query = "UPDATE " + tableName + " SET Balance = ? WHERE Owner = ?";
+        try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setDouble(1, balance);
+            preparedStatement.setString(2, owner);
+            if(preparedStatement.executeUpdate() > 0) {
+                System.out.println("update balance");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /*
     * Admin Section
