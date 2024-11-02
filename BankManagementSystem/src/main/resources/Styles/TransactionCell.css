@@ -33,6 +33,23 @@
     -fx-font-weight: 700;
 }
 
+.msg_btn {
+    -fx-background-color : rgba(0, 0, 0, 0);
+}
+
+.msg_btn FontAwesomeIconView {
+    -fx-text-fill: #132A13;
+}
+
+.msg_btn : hover {
+    -fx-cursor: hand;
+}
+
 .trans_amount_lbl FontAwesomeIconView {
     -fx-fill: #FFFFFF;
+}
+
+.amt_box {
+    -fx-alignment: center;
+    -fx-spacing: 20;
 }
