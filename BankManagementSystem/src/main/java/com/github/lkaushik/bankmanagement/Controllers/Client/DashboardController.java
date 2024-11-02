@@ -1,10 +1,9 @@
 package com.github.lkaushik.bankmanagement.Controllers.Client;
 
-import com.github.lkaushik.bankmanagement.Models.CheckingAccount;
-import com.github.lkaushik.bankmanagement.Models.CurrencyFormatter;
-import com.github.lkaushik.bankmanagement.Models.Model;
-import com.github.lkaushik.bankmanagement.Models.SavingsAccount;
+import com.github.lkaushik.bankmanagement.Models.*;
+import com.github.lkaushik.bankmanagement.Views.TransactionCellFactory;
 import javafx.beans.property.DoubleProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
@@ -13,8 +12,10 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class DashboardController implements Initializable {
     public Text user_name;
@@ -25,7 +26,7 @@ public class DashboardController implements Initializable {
     public Label savings_acc_num;
     public Label income_lbl;
     public Label expense_lbl;
-    public ListView transaction_listview;
+    public ListView<Transaction> transaction_listview;
     public TextField payee_fld;
     public TextField amount_fld;
     public TextArea message_fld;
@@ -60,6 +61,9 @@ public class DashboardController implements Initializable {
 
         // income expenses
         // transactions
+        transaction_listview.setCellFactory(param -> new TransactionCellFactory());
+        List<Transaction> transactionsList = Model.getInstance().getClientTransactionData().stream().limit(4).toList();
+        transaction_listview.setItems(FXCollections.observableArrayList(transactionsList));
     }
 
     private String getCurrentDate() {
