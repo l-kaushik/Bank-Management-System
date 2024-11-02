@@ -5,9 +5,11 @@ import com.github.lkaushik.bankmanagement.Views.ClientAccountType;
 import com.github.lkaushik.bankmanagement.Views.ViewFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Model {
     private static Model model;
@@ -72,6 +74,60 @@ public class Model {
         }
     }
 
+    public void initiateSendMoney(String receiver, String amount, String message) {
+        double parsedAmount = validateCreds(receiver, amount, message);
+        if(parsedAmount >= 1)
+            Model.getInstance().transferFunds(receiver, parsedAmount, message);
+    }
+
+    private double validateCreds(String receiver, String amount, String message) {
+        if(receiver.isEmpty() || amount.isEmpty()) {
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Empty field detected", "Payee address or amount field cannot be empty.");
+        }
+        else if(Objects.equals(receiver, Model.getInstance().getClient().payeeAddressProperty().getValue())) {
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Invalid payee address", "Cannot send money to yourself!");
+        }
+        else if(!databaseDriver.isClient(receiver)){
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Invalid payee address", "Client not found, \ncheck the payee address.");
+        }
+        else {
+            try {
+                double parsedAmount = Double.parseDouble(amount);
+                if(parsedAmount <= 0 ) {
+                    AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Invalid amount ", "Amount must be greater than zero");
+                }
+                else  if(parsedAmount > 0 && parsedAmount < 1){
+                    AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Transaction failed", "Amount is too small to be send");
+                }
+                else {
+                    return parsedAmount;
+                }
+            } catch (NumberFormatException e) {
+                AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Invalid amount", "The amount is not valid.");
+            }
+        }
+
+        return -1;
+    }
+
+    private void transferFunds(String receiver, double amount, String message) {
+        String sender = client.payeeAddressProperty().getValue();
+        double senderCheckingBalance = client.checkingAccountProperty().getValue().balanceProperty().getValue();
+        double senderSavingBalance = client.savingAccountProperty().getValue().balanceProperty().getValue();
+        double receiverCheckingBalance = getAccountsData(receiver, ClientAccountType.CHECKING).balanceProperty().getValue();
+
+        if (amount <= senderCheckingBalance) {
+            databaseDriver.transferFundsFromChecking(sender, receiver, amount, message, senderCheckingBalance, receiverCheckingBalance);
+        } else if (amount <= (senderCheckingBalance + senderSavingBalance)) {
+            databaseDriver.transferFundsFromSavings(sender, receiver, amount, message, senderCheckingBalance, senderSavingBalance, receiverCheckingBalance);
+        } else {
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Insufficient amount", "Insufficient balance in accounts");
+            return;
+        }
+
+        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(amount) + " has transferred to " + receiver);
+    }
+
     private Account getAccountsData(String pAddress, ClientAccountType accountType) {
         Account account = null;
         ResultSet resultSet;
@@ -117,7 +173,6 @@ public class Model {
         }
         return transactions;
     }
-
 
 
 }
