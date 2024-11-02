@@ -11,9 +11,11 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -60,6 +62,9 @@ public class DashboardController implements Initializable {
         checking_bal.setText(CurrencyFormatter.formattedCurrency(checkingAccount.balanceProperty().getValue()));
 
         // income expenses
+        income_lbl.setText(CurrencyFormatter.formattedCurrency(getIncome()));
+        expense_lbl.setText(CurrencyFormatter.formattedCurrency(getExpenses()));
+
         // transactions
         transaction_listview.setCellFactory(param -> new TransactionCellFactory());
         List<Transaction> transactionsList = Model.getInstance().getClientTransactionData().stream().limit(4).toList();
@@ -70,5 +75,21 @@ public class DashboardController implements Initializable {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return  today.format(formatter);
+    }
+
+    private double getIncome() {
+        return Model.getInstance().getClientTransactionData().stream()
+                .filter(transaction -> transaction.dateProperty().getValue().getMonth() == LocalDate.now().getMonth())
+                .filter(transaction -> Objects.equals(transaction.receiverProperty().getValue(), Model.getInstance().getClient().payeeAddressProperty().getValue()))
+                .mapToDouble(transaction -> transaction.amountProperty().getValue())
+                .sum();
+    }
+
+    private double getExpenses() {
+        return Model.getInstance().getClientTransactionData().stream()
+                .filter(transaction -> transaction.dateProperty().getValue().getMonth() == LocalDate.now().getMonth())
+                .filter(transaction -> Objects.equals(transaction.senderProperty().getValue(), Model.getInstance().getClient().payeeAddressProperty().getValue()))
+                .mapToDouble(transaction -> transaction.amountProperty().getValue())
+                .sum();
     }
 }
