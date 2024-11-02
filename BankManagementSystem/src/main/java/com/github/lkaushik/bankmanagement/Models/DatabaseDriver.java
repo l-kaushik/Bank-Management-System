@@ -54,6 +54,21 @@ public class DatabaseDriver {
         return getAccountData(owner, "CheckingAccounts");
     }
 
+    public ResultSet getClientTransactionData(String pAddress) {
+        PreparedStatement preparedStatement;
+        ResultSet resultSet = null;
+        String query = "SELECT * FROM Transactions WHERE Sender = ? OR Receiver = ?";
+        try {
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, pAddress);
+            preparedStatement.setString(2, pAddress);
+            resultSet = preparedStatement.executeQuery();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultSet;
+    }
+
     /*
     * Admin Section
     * */
