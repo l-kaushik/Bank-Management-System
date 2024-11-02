@@ -1,10 +1,19 @@
 package com.github.lkaushik.bankmanagement.Controllers.Client;
 
+import com.github.lkaushik.bankmanagement.Models.CurrencyFormatter;
 import com.github.lkaushik.bankmanagement.Models.Model;
 import com.github.lkaushik.bankmanagement.Models.Transaction;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.Objects;
@@ -17,6 +26,7 @@ public class TransactionCellController implements Initializable {
     public Label sender_lbl;
     public Label receiver_lbl;
     public Label amount_lbl;
+    public Button msg_btn;
 
     private final Transaction transaction;
 
@@ -33,7 +43,7 @@ public class TransactionCellController implements Initializable {
         trans_date_lbl.setText(transaction.dateProperty().getValue().toString());
         sender_lbl.setText(transaction.senderProperty().getValue());
         receiver_lbl.setText(transaction.receiverProperty().getValue());
-        amount_lbl.setText(transaction.amountProperty().getValue().toString());
+        amount_lbl.setText(CurrencyFormatter.formattedCurrency(transaction.amountProperty().getValue()));
 
         String payeeAddress = Model.getInstance().getClient().payeeAddressProperty().getValue();
 
@@ -45,5 +55,26 @@ public class TransactionCellController implements Initializable {
             in_icon.setVisible(false);
             out_icon.setVisible(true);
         }
+
+        msg_btn.setOnAction(e -> showPopInfo());
+    }
+
+    private void showPopInfo() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Message");
+        alert.setHeaderText(null);
+        alert.setGraphic(null);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/Images/bank.png"))));
+        Text content = new Text(transaction.senderProperty().get() + " " + transaction.messageProperty().getValue());
+        HBox hBox = new HBox(content);
+        hBox.setAlignment(javafx.geometry.Pos.CENTER);
+        hBox.setPadding(new Insets(20, 20, 20, 20));
+        alert.getDialogPane().setContent(hBox);
+        alert.getDialogPane().getButtonTypes().clear();
+        stage.setOnCloseRequest(event -> {
+            stage.close();
+        });
+        alert.showAndWait();
     }
 }
