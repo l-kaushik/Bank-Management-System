@@ -1,5 +1,6 @@
 package com.github.lkaushik.bankmanagement.Controllers.Client;
 
+import com.github.lkaushik.bankmanagement.Models.AlertBoxCreator;
 import com.github.lkaushik.bankmanagement.Models.CurrencyFormatter;
 import com.github.lkaushik.bankmanagement.Models.Model;
 import com.github.lkaushik.bankmanagement.Models.Transaction;
@@ -60,21 +61,7 @@ public class TransactionCellController implements Initializable {
     }
 
     private void showPopInfo() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Message");
-        alert.setHeaderText(null);
-        alert.setGraphic(null);
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/Images/bank.png"))));
-        Text content = new Text(transaction.senderProperty().get() + " " + transaction.messageProperty().getValue());
-        HBox hBox = new HBox(content);
-        hBox.setAlignment(javafx.geometry.Pos.CENTER);
-        hBox.setPadding(new Insets(20, 20, 20, 20));
-        alert.getDialogPane().setContent(hBox);
-        alert.getDialogPane().getButtonTypes().clear();
-        stage.setOnCloseRequest(event -> {
-            stage.close();
-        });
-        alert.showAndWait();
+        String alertMessage = transaction.senderProperty().get() + " " + transaction.messageProperty().getValue();
+        AlertBoxCreator.createMessageAlert(Alert.AlertType.INFORMATION, "Message", alertMessage);
     }
 }
