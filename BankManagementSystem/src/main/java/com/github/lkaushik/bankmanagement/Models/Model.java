@@ -2,13 +2,17 @@ package com.github.lkaushik.bankmanagement.Models;
 
 import com.github.lkaushik.bankmanagement.Views.AccountType;
 import com.github.lkaushik.bankmanagement.Views.ClientAccountType;
+import com.github.lkaushik.bankmanagement.Views.TransactionListener;
 import com.github.lkaushik.bankmanagement.Views.ViewFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Model {
@@ -21,6 +25,9 @@ public class Model {
     private boolean clientLoginSuccessFlag;
     private final ObservableList<Transaction> clientTransactionData;
     // Admin Data Section
+
+    // Transaction Listener
+    private List<TransactionListener> transactionListeners = new ArrayList<>();
 
     private Model() {
         this.viewFactory = new ViewFactory();
@@ -58,15 +65,8 @@ public class Model {
         ResultSet resultSet = getDatabaseDriver().getClientData(pAddress, password);
         try {
             if(resultSet.isBeforeFirst()) {
-                this.client.firstNameProperty().set(resultSet.getString("FirstName"));
-                this.client.lastNameProperty().set(resultSet.getString("LastName"));
-                this.client.payeeAddressProperty().set(resultSet.getString("PayeeAddress"));
-                String[] dateParts = resultSet.getString("Date").split("-");
-                LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
-                this.client.dateProperty().set(date);
-                this.client.savingAccountProperty().set(getAccountsData(pAddress, ClientAccountType.SAVINGS));
-                this.client.checkingAccountProperty().set(getAccountsData(pAddress, ClientAccountType.CHECKING));
-                this.clientTransactionData.addAll(getTransactionData(pAddress));
+                extractClientData(resultSet);
+                getAccountsAndTransactionData(pAddress);
                 this.clientLoginSuccessFlag = true;
             }
         } catch (Exception e) {
@@ -78,6 +78,22 @@ public class Model {
         double parsedAmount = validateCreds(receiver, amount, message);
         if(parsedAmount >= 1)
             Model.getInstance().transferFunds(receiver, parsedAmount, message);
+    }
+
+    private void extractClientData(ResultSet resultSet) throws SQLException {
+        this.client.firstNameProperty().set(resultSet.getString("FirstName"));
+        this.client.lastNameProperty().set(resultSet.getString("LastName"));
+        this.client.payeeAddressProperty().set(resultSet.getString("PayeeAddress"));
+        String[] dateParts = resultSet.getString("Date").split("-");
+        LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
+        this.client.dateProperty().set(date);
+    }
+
+    private void getAccountsAndTransactionData(String pAddress) {
+        this.client.savingAccountProperty().set(getAccountsData(pAddress, ClientAccountType.SAVINGS));
+        this.client.checkingAccountProperty().set(getAccountsData(pAddress, ClientAccountType.CHECKING));
+        this.clientTransactionData.clear();
+        this.clientTransactionData.addAll(getTransactionData(pAddress));
     }
 
     private double validateCreds(String receiver, String amount, String message) {
@@ -124,8 +140,8 @@ public class Model {
             AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Insufficient amount", "Insufficient balance in accounts");
             return;
         }
-
-        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(amount) + " has transferred to " + receiver);
+        updateClientDataAndNotify(sender);
+//        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(amount) + " has transferred to " + receiver);
     }
 
     private Account getAccountsData(String pAddress, ClientAccountType accountType) {
@@ -174,5 +190,24 @@ public class Model {
         return transactions;
     }
 
+    // Transaction Listener's Methods
 
+    public void addTransactionListener(TransactionListener listener) {
+        transactionListeners.add(listener);
+    }
+
+    public void removeTransactionListener(TransactionListener listener) {
+        transactionListeners.remove(listener);
+    }
+
+    private void notifyTransactionListeners() {
+        for(TransactionListener listener : new ArrayList<>(transactionListeners)) {
+            listener.onTransactionCompleted();
+        }
+    }
+
+    private void updateClientDataAndNotify(String pAddress) {
+        getAccountsAndTransactionData(pAddress);
+        notifyTransactionListeners();
+    }
 }
