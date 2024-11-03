@@ -10,6 +10,7 @@ import javafx.scene.control.ListView;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TransactionsController implements Initializable {
@@ -18,7 +19,7 @@ public class TransactionsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         transactions_listview.setCellFactory(param -> new TransactionCellFactory());
-        ObservableList<Transaction> transactions = Model.getInstance().getClientTransactionData();
-        transactions_listview.setItems(transactions);
+        List<Transaction> transactions = Model.getInstance().getClientTransactionData().reversed();
+        transactions_listview.setItems(FXCollections.observableArrayList(transactions));
     }
 }
