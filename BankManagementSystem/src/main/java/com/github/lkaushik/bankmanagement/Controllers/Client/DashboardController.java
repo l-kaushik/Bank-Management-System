@@ -2,24 +2,20 @@ package com.github.lkaushik.bankmanagement.Controllers.Client;
 
 import com.github.lkaushik.bankmanagement.Models.*;
 import com.github.lkaushik.bankmanagement.Views.TransactionCellFactory;
-import javafx.beans.property.DoubleProperty;
+import com.github.lkaushik.bankmanagement.Views.TransactionListener;
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
 import java.net.URL;
-import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
-public class DashboardController implements Initializable {
+public class DashboardController implements Initializable, TransactionListener {
     public Text user_name;
     public Label login_date;
     public Label checking_bal;
@@ -36,15 +32,16 @@ public class DashboardController implements Initializable {
 
     private SavingsAccount savingsAccount;
     private CheckingAccount checkingAccount;
+    private List<Transaction> transactionsList;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        savingsAccount = (SavingsAccount) Model.getInstance().getClient().savingAccountProperty().getValue();
-        checkingAccount = (CheckingAccount) Model.getInstance().getClient().checkingAccountProperty().getValue();
+        updateAccountsAndTransactionData();
 
         updateStaticData();
         updateDynamicData();
 
+        Model.getInstance().addTransactionListener(this);
         send_money_btn.setOnAction(event -> sendMoney());
     }
 
@@ -69,7 +66,6 @@ public class DashboardController implements Initializable {
 
         // transactions
         transaction_listview.setCellFactory(param -> new TransactionCellFactory());
-        List<Transaction> transactionsList = Model.getInstance().getClientTransactionData().stream().limit(4).toList();
         transaction_listview.setItems(FXCollections.observableArrayList(transactionsList));
     }
 
@@ -100,5 +96,17 @@ public class DashboardController implements Initializable {
         payee_fld.setText("");
         amount_fld.setText("");
         message_fld.setText("");
+    }
+
+    private void updateAccountsAndTransactionData() {
+        savingsAccount = (SavingsAccount) Model.getInstance().getClient().savingAccountProperty().getValue();
+        checkingAccount = (CheckingAccount) Model.getInstance().getClient().checkingAccountProperty().getValue();
+        transactionsList = Model.getInstance().getClientTransactionData().reversed().stream().limit(4).toList();
+    }
+
+    @Override
+    public void onTransactionCompleted() {
+        updateAccountsAndTransactionData();
+        updateDynamicData();
     }
 }
