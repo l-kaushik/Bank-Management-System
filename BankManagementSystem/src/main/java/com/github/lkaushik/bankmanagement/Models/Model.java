@@ -141,7 +141,7 @@ public class Model {
             return;
         }
         updateClientDataAndNotify(sender);
-//        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(amount) + " has transferred to " + receiver);
+        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(amount) + " has transferred to " + receiver);
     }
 
     private Account getAccountsData(String pAddress, ClientAccountType accountType) {
