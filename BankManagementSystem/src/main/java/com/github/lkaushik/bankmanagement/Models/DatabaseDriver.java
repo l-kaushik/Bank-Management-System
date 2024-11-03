@@ -167,14 +167,11 @@ public class DatabaseDriver {
         try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setDouble(1, balance);
             preparedStatement.setString(2, owner);
-            if(preparedStatement.executeUpdate() > 0) {
-                System.out.println("update balance");
-            }
+            preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     /*
     * Admin Section
