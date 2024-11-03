@@ -36,6 +36,7 @@ public class DashboardController implements Initializable, TransactionListener {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // implement withdrawal limit / transaction limit check
         updateAccountsAndTransactionData();
 
         updateStaticData();
