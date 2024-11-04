@@ -94,9 +94,6 @@ public class DashboardController implements Initializable, TransactionListener {
 
     private void sendMoney() {
         Model.getInstance().initiateSendMoney(payee_fld.getText(), amount_fld.getText(), message_fld.getText());
-        payee_fld.setText("");
-        amount_fld.setText("");
-        message_fld.setText("");
     }
 
     private void updateAccountsAndTransactionData() {
@@ -105,9 +102,16 @@ public class DashboardController implements Initializable, TransactionListener {
         transactionsList = Model.getInstance().getClientTransactionData().reversed().stream().limit(4).toList();
     }
 
+    private void performCleanup() {
+        payee_fld.setText("");
+        amount_fld.setText("");
+        message_fld.setText("");
+    }
+
     @Override
     public void onTransactionCompleted() {
         updateAccountsAndTransactionData();
         updateDynamicData();
+        performCleanup();
     }
 }
