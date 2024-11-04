@@ -25,6 +25,7 @@ public class Model {
     private boolean clientLoginSuccessFlag;
     private final ObservableList<Transaction> clientTransactionData;
     // Admin Data Section
+    private boolean adminLoginSuccessFlag;
 
     // Transaction Listener
     private final List<TransactionListener> transactionListeners = new ArrayList<>();
@@ -37,6 +38,7 @@ public class Model {
         this.client = new Client();
         this.clientTransactionData = FXCollections.observableArrayList();
         // Admin Data Section
+        this.adminLoginSuccessFlag = false;
     }
 
     // synchronized make sure only 1 thread at a time can execute this method (Singleton pattern)
@@ -248,5 +250,26 @@ public class Model {
     private void updateClientDataAndNotify(String pAddress) {
         getAccountsAndTransactionData(pAddress);
         notifyTransactionListeners();
+    }
+
+    /*
+    * Admin methods section
+    * */
+
+    public boolean getAdminLoginSuccessFlag() {return adminLoginSuccessFlag;}
+    public void setAdminLoginSuccessFlag(boolean flag) { this.adminLoginSuccessFlag = false;}
+
+    public void evaluateAdminCreds(String username, String password) {
+        ResultSet resultSet = getDatabaseDriver().getAdminData(username, password);
+        try {
+            if(resultSet.isBeforeFirst()) {
+                this.adminLoginSuccessFlag = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            databaseDriver.closeResources(resultSet);
+        }
     }
 }
