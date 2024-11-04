@@ -162,6 +162,19 @@ public class DatabaseDriver {
         updateAccount(owner, balance, "SavingsAccounts");
     }
 
+    public void performSelfTransfer(String owner, double toChecking, double toSavings) {
+        try {
+            conn.setAutoCommit(false);
+            updateCheckingAccount(owner, toChecking);
+            updateSavingsAccounts(owner, toSavings);
+            conn.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
+        } finally {
+            resetAutoCommit();
+        }
+    }
+
     private void updateAccount(String owner, double balance, String tableName) {
         String query = "UPDATE " + tableName + " SET Balance = ? WHERE Owner = ?";
         try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
