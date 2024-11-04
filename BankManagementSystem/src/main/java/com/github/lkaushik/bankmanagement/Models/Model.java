@@ -27,7 +27,7 @@ public class Model {
     // Admin Data Section
 
     // Transaction Listener
-    private List<TransactionListener> transactionListeners = new ArrayList<>();
+    private final List<TransactionListener> transactionListeners = new ArrayList<>();
 
     private Model() {
         this.viewFactory = new ViewFactory();
@@ -80,6 +80,40 @@ public class Model {
             Model.getInstance().transferFunds(receiver, parsedAmount, message);
     }
 
+    // self funds transferring
+    public void moveToChecking(String amount) {
+        performSelfTransfer(amount, ClientAccountType.CHECKING);
+    }
+
+    public void moveToSavings(String amount) {
+        performSelfTransfer(amount, ClientAccountType.SAVINGS);
+    }
+
+    private void performSelfTransfer(String amount, ClientAccountType accountType) {
+        double parsedAmount = validateAmount(amount);
+        if(parsedAmount < 1) {
+            return;
+        }
+
+        double checkingBalance = client.checkingAccountProperty().getValue().balanceProperty().getValue();
+        double savingBalance = client.savingAccountProperty().getValue().balanceProperty().getValue();
+        String owner = client.payeeAddressProperty().getValue();
+
+        if(accountType == ClientAccountType.CHECKING && parsedAmount <= checkingBalance) {
+            databaseDriver.performSelfTransfer(owner, checkingBalance + parsedAmount,savingBalance - parsedAmount );
+        }
+        else if(accountType == ClientAccountType.SAVINGS &&  parsedAmount <= savingBalance) {
+            databaseDriver.performSelfTransfer(owner, checkingBalance - parsedAmount, savingBalance + parsedAmount);
+        }
+        else {
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Insufficient amount", "Your " + accountType.toString() + " account balance is insufficient for a transfer of " + parsedAmount + ".");
+            return;
+        }
+
+        updateClientDataAndNotify(owner);
+        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(parsedAmount) + " has transferred to your " + accountType.toString().toLowerCase() + " account.");
+    }
+
     private void extractClientData(ResultSet resultSet) throws SQLException {
         this.client.firstNameProperty().set(resultSet.getString("FirstName"));
         this.client.lastNameProperty().set(resultSet.getString("LastName"));
@@ -107,22 +141,27 @@ public class Model {
             AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Invalid payee address", "Client not found, \ncheck the payee address.");
         }
         else {
-            try {
-                double parsedAmount = Double.parseDouble(amount);
-                if(parsedAmount <= 0 ) {
-                    AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Invalid amount ", "Amount must be greater than zero");
-                }
-                else  if(parsedAmount > 0 && parsedAmount < 1){
-                    AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Transaction failed", "Amount is too small to be send");
-                }
-                else {
-                    return parsedAmount;
-                }
-            } catch (NumberFormatException e) {
-                AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Invalid amount", "The amount is not valid.");
-            }
+            return validateAmount(amount);
         }
 
+        return -1;
+    }
+
+    private double validateAmount(String amount) {
+        try {
+            double parsedAmount = Double.parseDouble(amount);
+            if(parsedAmount <= 0 ) {
+                AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Invalid amount ", "Amount must be greater than zero");
+            }
+            else  if(parsedAmount > 0 && parsedAmount < 1){
+                AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Transaction failed", "Amount is too small to be send");
+            }
+            else {
+                return parsedAmount;
+            }
+        } catch (NumberFormatException e) {
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Invalid amount", "The amount is not valid.");
+        }
         return -1;
     }
 
