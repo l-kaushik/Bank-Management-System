@@ -190,8 +190,34 @@ public class DatabaseDriver {
     * Admin Section
     * */
 
+    public ResultSet getAdminData(String username, String password) {
+        String query = "SELECT * FROM Admins WHERE Username = ? AND Password = ?";
+        ResultSet resultSet = null;
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultSet;
+    }
+
+
     /*
     * Utility Methods
     * */
 
+    public void closeResources(ResultSet resultSet) {
+        try {
+            if(resultSet != null) {
+                Statement statement = resultSet.getStatement();
+                if(statement != null) statement.close();
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
