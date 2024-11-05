@@ -36,6 +36,31 @@ public class CreateClientController implements Initializable {
         addNumericValueVerifier(ch_amount_fld);
     }
 
+    // called when create client button is pressed
+    private void onCreateClient() {
+        validateData();
+        setPayeeAddress();
+        initializeClientCreation();
+    }
+
+    // client creation process initializer
+    private void initializeClientCreation() {
+        if(hasError) return;
+
+        boolean hasSavingsAccount = sv_acc_box.isSelected();
+        boolean hasCheckingAccount = ch_acc_box.isSelected();
+
+
+        Model.getInstance().initializeClientCreation(
+                fName_fld.getText(),
+                lName_fld.getText(),
+                pAddress_lbl.getText(),
+                password_fld.getText(),
+                hasCheckingAccount, extractValue(ch_amount_fld),
+                hasSavingsAccount, extractValue(sv_amount_fld));
+    }
+
+    // style re-setters and listeners
     private void resetFieldStyles(TextField... fields) {
         for (TextField field : fields) {
             field.setOnMouseClicked(event -> field.setStyle(""));
@@ -67,6 +92,7 @@ public class CreateClientController implements Initializable {
         } ));
     }
 
+    // input value verifiers
     private void addNumericValueVerifier(TextField textField) {
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String newText = change.getControlNewText();
@@ -79,11 +105,8 @@ public class CreateClientController implements Initializable {
         textField.setTextFormatter(new TextFormatter<>(filter));
     }
 
-    private void onCreateClient() {
-        validateData();
-        setPayeeAddress();
-        initializeClientCreation();
-    }
+    // Error handling
+
     private void validateData() {
         int errorCode = 0;
         boolean checkBoxError = false;
@@ -161,22 +184,5 @@ public class CreateClientController implements Initializable {
             return 0.0;
         }
     }
-
-    private void initializeClientCreation() {
-        if(hasError) return;
-
-        boolean hasSavingsAccount = sv_acc_box.isSelected();
-        boolean hasCheckingAccount = ch_acc_box.isSelected();
-
-
-        Model.getInstance().initializeClientCreation(
-                fName_fld.getText(),
-                lName_fld.getText(),
-                pAddress_lbl.getText(),
-                password_fld.getText(),
-                hasCheckingAccount, extractValue(ch_amount_fld),
-                hasSavingsAccount, extractValue(sv_amount_fld));
-    }
-
 
 }
