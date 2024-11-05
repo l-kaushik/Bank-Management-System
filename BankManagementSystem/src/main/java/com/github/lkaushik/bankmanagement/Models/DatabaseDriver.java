@@ -2,7 +2,6 @@ package com.github.lkaushik.bankmanagement.Models;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.HashSet;
 
 public class DatabaseDriver {
     private Connection conn;
@@ -71,7 +70,7 @@ public class DatabaseDriver {
         return resultSet;
     }
 
-    private void updateTransactionTable(String sender, String receiver, double amount, String message) {
+    private void updateTransactionTable(String sender, String receiver, double amount, String message) throws SQLException {
         String query = "INSERT INTO Transactions (Sender, Receiver, Amount, Date, Message) VALUES (?, ?, ?, ?, ?)";
         try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, sender);
@@ -80,8 +79,6 @@ public class DatabaseDriver {
             preparedStatement.setString(4, String.valueOf(LocalDate.now()));
             preparedStatement.setString(5, message);
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -155,11 +152,11 @@ public class DatabaseDriver {
         return false;
     }
 
-    public void updateCheckingAccount(String owner, double balance) {
+    private void updateCheckingAccount(String owner, double balance) throws SQLException {
         updateAccount(owner, balance, "CheckingAccounts");
     }
 
-    public void updateSavingsAccounts(String owner, double balance) {
+    private void updateSavingsAccounts(String owner, double balance) throws SQLException {
         updateAccount(owner, balance, "SavingsAccounts");
     }
 
@@ -170,20 +167,19 @@ public class DatabaseDriver {
             updateSavingsAccounts(owner, toSavings);
             conn.commit();
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             rollbackTransaction();
         } finally {
             resetAutoCommit();
         }
     }
 
-    private void updateAccount(String owner, double balance, String tableName) {
+    private void updateAccount(String owner, double balance, String tableName) throws SQLException{
         String query = "UPDATE " + tableName + " SET Balance = ? WHERE Owner = ?";
         try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setDouble(1, balance);
             preparedStatement.setString(2, owner);
             preparedStatement.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
