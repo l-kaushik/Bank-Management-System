@@ -3,8 +3,6 @@ package com.github.lkaushik.bankmanagement.Controllers.Admin;
 import com.github.lkaushik.bankmanagement.Models.Model;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.layout.Border;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
@@ -84,11 +82,14 @@ public class CreateClientController implements Initializable {
     private void onCreateClient() {
         validateData();
         setPayeeAddress();
+        initializeClientCreation();
     }
     private void validateData() {
         int errorCode = 0;
         boolean checkBoxError = false;
         boolean addressBoxError = false;
+        boolean chAmountError = false;
+        boolean svAmountError = false;
 
         if(fName_fld.getText().isEmpty()) {
             setFieldError(fName_fld);
@@ -111,13 +112,30 @@ public class CreateClientController implements Initializable {
             checkBoxError = true;
         }
 
-        updateErrorMessage(errorCode, checkBoxError, addressBoxError);
+        if(ch_acc_box.isSelected() && extractValue(ch_amount_fld) < 100) {
+            chAmountError = true;
+            ch_amount_fld.setStyle(RED_BORDER + " -fx-background-color: #FFFFFF;");
+        }
+        else if(ch_acc_box.isSelected()) {
+            ch_amount_fld.setStyle(" -fx-background-color: #FFFFFF;");
+        }
+
+        if(sv_acc_box.isSelected() && extractValue(sv_amount_fld) < 100) {
+            svAmountError = true;
+            sv_amount_fld.setStyle(RED_BORDER + " -fx-background-color: #FFFFFF;");
+        }
+        else if(sv_acc_box.isSelected()) {
+            sv_amount_fld.setStyle(" -fx-background-color: #FFFFFF;");
+        }
+
+        updateErrorMessage(errorCode, checkBoxError, addressBoxError, chAmountError, svAmountError);
     }
 
-    private void updateErrorMessage(int errorCode, boolean checkBoxError, boolean addressBoxError) {
+    private void updateErrorMessage(int errorCode, boolean checkBoxError, boolean addressBoxError, boolean chAmountError, boolean svAmountError) {
         StringBuilder errorMsg = new StringBuilder();
         if(errorCode > 0) errorMsg.append("One or more field is empty!\n");
         if(checkBoxError) errorMsg.append("One account must be selected!\n");
+        if(chAmountError || svAmountError) errorMsg.append("Minimum amount should be 100 rupees.");
 
         hasError = !errorMsg.isEmpty();
         error_lbl.setText(errorMsg.toString());
@@ -133,6 +151,32 @@ public class CreateClientController implements Initializable {
 
     private void setPayeeAddress() {
         if(hasError) return;
-        pAddress_lbl.setText("Generate address");
+        pAddress_lbl.setText("@lomdi");
     }
+
+    private double extractValue(TextField textField) {
+        try {
+            return Double.parseDouble(textField.getText());
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+
+    private void initializeClientCreation() {
+        if(hasError) return;
+
+        boolean hasSavingsAccount = sv_acc_box.isSelected();
+        boolean hasCheckingAccount = ch_acc_box.isSelected();
+
+
+        Model.getInstance().initializeClientCreation(
+                fName_fld.getText(),
+                lName_fld.getText(),
+                pAddress_lbl.getText(),
+                password_fld.getText(),
+                hasCheckingAccount, extractValue(ch_amount_fld),
+                hasSavingsAccount, extractValue(sv_amount_fld));
+    }
+
+
 }
