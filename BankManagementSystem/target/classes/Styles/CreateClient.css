@@ -23,6 +23,10 @@
     -fx-effect: dropshadow(three-pass-box, #AAAAAA, 3, 0, 0, 3);
 }
 
+.lockedTextField {
+-fx-background-color: #808080;
+}
+
 .payee_address_lbl {
     -fx-pref-width: 250;
     -fx-pref-height: 30;
