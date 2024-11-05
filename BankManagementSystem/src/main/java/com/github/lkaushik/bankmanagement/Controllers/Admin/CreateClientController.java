@@ -1,13 +1,14 @@
 package com.github.lkaushik.bankmanagement.Controllers.Admin;
 
 import com.github.lkaushik.bankmanagement.Models.Model;
+import com.github.lkaushik.bankmanagement.Views.ClientCreationListener;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 
-public class CreateClientController implements Initializable {
+public class CreateClientController implements Initializable, ClientCreationListener {
 
     public TextField fName_fld;
     public TextField lName_fld;
@@ -26,6 +27,8 @@ public class CreateClientController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         create_client_btn.setOnAction(_ -> onCreateClient());
+
+        Model.getInstance().addClientCreationListener(this);
 
         resetFieldStyles(fName_fld, lName_fld, password_fld);
         resetAccountCheckBoxStyles(ch_acc_box, sv_acc_box);
@@ -174,7 +177,7 @@ public class CreateClientController implements Initializable {
 
     private void setPayeeAddress() {
         if(hasError) return;
-        pAddress_lbl.setText("@lomdi");
+        pAddress_lbl.setText(Model.getInstance().generatePayeeAddress(fName_fld.getText(), lName_fld.getText()));
     }
 
     private double extractValue(TextField textField) {
@@ -185,4 +188,14 @@ public class CreateClientController implements Initializable {
         }
     }
 
+    @Override
+    public void onClientCreationCompleted() {
+        System.out.println("here");
+        fName_fld.setText("");
+        lName_fld.setText("");
+        password_fld.setText("");
+        pAddress_lbl.setText("");
+        ch_acc_box.setSelected(false);
+        sv_acc_box.setSelected(false);
+    }
 }
