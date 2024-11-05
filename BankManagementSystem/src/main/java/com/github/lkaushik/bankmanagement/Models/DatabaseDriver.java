@@ -2,6 +2,7 @@ package com.github.lkaushik.bankmanagement.Models;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 
 public class DatabaseDriver {
     private Connection conn;
@@ -218,6 +219,76 @@ public class DatabaseDriver {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean isAccountNumberExists(String accountNumber) {
+        String query = "SELECT * FROM SavingsAccounts WHERE AccountNumber = ?" +
+                " UNION " +
+                "SELECT * FROM CheckingAccounts WHERE AccountNumber = ?;";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, accountNumber);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch ( SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean pushClientData(Client client, String password) {
+        try {
+            conn.setAutoCommit(false);
+
+            pushCheckingAccount(client.checkingAccountProperty().getValue(), client.payeeAddressProperty().getValue());
+            pushSavingsAccount(client.savingAccountProperty().getValue(), client.payeeAddressProperty().getValue());
+            pushClient(client, password);
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            rollbackTransaction();
+            return false;
+        } finally {
+            resetAutoCommit();
+        }
+    }
+
+    private void pushClient(Client client, String password) throws SQLException {
+        String query = "INSERT INTO Clients (FirstName, LastName, PayeeAddress, Password, Date) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)){
+            preparedStatement.setString(1, client.firstNameProperty().getValue());
+            preparedStatement.setString(2, client.lastNameProperty().getValue());
+            preparedStatement.setString(3, client.payeeAddressProperty().getValue());
+            preparedStatement.setString(4, password);
+            preparedStatement.setString(5, LocalDate.now().toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    private void pushSavingsAccount(Account account, String owner) throws SQLException {
+        if(account == null) return;
+        String query = "INSERT INTO SavingsAccounts (Owner, AccountNumber, WithdrawalLimit, Balance) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)){
+            preparedStatement.setString(1, owner);
+            preparedStatement.setString(2, account.accountNumberProperty().getValue());
+            preparedStatement.setDouble(3, 2000);
+            preparedStatement.setDouble(4, account.balanceProperty().getValue());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    private void pushCheckingAccount(Account account, String owner) throws SQLException {
+        if(account == null) return;
+        String query = "INSERT INTO CheckingAccounts (Owner, AccountNumber, TransactionLimit, Balance) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)){
+            preparedStatement.setString(1, owner);
+            preparedStatement.setString(2, account.accountNumberProperty().getValue());
+            preparedStatement.setInt(3, 10);
+            preparedStatement.setDouble(4, account.balanceProperty().getValue());
+            preparedStatement.executeUpdate();
         }
     }
 }
