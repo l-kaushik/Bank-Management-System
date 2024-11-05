@@ -332,4 +332,25 @@ public class Model {
 
         return pAddress.toString();
     }
+
+    public List<Client> getExistingClients() {
+        List<Client> clients = new ArrayList<>();
+        try(ResultSet resultSet = databaseDriver.fetchAllClientsData()) {
+            while (resultSet.next()) {
+                String firstName = resultSet.getString("FirstName");
+                String lastName = resultSet.getString("LastName");
+                String payeeAddress = resultSet.getString("PayeeAddress");
+                String password = resultSet.getString("Password");
+                String[] dateParts = resultSet.getString("Date").split("-");
+                LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
+                CheckingAccount checkingAccount =  (CheckingAccount) getAccountsData(payeeAddress, ClientAccountType.CHECKING);
+                SavingsAccount savingsAccount = (SavingsAccount) getAccountsData(payeeAddress, ClientAccountType.SAVINGS);
+                clients.add(new Client(firstName, lastName, payeeAddress, checkingAccount, savingsAccount, date));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return clients;
+    }
 }
