@@ -1,9 +1,6 @@
 package com.github.lkaushik.bankmanagement.Models;
 
-import com.github.lkaushik.bankmanagement.Views.AccountType;
-import com.github.lkaushik.bankmanagement.Views.ClientAccountType;
-import com.github.lkaushik.bankmanagement.Views.TransactionListener;
-import com.github.lkaushik.bankmanagement.Views.ViewFactory;
+import com.github.lkaushik.bankmanagement.Views.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -11,9 +8,7 @@ import javafx.scene.control.Alert;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Model {
     private static Model model;
@@ -27,8 +22,9 @@ public class Model {
     // Admin Data Section
     private boolean adminLoginSuccessFlag;
 
-    // Transaction Listener
+    // Listener
     private final List<TransactionListener> transactionListeners = new ArrayList<>();
+    private final List<ClientCreationListener> clientCreationListeners = new ArrayList<>();
 
     private Model() {
         this.viewFactory = new ViewFactory();
@@ -252,6 +248,22 @@ public class Model {
         notifyTransactionListeners();
     }
 
+    // Client Creation Listener's Methods
+
+    public void addClientCreationListener(ClientCreationListener listener) {
+        clientCreationListeners.add(listener);
+    }
+
+    public void removeClientCreationListener(ClientCreationListener listener) {
+        clientCreationListeners.remove(listener);
+    }
+
+    private void notifyClientCreationListeners() {
+        for(ClientCreationListener listener : new ArrayList<>(clientCreationListeners)) {
+            listener.onClientCreationCompleted();
+        }
+    }
+
     /*
     * Admin methods section
     * */
@@ -271,5 +283,53 @@ public class Model {
         finally {
             databaseDriver.closeResources(resultSet);
         }
+    }
+
+    public void initializeClientCreation(String firstName, String lastName, String address, String password,
+                                         boolean hasCheckingAccount, double checkingBalance, boolean hasSavingsAccount,
+                                         double savingsBalance) {
+
+        // accounts generation
+        SavingsAccount savingsAccount = null;
+        CheckingAccount checkingAccount = null;
+        int transactionLimit = 10;
+        double withdrawalLimit = 2000;
+        String checkingAccountNumber = AccountNumberGenerator.generateAccountNumber();
+        String savingsAccountNumber = AccountNumberGenerator.generateUniqueSavingsAccountNumber(checkingAccountNumber);
+
+        if(hasCheckingAccount) {
+            checkingAccount = new CheckingAccount(address, checkingAccountNumber, checkingBalance, transactionLimit);
+        }
+
+        if(hasSavingsAccount) {
+            savingsAccount = new SavingsAccount(address, savingsAccountNumber, checkingBalance, withdrawalLimit);
+        }
+
+        // client generation
+        Client client = new Client(firstName, lastName, address, checkingAccount, savingsAccount, LocalDate.now());
+
+        // hash password
+
+        // insert into database
+        if(databaseDriver.pushClientData(client, password)) {
+            notifyClientCreationListeners();
+            AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Account Creation", "Your account has been created.\n Payee Address: " + address);
+        }
+    }
+
+    public String generatePayeeAddress(String firstName, String secondName) {
+        StringBuilder pAddress = new StringBuilder();
+
+        pAddress.append("@");
+        pAddress.append(firstName.substring(0, 1).toLowerCase());
+        pAddress.append(secondName.substring(0, 1).toUpperCase());
+        pAddress.append(secondName.substring(1).toLowerCase());
+        Random random = new Random();
+
+        while (databaseDriver.isClient(pAddress.toString())) {
+            pAddress.append(random.nextInt(10));
+        }
+
+        return pAddress.toString();
     }
 }
