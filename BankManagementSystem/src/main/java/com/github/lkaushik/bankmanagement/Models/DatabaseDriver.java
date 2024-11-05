@@ -287,4 +287,16 @@ public class DatabaseDriver {
             preparedStatement.executeUpdate();
         }
     }
+
+    public ResultSet fetchAllClientsData() {
+        String query = "SELECT * FROM Clients";
+        ResultSet resultSet = null;
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return resultSet;
+    }
 }
