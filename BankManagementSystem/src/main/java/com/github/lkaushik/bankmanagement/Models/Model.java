@@ -339,7 +339,7 @@ public class Model {
                 : new CheckingAccount(address, "0000 0000 0000 0000", 0.0, 0);
 
         savingsAccount = (hasSavingsAccount) ?
-                new SavingsAccount(address, savingsAccountNumber, checkingBalance, withdrawalLimit)
+                new SavingsAccount(address, savingsAccountNumber, savingsBalance, withdrawalLimit)
                 : new SavingsAccount(address, "0000 0000 0000 0000", 0.0, 0.0);
 
         // client generation
