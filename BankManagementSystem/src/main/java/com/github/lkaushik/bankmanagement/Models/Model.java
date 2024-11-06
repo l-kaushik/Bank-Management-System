@@ -297,13 +297,13 @@ public class Model {
         String checkingAccountNumber = AccountNumberGenerator.generateAccountNumber();
         String savingsAccountNumber = AccountNumberGenerator.generateUniqueSavingsAccountNumber(checkingAccountNumber);
 
-        if(hasCheckingAccount) {
-            checkingAccount = new CheckingAccount(address, checkingAccountNumber, checkingBalance, transactionLimit);
-        }
+        checkingAccount = (hasCheckingAccount) ?
+                new CheckingAccount(address, checkingAccountNumber, checkingBalance, transactionLimit)
+                : new CheckingAccount(address, "0000 0000 0000 0000", 0.0, 0);
 
-        if(hasSavingsAccount) {
-            savingsAccount = new SavingsAccount(address, savingsAccountNumber, checkingBalance, withdrawalLimit);
-        }
+        savingsAccount = (hasSavingsAccount) ?
+                new SavingsAccount(address, savingsAccountNumber, checkingBalance, withdrawalLimit)
+                : new SavingsAccount(address, "0000 0000 0000 0000", 0.0, 0.0);
 
         // client generation
         Client client = new Client(firstName, lastName, address, checkingAccount, savingsAccount, LocalDate.now());
