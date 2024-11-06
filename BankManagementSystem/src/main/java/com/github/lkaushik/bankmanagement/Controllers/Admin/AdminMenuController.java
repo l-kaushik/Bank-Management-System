@@ -4,6 +4,7 @@ import com.github.lkaushik.bankmanagement.Models.Model;
 import com.github.lkaushik.bankmanagement.Views.AdminMenuOptions;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,6 +24,7 @@ public class AdminMenuController implements Initializable {
         create_client_btn.setOnAction(event -> onCreateClient());
         clients_btn.setOnAction(event -> onClients());
         deposit_btn.setOnAction(event -> onDeposit());
+        logout_btn.setOnAction(event -> onLogOut());
     }
 
     private void onCreateClient() {
@@ -35,5 +37,10 @@ public class AdminMenuController implements Initializable {
 
     private void onDeposit() {
         Model.getInstance().getViewFactory().getAdminSelectedMenuItem().set(AdminMenuOptions.DEPOSITS);
+    }
+
+    private void onLogOut() {
+        Model.getInstance().adminLogOutCleanups();
+        Model.getInstance().getViewFactory().simulateLogOut((Stage)logout_btn.getScene().getWindow());
     }
 }

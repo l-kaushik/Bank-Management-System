@@ -102,6 +102,11 @@ public class ViewFactory {
         stage.close();
     }
 
+    public void simulateLogOut(Stage stage) {
+        closeStage(stage);
+        showLoginWindow();
+    }
+
     private void createStage(FXMLLoader loader) {
         Scene scene = null;
         try{

@@ -227,6 +227,13 @@ public class Model {
         return transactions;
     }
 
+    public void clientLogOutCleanups() {
+        client.cleanup();
+        clientLoginSuccessFlag = false;
+        clientTransactionData.clear();
+        transactionListeners.clear();
+    }
+
     // Transaction Listener's Methods
 
     public void addTransactionListener(TransactionListener listener) {
@@ -352,5 +359,10 @@ public class Model {
         }
 
         return clients;
+    }
+
+    public void adminLogOutCleanups() {
+        adminLoginSuccessFlag = false;
+        clientCreationListeners.clear();
     }
 }

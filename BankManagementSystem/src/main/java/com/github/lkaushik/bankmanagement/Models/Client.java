@@ -41,4 +41,13 @@ public class Client {
     public ObjectProperty<Account> checkingAccountProperty() {return checkingAccount;}
     public ObjectProperty<Account> savingAccountProperty() {return savingsAccount;}
     public ObjectProperty<LocalDate> dateProperty() {return dateCreated;}
+
+    public void cleanup() {
+        firstName.setValue("");
+        lastName.setValue("");
+        payeeAddress.setValue("");
+        checkingAccount.setValue(null);
+        savingsAccount.setValue(null);
+        dateCreated.setValue(null);
+    }
 }
