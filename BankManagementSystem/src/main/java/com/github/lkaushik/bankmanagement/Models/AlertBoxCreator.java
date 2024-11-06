@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
@@ -13,15 +14,23 @@ import java.util.Optional;
 
 public class AlertBoxCreator {
 
-    public static Alert createMessageAlert(Alert.AlertType alertType, String title, String alertMessage) {
-        return  configureAlert(alertType, title, alertMessage, null, false,null);
+    public static Optional<ButtonType> createMessageAlert(Alert.AlertType alertType, String title, String alertMessage) {
+        return  configureAlert(alertType, title, alertMessage, null, false,null, false);
     }
 
-    public static Alert createAlert(Alert.AlertType alertType, String title, String alertMessage) {
-        return  configureAlert(alertType, title, alertMessage, null, true, null);
+    public static Optional<ButtonType> createMessageAlert(Alert.AlertType alertType, String title, String alertMessage, boolean withButtons) {
+        return  configureAlert(alertType, title, alertMessage, null, false,null, withButtons);
     }
 
-    private static Alert configureAlert(Alert.AlertType alertType, String title, String alertMessage, String headerText, boolean showDefaultGraphics, Node customGraphic) {
+    public static Optional<ButtonType> createAlert(Alert.AlertType alertType, String title, String alertMessage) {
+        return  configureAlert(alertType, title, alertMessage, null, true, null, false);
+    }
+
+    public static Optional<ButtonType> createAlert(Alert.AlertType alertType, String title, String alertMessage, boolean withButtons) {
+        return  configureAlert(alertType, title, alertMessage, null, true, null, withButtons);
+    }
+
+    private static Optional<ButtonType> configureAlert(Alert.AlertType alertType, String title, String alertMessage, String headerText, boolean showDefaultGraphics, Node customGraphic, boolean withButtons) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(headerText);
@@ -34,12 +43,11 @@ public class AlertBoxCreator {
         hBox.setAlignment(Pos.CENTER);
         hBox.setPadding(new Insets(20, 20, 20, 20));
         alert.getDialogPane().setContent(hBox);
-        alert.getDialogPane().getButtonTypes().clear();
+        if(!withButtons)
+            alert.getDialogPane().getButtonTypes().clear();
         stage.setOnCloseRequest(event -> {
             stage.close();
         });
-        alert.showAndWait();
-
-        return alert;
+        return alert.showAndWait();
     }
 }
