@@ -25,6 +25,7 @@ public class Model {
     // Listener
     private final List<TransactionListener> transactionListeners = new ArrayList<>();
     private final List<ClientCreationListener> clientCreationListeners = new ArrayList<>();
+    private final List<ClientDeletionListener> clientDeletionListeners = new ArrayList<>();
 
     private Model() {
         this.viewFactory = new ViewFactory();
@@ -288,6 +289,18 @@ public class Model {
         }
     }
 
+    // Client Deletion Listener's Methods
+
+    public void addClientDeletionListener(ClientDeletionListener listener) {
+        clientDeletionListeners.add(listener);
+    }
+
+    private void notifyClientDeletionListeners() {
+        for(ClientDeletionListener listener : new ArrayList<>(clientDeletionListeners)) {
+            listener.onClientDeletionCompleted();
+        }
+    }
+
     /*
     * Admin methods section
     * */
@@ -381,5 +394,11 @@ public class Model {
     public void adminLogOutCleanups() {
         adminLoginSuccessFlag = false;
         clientCreationListeners.clear();
+    }
+
+    public void removeClient(String address) {
+        if(databaseDriver.deleteClientData(address)) {
+            notifyClientDeletionListeners();
+        }
     }
 }
