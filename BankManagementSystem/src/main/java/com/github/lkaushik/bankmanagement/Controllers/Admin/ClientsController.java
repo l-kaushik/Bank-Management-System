@@ -2,7 +2,6 @@ package com.github.lkaushik.bankmanagement.Controllers.Admin;
 
 import com.github.lkaushik.bankmanagement.Models.Client;
 import com.github.lkaushik.bankmanagement.Models.Model;
-import com.github.lkaushik.bankmanagement.Models.Transaction;
 import com.github.lkaushik.bankmanagement.Views.ClientCellFactory;
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
@@ -19,7 +18,6 @@ public class ClientsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         clients_listview.setCellFactory(param -> new ClientCellFactory());
         List<Client> clients = Model.getInstance().getExistingClients().reversed();
-        System.out.println(clients.size());
         clients_listview.setItems(FXCollections.observableArrayList(clients));
     }
 }
