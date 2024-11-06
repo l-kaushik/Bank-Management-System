@@ -297,4 +297,32 @@ public class DatabaseDriver {
         }
         return resultSet;
     }
+
+    public boolean deleteClientData(String address) {
+        try {
+            conn.setAutoCommit(false);
+
+            deleteFromTable(address, "Clients", "PayeeAddress");
+            deleteFromTable(address, "CheckingAccounts", "Owner");
+            deleteFromTable(address, "SavingsAccounts", "Owner");
+
+            conn.commit();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            rollbackTransaction();
+            return false;
+        }finally {
+            resetAutoCommit();
+        }
+        return true;
+    }
+
+    private void deleteFromTable(String address, String tableName, String columnName) throws SQLException {
+        String query = "DELETE FROM " + tableName + " WHERE " + columnName + " = ?";
+
+        try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, address);
+            preparedStatement.executeUpdate();
+        }
+    }
 }
