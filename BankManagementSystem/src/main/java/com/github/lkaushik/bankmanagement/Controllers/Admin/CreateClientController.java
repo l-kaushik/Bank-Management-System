@@ -190,7 +190,6 @@ public class CreateClientController implements Initializable, ClientCreationList
 
     @Override
     public void onClientCreationCompleted() {
-        System.out.println("here");
         fName_fld.setText("");
         lName_fld.setText("");
         password_fld.setText("");
