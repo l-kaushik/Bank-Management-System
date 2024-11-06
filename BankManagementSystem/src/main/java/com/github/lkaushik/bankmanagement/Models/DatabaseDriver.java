@@ -265,24 +265,22 @@ public class DatabaseDriver {
     }
 
     private void pushSavingsAccount(Account account, String owner) throws SQLException {
-        if(account == null) return;
         String query = "INSERT INTO SavingsAccounts (Owner, AccountNumber, WithdrawalLimit, Balance) VALUES (?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)){
             preparedStatement.setString(1, owner);
             preparedStatement.setString(2, account.accountNumberProperty().getValue());
-            preparedStatement.setDouble(3, 2000);
+            preparedStatement.setDouble(3, ((SavingsAccount) account).withdrawalLimitProperty().getValue());
             preparedStatement.setDouble(4, account.balanceProperty().getValue());
             preparedStatement.executeUpdate();
         }
     }
 
     private void pushCheckingAccount(Account account, String owner) throws SQLException {
-        if(account == null) return;
         String query = "INSERT INTO CheckingAccounts (Owner, AccountNumber, TransactionLimit, Balance) VALUES (?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)){
             preparedStatement.setString(1, owner);
             preparedStatement.setString(2, account.accountNumberProperty().getValue());
-            preparedStatement.setInt(3, 10);
+            preparedStatement.setInt(3,  ((CheckingAccount) account).transactionLimitProperty().getValue());
             preparedStatement.setDouble(4, account.balanceProperty().getValue());
             preparedStatement.executeUpdate();
         }
