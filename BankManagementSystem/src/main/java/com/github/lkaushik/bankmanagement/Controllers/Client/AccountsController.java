@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AccountsController implements Initializable, TransactionListener {
@@ -33,6 +34,7 @@ public class AccountsController implements Initializable, TransactionListener {
         addCheckingAccountDetails();
 
         Model.getInstance().addTransactionListener(this);
+        accountVerification();
         trans_to_sv_btn.setOnAction(_ -> sendToSavings());
         trans_to_ch_btn.setOnAction(_ -> sendToChecking());
     }
@@ -77,5 +79,18 @@ public class AccountsController implements Initializable, TransactionListener {
     public void onTransactionCompleted() {
         updateUI();
         performCleanup();
+    }
+
+    private void accountVerification() {
+        String nullAccountNumber = "0000 0000 0000 0000";
+        if(Objects.equals(ch_acc_num.getText(), nullAccountNumber)) {
+            trans_to_sv_btn.setDisable(true);
+            amount_to_sv.setDisable(true);
+        }
+
+        if(Objects.equals(sv_acc_num.getText(), nullAccountNumber)) {
+            trans_to_ch_btn.setDisable(true);
+            amount_to_ch.setDisable(true);
+        }
     }
 }
