@@ -80,36 +80,53 @@ public class Model {
 
     // self funds transferring
     public void moveToChecking(String amount) {
-        performSelfTransfer(amount, ClientAccountType.CHECKING);
+        selfTransferChecks(amount, ClientAccountType.CHECKING);
     }
 
     public void moveToSavings(String amount) {
-        performSelfTransfer(amount, ClientAccountType.SAVINGS);
+        selfTransferChecks(amount, ClientAccountType.SAVINGS);
     }
 
-    private void performSelfTransfer(String amount, ClientAccountType accountType) {
+    private void selfTransferChecks(String amount, ClientAccountType receiverAccountType) {
+        if(!isAccountExists(receiverAccountType)) {
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Account not found", "You do not have a " + receiverAccountType.toString().toLowerCase() + " account.");
+            return;
+        }
+
         double parsedAmount = validateAmount(amount);
         if(parsedAmount < 1) {
             return;
         }
 
+        performSelfTransfer(amount, parsedAmount, receiverAccountType);
+    }
+
+    private void performSelfTransfer(String amount, double parsedAmount, ClientAccountType receiverAccountType) {
         double checkingBalance = client.checkingAccountProperty().getValue().balanceProperty().getValue();
         double savingBalance = client.savingAccountProperty().getValue().balanceProperty().getValue();
         String owner = client.payeeAddressProperty().getValue();
 
-        if(accountType == ClientAccountType.CHECKING && parsedAmount <= checkingBalance) {
+        if(receiverAccountType == ClientAccountType.CHECKING && parsedAmount <= savingBalance) {
             databaseDriver.performSelfTransfer(owner, checkingBalance + parsedAmount,savingBalance - parsedAmount );
         }
-        else if(accountType == ClientAccountType.SAVINGS &&  parsedAmount <= savingBalance) {
+        else if(receiverAccountType == ClientAccountType.SAVINGS &&  parsedAmount <= checkingBalance) {
             databaseDriver.performSelfTransfer(owner, checkingBalance - parsedAmount, savingBalance + parsedAmount);
         }
         else {
-            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Insufficient amount", "Your " + accountType.toString() + " account balance is insufficient for a transfer of " + parsedAmount + ".");
+            String account = (receiverAccountType == ClientAccountType.SAVINGS) ? "Checking" : "Savings";
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Insufficient amount", "Your " + account + " account balance is insufficient for a transfer of " + parsedAmount + ".");
             return;
         }
-
         updateClientDataAndNotify(owner);
-        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(parsedAmount) + " has transferred to your " + accountType.toString().toLowerCase() + " account.");
+        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(parsedAmount) + " has transferred to your " + receiverAccountType.toString().toLowerCase() + " account.");
+    }
+
+    private boolean isAccountExists(ClientAccountType accountType) {
+        String nullAccountNumber = "0000 0000 0000 0000";
+        if (Objects.requireNonNull(accountType) == ClientAccountType.CHECKING) {
+            return !Objects.equals(client.checkingAccountProperty().getValue().accountNumberProperty().getValue(), nullAccountNumber);
+        }
+        return !Objects.equals(client.savingAccountProperty().getValue().accountNumberProperty().getValue(), nullAccountNumber);
     }
 
     private void extractClientData(ResultSet resultSet) throws SQLException {
