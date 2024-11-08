@@ -40,6 +40,11 @@ Button:hover {
     -fx-border-width: 0;
 }
 
+.list-view Button{
+    -fx-pref-width: 100;
+    -fx-pref-height: 20;
+}
+
 .list-cell {
     -fx-background-color: #EEEEEE;
     -fx-padding: 20 0 20 0;
