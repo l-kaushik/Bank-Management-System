@@ -64,7 +64,7 @@ public class Model {
         ResultSet resultSet = getDatabaseDriver().getClientData(pAddress, password);
         try {
             if(resultSet.isBeforeFirst()) {
-                extractClientData(resultSet);
+                extractAndSetClientData(resultSet);
                 getAccountsAndTransactionData(pAddress);
                 this.clientLoginSuccessFlag = true;
             }
@@ -130,7 +130,7 @@ public class Model {
         return !Objects.equals(client.savingAccountProperty().getValue().accountNumberProperty().getValue(), nullAccountNumber);
     }
 
-    private void extractClientData(ResultSet resultSet) throws SQLException {
+    private void extractAndSetClientData(ResultSet resultSet) throws SQLException {
         this.client.firstNameProperty().set(resultSet.getString("FirstName"));
         this.client.lastNameProperty().set(resultSet.getString("LastName"));
         this.client.payeeAddressProperty().set(resultSet.getString("PayeeAddress"));
@@ -375,22 +375,38 @@ public class Model {
         List<Client> clients = new ArrayList<>();
         try(ResultSet resultSet = databaseDriver.fetchAllClientsData()) {
             while (resultSet.next()) {
-                String firstName = resultSet.getString("FirstName");
-                String lastName = resultSet.getString("LastName");
-                String payeeAddress = resultSet.getString("PayeeAddress");
-                String password = resultSet.getString("Password");
-                String[] dateParts = resultSet.getString("Date").split("-");
-                LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
-                CheckingAccount checkingAccount =  (CheckingAccount) getAccountsData(payeeAddress, ClientAccountType.CHECKING);
-                SavingsAccount savingsAccount = (SavingsAccount) getAccountsData(payeeAddress, ClientAccountType.SAVINGS);
-                clients.add(new Client(firstName, lastName, payeeAddress, checkingAccount, savingsAccount, date));
+                clients.add(extractClientData(resultSet));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
         return clients;
     }
+
+    public List<Client> getExistingClient(String payeeAddress) {
+        List<Client> client = new ArrayList<>();
+        try(ResultSet resultSet = databaseDriver.fetchClientData(payeeAddress)) {
+            while (resultSet.next()) {
+                client.add(extractClientData(resultSet));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return client;
+    }
+
+    private Client extractClientData(ResultSet resultSet) throws SQLException {
+        String firstName = resultSet.getString("FirstName");
+        String lastName = resultSet.getString("LastName");
+        String payeeAddress = resultSet.getString("PayeeAddress");
+        String password = resultSet.getString("Password");
+        String[] dateParts = resultSet.getString("Date").split("-");
+        LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
+        CheckingAccount checkingAccount =  (CheckingAccount) getAccountsData(payeeAddress, ClientAccountType.CHECKING);
+        SavingsAccount savingsAccount = (SavingsAccount) getAccountsData(payeeAddress, ClientAccountType.SAVINGS);
+        return new Client(firstName, lastName, payeeAddress, checkingAccount, savingsAccount, date);
+    }
+
 
     public void adminLogOutCleanups() {
         viewFactory.resetAdminSelectedMenuItem();
@@ -402,5 +418,21 @@ public class Model {
         if(databaseDriver.deleteClientData(address)) {
             notifyClientDeletionListeners();
         }
+    }
+
+    public void sendMoneyToClient(Client client, String amount) {
+        double parsedAmount = validateAmount(amount);
+        if(parsedAmount >= 1){
+            double newAmount = client.checkingAccountProperty().getValue().balanceProperty().getValue() + parsedAmount;
+            String receiver = client.payeeAddressProperty().getValue();
+            if(databaseDriver.transferFundsFromAdmin(receiver, newAmount)){
+                AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(parsedAmount) + " has been transferred to " + receiver + "'s account.");
+                notifyTransactionListeners();
+            }
+            else {
+                AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Transaction Failed", "Transfer of amount " + CurrencyFormatter.formattedCurrency(parsedAmount) + " has been failed, please try again later.");
+            }
+        }
+
     }
 }
