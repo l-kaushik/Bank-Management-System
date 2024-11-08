@@ -305,6 +305,7 @@ public class DatabaseDriver {
             deleteFromTable(address, "Clients", "PayeeAddress");
             deleteFromTable(address, "CheckingAccounts", "Owner");
             deleteFromTable(address, "SavingsAccounts", "Owner");
+            removeUserFromTransaction(address);
 
             conn.commit();
         } catch (SQLException e) {
@@ -315,6 +316,23 @@ public class DatabaseDriver {
             resetAutoCommit();
         }
         return true;
+    }
+
+    private void removeUserFromTransaction(String address) throws SQLException{
+        String query = "UPDATE Transactions SET Sender = CASE WHEN Sender = ? THEN ? ELSE Sender END, " +
+                "Receiver = CASE WHEN Receiver = ? THEN ? ELSE Receiver END WHERE Sender = ? or Receiver = ?";
+
+        String newAddress = "DeletedUser(" + address + ")";
+
+        try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, address);
+            preparedStatement.setString(2, newAddress);
+            preparedStatement.setString(3, address);
+            preparedStatement.setString(4, newAddress);
+            preparedStatement.setString(5, address);
+            preparedStatement.setString(6, address);
+            preparedStatement.executeUpdate();
+        }
     }
 
     private void deleteFromTable(String address, String tableName, String columnName) throws SQLException {
