@@ -298,6 +298,19 @@ public class DatabaseDriver {
         return resultSet;
     }
 
+    public ResultSet fetchClientData(String address) {
+        String query = "SELECT * FROM Clients WHERE PayeeAddress = ?";
+        ResultSet resultSet = null;
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, address);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return  resultSet;
+    }
+
     public boolean deleteClientData(String address) {
         try {
             conn.setAutoCommit(false);
@@ -342,5 +355,21 @@ public class DatabaseDriver {
             preparedStatement.setString(1, address);
             preparedStatement.executeUpdate();
         }
+    }
+
+    public boolean transferFundsFromAdmin(String receiver, double amount) {
+        try{
+            conn.setAutoCommit(false);
+            updateCheckingAccount(receiver, amount);
+            updateTransactionTable("Admin", receiver, amount, "Deposited by admin.");
+            conn.commit();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            rollbackTransaction();
+            return false;
+        } finally {
+            resetAutoCommit();
+        }
+        return true;
     }
 }
