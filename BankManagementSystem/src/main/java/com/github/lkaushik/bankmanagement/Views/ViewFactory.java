@@ -47,6 +47,9 @@ public class ViewFactory {
         return clientSelectedMenuItem;
     }
 
+    public void resetClientSelectedMenuItem() {
+        clientSelectedMenuItem.set(ClientMenuOptions.DASHBOARD);
+    }
     public AnchorPane getDashboardView() {
         return createView(dashboardView, "Client/Dashboard.fxml");
     }
@@ -72,6 +75,10 @@ public class ViewFactory {
 
     public ObjectProperty<AdminMenuOptions> getAdminSelectedMenuItem() {
         return adminSelectedMenuItem;
+    }
+
+    public void resetAdminSelectedMenuItem() {
+        adminSelectedMenuItem.set(AdminMenuOptions.CREATE_CLIENT);
     }
 
     public AnchorPane getCreateClientView() {
@@ -117,7 +124,7 @@ public class ViewFactory {
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/Images/bank.png"))));
-        stage.setResizable(false);
+        stage.setResizable(true);
         stage.setTitle("Trust Us Bank");
         stage.show();
     }

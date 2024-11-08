@@ -246,6 +246,7 @@ public class Model {
     }
 
     public void clientLogOutCleanups() {
+        viewFactory.resetClientSelectedMenuItem();
         client.cleanup();
         clientLoginSuccessFlag = false;
         clientTransactionData.clear();
@@ -392,6 +393,7 @@ public class Model {
     }
 
     public void adminLogOutCleanups() {
+        viewFactory.resetAdminSelectedMenuItem();
         adminLoginSuccessFlag = false;
         clientCreationListeners.clear();
     }
