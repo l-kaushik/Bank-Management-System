@@ -24,6 +24,7 @@ public class ViewFactory {
     private AnchorPane createClientView;
     private AnchorPane clientsView;
     private AnchorPane depositView;
+    private AnchorPane clientEditView;
 
     public ViewFactory() {
         this.loginAccountType = AccountType.CLIENT;
@@ -91,6 +92,10 @@ public class ViewFactory {
 
     public AnchorPane getDepositView() {
         return createView(depositView, "Admin/Deposit.fxml");
+    }
+
+    public AnchorPane getClientEditView() {
+        return createView(clientEditView, "Admin/ClientEdit.fxml");
     }
 
     public void showAdminWindow() {

@@ -14,6 +14,7 @@ public class AdminMenuController implements Initializable {
     public Button clients_btn;
     public Button deposit_btn;
     public Button logout_btn;
+    public Button client_edit_btn;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -25,6 +26,7 @@ public class AdminMenuController implements Initializable {
         clients_btn.setOnAction(event -> onClients());
         deposit_btn.setOnAction(event -> onDeposit());
         logout_btn.setOnAction(event -> onLogOut());
+        client_edit_btn.setOnAction(event -> onClientEdit());
     }
 
     private void onCreateClient() {
@@ -37,6 +39,10 @@ public class AdminMenuController implements Initializable {
 
     private void onDeposit() {
         Model.getInstance().getViewFactory().getAdminSelectedMenuItem().set(AdminMenuOptions.DEPOSITS);
+    }
+
+    private void onClientEdit() {
+        Model.getInstance().getViewFactory().getAdminSelectedMenuItem().set(AdminMenuOptions.CLIENT_EDIT);
     }
 
     private void onLogOut() {
