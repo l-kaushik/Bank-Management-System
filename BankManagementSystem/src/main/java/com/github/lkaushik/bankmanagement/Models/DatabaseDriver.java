@@ -1,5 +1,7 @@
 package com.github.lkaushik.bankmanagement.Models;
 
+import com.github.lkaushik.bankmanagement.Views.ClientAccountType;
+
 import java.sql.*;
 import java.time.LocalDate;
 
@@ -369,6 +371,44 @@ public class DatabaseDriver {
             return false;
         } finally {
             resetAutoCommit();
+        }
+        return true;
+    }
+
+    public boolean updateSavingsAccount(String payeeAddress, String accountNumber, double amount) {
+        return updateClientAccount(payeeAddress, "SavingsAccounts", "WithdrawalLimit", 2000.0, accountNumber, amount);
+    }
+
+    public boolean updateCheckingAccount(String payeeAddress, String accountNumber, double amount) {
+        return updateClientAccount(payeeAddress, "CheckingAccounts", "TransactionLimit", 10, accountNumber, amount);
+    }
+
+    private boolean updateClientAccount(String payeeAddress, String tableName, String limitColumnName, double limit, String accountNumber, double amount) {
+        String query = "UPDATE " + tableName + " SET AccountNumber = ?, " + limitColumnName + " = ?, Balance = ? WHERE Owner = ?";
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)){
+            preparedStatement.setString(1, accountNumber);
+            preparedStatement.setDouble(2, limit);
+            preparedStatement.setDouble(3, amount);
+            preparedStatement.setString(4, payeeAddress);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean updateClientPassword(String address, String password) {
+        String query = "UPDATE Clients SET Password = ? WHERE PayeeAddress = ?";
+
+        try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, password);
+            preparedStatement.setString(2, address);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
         }
         return true;
     }
