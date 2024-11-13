@@ -26,6 +26,7 @@ public class Model {
     private final List<TransactionListener> transactionListeners = new ArrayList<>();
     private final List<ClientCreationListener> clientCreationListeners = new ArrayList<>();
     private final List<ClientDeletionListener> clientDeletionListeners = new ArrayList<>();
+    private final List<AccountCreationListener> accountCreationListeners = new ArrayList<>();
 
     private Model() {
         this.viewFactory = new ViewFactory();
@@ -302,6 +303,18 @@ public class Model {
         }
     }
 
+    // Account Creation Listener
+
+    public void addAccountCreationListener(AccountCreationListener listener) {
+        accountCreationListeners.add(listener);
+    }
+
+    private void notifyAccountCreationListeners() {
+        for(AccountCreationListener listener : new ArrayList<>(accountCreationListeners)) {
+            listener.onAccountCreationCompleted();
+        }
+    }
+
     /*
     * Admin methods section
     * */
@@ -434,5 +447,44 @@ public class Model {
             }
         }
 
+    }
+
+    public void updateSavingsAccount(String payeeAddress) {
+        updateAccount(payeeAddress, ClientAccountType.SAVINGS);
+    }
+
+    public void updateCheckingAccount(String payeeAddress) {
+        updateAccount(payeeAddress, ClientAccountType.CHECKING);
+    }
+
+    private void updateAccount(String payeeAddress, ClientAccountType accountType) {
+        String accountNumber = AccountNumberGenerator.generateAccountNumber();
+        double amount = 100.0;
+        boolean success = false;
+
+        if(accountType == ClientAccountType.SAVINGS) {
+            success = databaseDriver.updateSavingsAccount(payeeAddress, accountNumber, amount);
+        }
+        else {
+            success = databaseDriver.updateCheckingAccount(payeeAddress, accountNumber, amount);
+        }
+
+        if(success) {
+            AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Account Creation ", accountType.toString().toLowerCase() + " account has been created successfully.");
+            notifyAccountCreationListeners();
+        }
+        else {
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Account creation failed", accountType.toString().toLowerCase() + " account has not been created, please try later.");
+        }
+    }
+
+    public void updatePassword(String address, String password) {
+        if(databaseDriver.updateClientPassword(address, password)) {
+            AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Password Updated", "Your password has been updated successfully!");
+            notifyAccountCreationListeners();
+        }
+        else {
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Password update failed", "Your password updating process has been failed, please try later!");
+        }
     }
 }
