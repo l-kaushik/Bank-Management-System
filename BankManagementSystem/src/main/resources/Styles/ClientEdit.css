@@ -32,7 +32,6 @@ Button:hover {
 }
 
 .values_box {
-    -fx-alignment: Center;
     -fx-spacing: 20;
     -fx-padding: 20;
     -fx-background-color: #EEEEEE;
@@ -63,4 +62,8 @@ Button:hover {
 
 .hide_btn FontAwesomeIconView {
     -fx-fill: #000000;
+}
+
+.error_lbl {
+    -fx-text-fill: #FF0000;
 }
