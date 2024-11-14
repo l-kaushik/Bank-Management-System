@@ -337,7 +337,7 @@ public class DatabaseDriver {
         String query = "UPDATE Transactions SET Sender = CASE WHEN Sender = ? THEN ? ELSE Sender END, " +
                 "Receiver = CASE WHEN Receiver = ? THEN ? ELSE Receiver END WHERE Sender = ? or Receiver = ?";
 
-        String newAddress = "DeletedUser(" + address + ")";
+        String newAddress = "REM(" + address + ")";
 
         try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, address);
