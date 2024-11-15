@@ -4,6 +4,7 @@ import com.github.lkaushik.bankmanagement.Views.ClientAccountType;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class DatabaseDriver {
     private Connection conn;
@@ -359,11 +360,17 @@ public class DatabaseDriver {
         }
     }
 
-    public boolean transferFundsFromAdmin(String receiver, double amount) {
+    public boolean transferFundsFromAdmin(String receiver, double newAmount, double actualAmount, ClientAccountType accountType) {
         try{
             conn.setAutoCommit(false);
-            updateCheckingAccount(receiver, amount);
-            updateTransactionTable("Admin", receiver, amount, "Deposited by admin.");
+
+            if (Objects.requireNonNull(accountType) == ClientAccountType.CHECKING) {
+                updateCheckingAccount(receiver, newAmount);
+            } else {
+                updateSavingsAccounts(receiver, newAmount);
+            }
+
+            updateTransactionTable("Admin", receiver, actualAmount, "Deposited by admin.");
             conn.commit();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

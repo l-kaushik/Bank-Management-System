@@ -435,17 +435,32 @@ public class Model {
 
     public void sendMoneyToClient(Client client, String amount) {
         double parsedAmount = validateAmount(amount);
-        if(parsedAmount >= 1){
-            double newAmount = client.checkingAccountProperty().getValue().balanceProperty().getValue() + parsedAmount;
-            String receiver = client.payeeAddressProperty().getValue();
-            if(databaseDriver.transferFundsFromAdmin(receiver, newAmount)){
-                AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(parsedAmount) + " has been transferred to " + receiver + "'s account.");
-                notifyTransactionListeners();
-            }
-            else {
-                AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Transaction Failed", "Transfer of amount " + CurrencyFormatter.formattedCurrency(parsedAmount) + " has been failed, please try again later.");
-            }
+        if(parsedAmount < 1) return;
+
+        CheckingAccount checkingAccount = (CheckingAccount) client.checkingAccountProperty().getValue();
+        SavingsAccount savingsAccount = (SavingsAccount) client.savingAccountProperty().getValue();
+        double newAmount;
+        String receiver = client.payeeAddressProperty().getValue();
+        ClientAccountType accountType;
+
+        // check account exists
+        if(!(Objects.equals(checkingAccount.accountNumberProperty().getValue(), Account.nullAccountNumber))) {
+            newAmount = checkingAccount.balanceProperty().getValue() + parsedAmount;
+            accountType = ClientAccountType.CHECKING;
         }
+        else {
+            newAmount = savingsAccount.balanceProperty().getValue() + parsedAmount;
+            accountType = ClientAccountType.SAVINGS;
+        }
+
+        if(databaseDriver.transferFundsFromAdmin(receiver, newAmount, parsedAmount, accountType)){
+            AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(parsedAmount) + " has been transferred to " + receiver + "'s account.");
+            notifyTransactionListeners();
+        }
+        else {
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Transaction Failed", "Transfer of amount " + CurrencyFormatter.formattedCurrency(parsedAmount) + " has been failed, please try again later.");
+        }
+
 
     }
 

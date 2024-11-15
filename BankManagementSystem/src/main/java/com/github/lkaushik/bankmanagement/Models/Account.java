@@ -9,6 +9,7 @@ public abstract class Account {
     private final StringProperty owner;
     private final StringProperty accountNumber;
     private final DoubleProperty balance;
+    public static String nullAccountNumber = "0000 0000 0000 0000";
 
     public Account(String owner, String accountNumber, double balance) {
         this.owner = new SimpleStringProperty(this, "Owner", owner);
