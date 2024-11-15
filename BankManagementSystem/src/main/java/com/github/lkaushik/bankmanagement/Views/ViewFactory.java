@@ -107,7 +107,19 @@ public class ViewFactory {
 
     public void showLoginWindow() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Login.fxml"));
-        createStage(loader);
+//        createStage(loader);
+        Scene scene = null;
+        try{
+            scene = new Scene(loader.load());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/Images/bank.png"))));
+        stage.setResizable(true);
+        stage.setTitle("Trust Us Bank");
+        stage.show();
     }
 
     public void closeStage(Stage stage) {
@@ -130,6 +142,7 @@ public class ViewFactory {
         stage.setScene(scene);
         stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/Images/bank.png"))));
         stage.setResizable(true);
+        stage.setMaximized(true);
         stage.setTitle("Trust Us Bank");
         stage.show();
     }
