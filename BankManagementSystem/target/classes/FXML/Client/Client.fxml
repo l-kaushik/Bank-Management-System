@@ -2,22 +2,20 @@
 
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.Pane?>
 
-
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <content>
-      <VBox alignment="CENTER" spacing="10.0">
-         <children>
-            <BorderPane fx:id="client_parent">
-               <left>
-                  <fx:include source="ClientMenu.fxml" />
-               </left>
-               <center>
-                  <fx:include source="Dashboard.fxml" />
-               </center>
-            </BorderPane>
-         </children>
-      </VBox>
-   </content>
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <FlowPane alignment="CENTER">
+      <Pane />
+      <BorderPane fx:id="client_parent">
+         <left>
+            <fx:include source="ClientMenu.fxml" />
+         </left>
+         <center>
+            <fx:include source="Dashboard.fxml" />
+         </center>
+      </BorderPane>
+      <Pane />
+   </FlowPane>
 </ScrollPane>
