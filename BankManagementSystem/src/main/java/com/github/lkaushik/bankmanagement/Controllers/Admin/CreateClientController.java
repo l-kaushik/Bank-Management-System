@@ -1,10 +1,14 @@
 package com.github.lkaushik.bankmanagement.Controllers.Admin;
 
 import com.github.lkaushik.bankmanagement.Models.Model;
+import com.github.lkaushik.bankmanagement.Models.PasswordManager;
 import com.github.lkaushik.bankmanagement.Views.ClientCreationListener;
+import com.github.lkaushik.bankmanagement.Views.PasswordStatus;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 
@@ -20,6 +24,9 @@ public class CreateClientController implements Initializable, ClientCreationList
     public TextField sv_amount_fld;
     public Button create_client_btn;
     public Label error_lbl;
+    public TextField password_text_fld;
+    public Button pass_toggle_btn;
+    public FontAwesomeIconView pass_toggle_icon;
 
     final String RED_BORDER = "-fx-border-color: red; -fx-border-width: 1px;";
     boolean hasError = false;
@@ -27,10 +34,12 @@ public class CreateClientController implements Initializable, ClientCreationList
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         create_client_btn.setOnAction(_ -> onCreateClient());
+        pass_toggle_btn.setOnAction(_ -> onPassToggle());
 
         Model.getInstance().addClientCreationListener(this);
 
-        resetFieldStyles(fName_fld, lName_fld, password_fld);
+        resetFieldStyles(fName_fld, lName_fld);
+        resetPasswordField();
         resetAccountCheckBoxStyles(ch_acc_box, sv_acc_box);
 
         addListenerToAccountCheckBox(ch_acc_box, ch_amount_fld);
@@ -42,8 +51,24 @@ public class CreateClientController implements Initializable, ClientCreationList
     // called when create client button is pressed
     private void onCreateClient() {
         validateData();
+        validatePassword();
         setPayeeAddress();
         initializeClientCreation();
+    }
+
+    private void onPassToggle() {
+        if(Objects.equals(pass_toggle_icon.getGlyphName(), "EYE")) {
+            pass_toggle_icon.setGlyphName("EYE_SLASH");
+            password_fld.setVisible(true);
+            password_text_fld.setVisible(false);
+            password_fld.setText(password_text_fld.getText());
+        }
+        else {
+            pass_toggle_icon.setGlyphName("EYE");
+            password_fld.setVisible(false);
+            password_text_fld.setVisible(true);
+            password_text_fld.setText(password_fld.getText());
+        }
     }
 
     // client creation process initializer
@@ -68,6 +93,18 @@ public class CreateClientController implements Initializable, ClientCreationList
         for (TextField field : fields) {
             field.setOnMouseClicked(event -> field.setStyle(""));
         }
+    }
+
+    private void resetPasswordField() {
+        password_text_fld.setOnMouseClicked(mouseEvent -> {
+            password_text_fld.setStyle("");
+            password_fld.setStyle("");
+        });
+
+        password_fld.setOnMouseClicked(mouseEvent -> {
+            password_fld.setStyle("");
+            password_text_fld.setStyle("");
+        });
     }
 
     private void resetAccountCheckBoxStyles(CheckBox... checkBoxes) {
@@ -132,6 +169,11 @@ public class CreateClientController implements Initializable, ClientCreationList
             errorCode++;
         }
 
+        if(password_text_fld.getText().isEmpty()) {
+            setFieldError(password_text_fld);
+            errorCode++;
+        }
+
         if(!ch_acc_box.isSelected() && !sv_acc_box.isSelected()) {
             setCheckBoxError(ch_acc_box);
             setCheckBoxError(sv_acc_box);
@@ -155,6 +197,21 @@ public class CreateClientController implements Initializable, ClientCreationList
         }
 
         updateErrorMessage(errorCode, checkBoxError, addressBoxError, chAmountError, svAmountError);
+    }
+
+    private void validatePassword() {
+        if(hasError) return;
+
+        PasswordStatus status = PasswordManager.validate(password_fld.getText());
+        if(status == PasswordStatus.VALID) return;
+        else if(status == PasswordStatus.TOO_SHORT) {
+            error_lbl.setText("Your password must be at least 6 characters long");
+        }
+        else {
+            error_lbl.setText("Your password should only contains a-z, A-Z, 0-9 and !@#$%^&*()");
+        }
+
+        hasError = true;
     }
 
     private void updateErrorMessage(int errorCode, boolean checkBoxError, boolean addressBoxError, boolean chAmountError, boolean svAmountError) {
@@ -193,6 +250,7 @@ public class CreateClientController implements Initializable, ClientCreationList
         fName_fld.setText("");
         lName_fld.setText("");
         password_fld.setText("");
+        password_text_fld.setText("");
         pAddress_lbl.setText("");
         ch_acc_box.setSelected(false);
         sv_acc_box.setSelected(false);
