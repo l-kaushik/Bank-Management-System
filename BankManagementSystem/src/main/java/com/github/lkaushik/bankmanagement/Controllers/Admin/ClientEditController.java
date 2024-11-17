@@ -143,7 +143,7 @@ public class ClientEditController implements Initializable, AccountCreationListe
     }
 
     private boolean showAccountConfirmationDialog() {
-        Optional<ButtonType> result = AlertBoxCreator.createAlert(Alert.AlertType.CONFIRMATION, "Account creation confirmation", "Account creation requires minimum deposit of " + CurrencyFormatter.formattedCurrency(100) + ".",true);
+        Optional<ButtonType> result = AlertBoxCreator.createAlert(Alert.AlertType.CONFIRMATION, "Account creation confirmation", "Account creation requires minimum deposit of " + CurrencyFormatter.formattedCurrencyIndian(100) + ".",true);
         return (result.isPresent() && (result.get() == ButtonType.OK));
     }
 

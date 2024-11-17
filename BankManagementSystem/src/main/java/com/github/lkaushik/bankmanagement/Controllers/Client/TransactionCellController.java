@@ -44,7 +44,7 @@ public class TransactionCellController implements Initializable {
         trans_date_lbl.setText(transaction.dateProperty().getValue().toString());
         sender_lbl.setText(transaction.senderProperty().getValue());
         receiver_lbl.setText(transaction.receiverProperty().getValue());
-        amount_lbl.setText(CurrencyFormatter.formattedCurrency(transaction.amountProperty().getValue()));
+        amount_lbl.setText(CurrencyFormatter.formattedCurrencyIndian(transaction.amountProperty().getValue()));
 
         String payeeAddress = Model.getInstance().getClient().payeeAddressProperty().getValue();
 

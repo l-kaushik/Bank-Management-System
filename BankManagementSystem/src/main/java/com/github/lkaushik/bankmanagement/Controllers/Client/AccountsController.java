@@ -43,7 +43,7 @@ public class AccountsController implements Initializable, TransactionListener {
         CheckingAccount checkingAccount = (CheckingAccount) Model.getInstance().getClient().checkingAccountProperty().getValue();
 
         ch_acc_num.setText(checkingAccount.accountNumberProperty().getValue());
-        ch_acc_bal.setText(CurrencyFormatter.formattedCurrency(checkingAccount.balanceProperty().getValue()));
+        ch_acc_bal.setText(CurrencyFormatter.formattedCurrencyIndian(checkingAccount.balanceProperty().getValue()));
         ch_acc_date.setText(Model.getInstance().getClient().dateProperty().getValue().toString());
         transaction_limit.setText(checkingAccount.transactionLimitProperty().getValue().toString());
     }
@@ -52,9 +52,9 @@ public class AccountsController implements Initializable, TransactionListener {
         SavingsAccount savingsAccount = (SavingsAccount) Model.getInstance().getClient().savingAccountProperty().getValue();
 
         sv_acc_num.setText(savingsAccount.accountNumberProperty().getValue());
-        sv_acc_bal.setText(CurrencyFormatter.formattedCurrency(savingsAccount.balanceProperty().getValue()));
+        sv_acc_bal.setText(CurrencyFormatter.formattedCurrencyIndian(savingsAccount.balanceProperty().getValue()));
         sv_acc_date.setText(Model.getInstance().getClient().dateProperty().getValue().toString());
-        withdrawal_limit.setText(CurrencyFormatter.formattedCurrency(savingsAccount.withdrawalLimitProperty().getValue()));
+        withdrawal_limit.setText(CurrencyFormatter.formattedCurrencyIndian(savingsAccount.withdrawalLimitProperty().getValue()));
     }
 
     private void sendToSavings() {

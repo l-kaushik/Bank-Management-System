@@ -120,7 +120,7 @@ public class Model {
             return;
         }
         updateClientDataAndNotify(owner);
-        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(parsedAmount) + " has transferred to your " + receiverAccountType.toString().toLowerCase() + " account.");
+        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrencyIndian(parsedAmount) + " has transferred to your " + receiverAccountType.toString().toLowerCase() + " account.");
     }
 
     private boolean isAccountExists(ClientAccountType accountType) {
@@ -197,7 +197,7 @@ public class Model {
             return;
         }
         updateClientDataAndNotify(sender);
-        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(amount) + " has transferred to " + receiver);
+        AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrencyIndian(amount) + " has transferred to " + receiver);
     }
 
     private Account getAccountsData(String pAddress, ClientAccountType accountType) {
@@ -454,11 +454,11 @@ public class Model {
         }
 
         if(databaseDriver.transferFundsFromAdmin(receiver, newAmount, parsedAmount, accountType)){
-            AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrency(parsedAmount) + " has been transferred to " + receiver + "'s account.");
+            AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Transaction Completed", CurrencyFormatter.formattedCurrencyIndian(parsedAmount) + " has been transferred to " + receiver + "'s account.");
             notifyTransactionListeners();
         }
         else {
-            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Transaction Failed", "Transfer of amount " + CurrencyFormatter.formattedCurrency(parsedAmount) + " has been failed, please try again later.");
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Transaction Failed", "Transfer of amount " + CurrencyFormatter.formattedCurrencyIndian(parsedAmount) + " has been failed, please try again later.");
         }
 
 

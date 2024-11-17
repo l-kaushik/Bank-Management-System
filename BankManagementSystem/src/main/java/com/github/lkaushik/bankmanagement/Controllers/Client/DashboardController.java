@@ -58,12 +58,12 @@ public class DashboardController implements Initializable, TransactionListener {
 
     private void updateDynamicData() {
         // Updates the changeable data.
-        savings_bal.setText(CurrencyFormatter.formattedCurrency(savingsAccount.balanceProperty().getValue()));
-        checking_bal.setText(CurrencyFormatter.formattedCurrency(checkingAccount.balanceProperty().getValue()));
+        savings_bal.setText(CurrencyFormatter.formattedCurrencyIndian(savingsAccount.balanceProperty().getValue()));
+        checking_bal.setText(CurrencyFormatter.formattedCurrencyIndian(checkingAccount.balanceProperty().getValue()));
 
         // income expenses
-        income_lbl.setText(CurrencyFormatter.formattedCurrency(getIncome()));
-        expense_lbl.setText(CurrencyFormatter.formattedCurrency(getExpenses()));
+        income_lbl.setText(CurrencyFormatter.formattedCurrencyIndian(getIncome()));
+        expense_lbl.setText(CurrencyFormatter.formattedCurrencyIndian(getExpenses()));
 
         // transactions
         transaction_listview.setCellFactory(param -> new TransactionCellFactory());

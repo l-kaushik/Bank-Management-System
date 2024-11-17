@@ -6,6 +6,10 @@ import java.util.Locale;
 
 public class CurrencyFormatter {
 
+    public static String formattedCurrencyIndian(double currency) {
+        return formattedCurrency(currency, "en", "IN");
+    }
+
     public static String formattedCurrency(double currency, String languageCode, String countryCode) {
         Locale locale = Locale.of(languageCode, countryCode);
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(locale);
