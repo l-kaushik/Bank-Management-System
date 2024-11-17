@@ -4,8 +4,11 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
@@ -20,8 +23,18 @@
         <Label fx:id="payee_address_lbl" text="Payee Address:" />
         <TextField fx:id="payee_address_fld" styleClass="input_field" />
         <Label text="Password:" />
-        <TextField fx:id="password_fld" styleClass="input_field" />
+        <HBox alignment="CENTER">
+            <StackPane HBox.hgrow="ALWAYS">
+                <TextField fx:id="password_txt_fld" styleClass="input_field" />
+                <PasswordField fx:id="password_fld" styleClass="input_field" />
+            </StackPane>
+            <Button fx:id="pass_toggle_btn" alignment="CENTER" mnemonicParsing="false" styleClass="toggle_pass_btn">
+                <graphic>
+                    <FontAwesomeIconView fx:id="toggle_icon" glyphName="EYE_SLASH" size="20" />
+                </graphic>
+            </Button>
+        </HBox>
         <Button fx:id="login_btn" mnemonicParsing="false" text="Login" />
-        <Label fx:id="error_lbl" styleClass="error_lbl"/>
+        <Label fx:id="error_lbl" styleClass="error_lbl" />
     </VBox>
 </AnchorPane>
