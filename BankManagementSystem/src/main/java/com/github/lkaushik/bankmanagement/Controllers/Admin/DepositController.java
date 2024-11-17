@@ -65,6 +65,7 @@ public class DepositController implements Initializable, ClientDeletionListener,
 
     @Override
     public void onTransactionCompleted() {
+        updateList();
         amount_fld.setText("");
     }
 }
