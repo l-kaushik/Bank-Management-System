@@ -72,3 +72,12 @@
 .error_lbl {
     -fx-text-fill: #FF0000;
 }
+
+.toggle_pass_btn {
+    -fx-background-color: rgba(0, 0, 0, 0);
+    -fx-pref-width: 20;
+}
+
+.toggle_pass_btn FontAwesomeIconView {
+    -fx-fill: linear-gradient(to right, #132A13, #253F25);
+}
