@@ -7,6 +7,8 @@ import com.github.lkaushik.bankmanagement.Views.PasswordStatus;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
+
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -29,6 +31,7 @@ public class CreateClientController implements Initializable, ClientCreationList
     public FontAwesomeIconView pass_toggle_icon;
 
     final String RED_BORDER = "-fx-border-color: red; -fx-border-width: 1px;";
+    public StackPane pass_stack;
     boolean hasError = false;
 
     @Override
@@ -46,6 +49,13 @@ public class CreateClientController implements Initializable, ClientCreationList
         addListenerToAccountCheckBox(sv_acc_box, sv_amount_fld);
 
         addNumericValueVerifier(ch_amount_fld);
+
+        addTextSyncListener(password_fld, password_text_fld);
+        addTextSyncListener(password_text_fld, password_fld);
+
+        toggleVisibility(password_fld, true);
+        toggleVisibility(password_text_fld, false);
+
     }
 
     // called when create client button is pressed
@@ -59,16 +69,32 @@ public class CreateClientController implements Initializable, ClientCreationList
     private void onPassToggle() {
         if(Objects.equals(pass_toggle_icon.getGlyphName(), "EYE")) {
             pass_toggle_icon.setGlyphName("EYE_SLASH");
-            password_fld.setVisible(true);
-            password_text_fld.setVisible(false);
+            toggleVisibility(password_fld, true);
+            toggleVisibility(password_text_fld, false);
+
             password_fld.setText(password_text_fld.getText());
         }
         else {
             pass_toggle_icon.setGlyphName("EYE");
-            password_fld.setVisible(false);
-            password_text_fld.setVisible(true);
+            toggleVisibility(password_fld, false);
+            toggleVisibility(password_text_fld, true);
             password_text_fld.setText(password_fld.getText());
         }
+    }
+
+    private void toggleVisibility(TextInputControl field, boolean b) {
+        field.setVisible(b);
+        field.setManaged(b);    // include/exclude from layout
+        field.setFocusTraversable(b);   // exclude from tab navigation
+    }
+
+    // add change listener to password fields
+    private void addTextSyncListener(TextInputControl source, TextInputControl target) {
+        source.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            if(!target.getText().equals(newValue)) {
+                target.setText(newValue);
+            }
+        });
     }
 
     // client creation process initializer
@@ -205,7 +231,7 @@ public class CreateClientController implements Initializable, ClientCreationList
         PasswordStatus status = PasswordManager.validate(password_fld.getText());
         if(status == PasswordStatus.VALID) return;
         else if(status == PasswordStatus.TOO_SHORT) {
-            error_lbl.setText("Your password must be at least 6 characters long");
+            error_lbl.setText("Your password must be at least 8 characters long");
         }
         else {
             error_lbl.setText("Your password should only contains a-z, A-Z, 0-9 and !@#$%^&*()");
