@@ -91,7 +91,7 @@ public class ClientEditController implements Initializable, AccountCreationListe
             error_lbl.setText("");
         }
         else if(status == PasswordStatus.TOO_SHORT){
-            error_lbl.setText("Your password must be at least 6 characters long");
+            error_lbl.setText("Your password must be at least 8 characters long");
         }
         else {
             error_lbl.setText("Your password should only contains a-z, A-Z, 0-9 and !@#$%^&*()");
