@@ -370,7 +370,7 @@ public class DatabaseDriver {
                 updateSavingsAccounts(receiver, newAmount);
             }
 
-            updateTransactionTable("Admin", receiver, actualAmount, "Deposited by admin.");
+            updateTransactionTable("Admin", receiver, actualAmount, "deposited");
             conn.commit();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

@@ -21,7 +21,7 @@
         <TextField fx:id="lName_fld" />
         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" />
         <HBox alignment="CENTER" prefHeight="42.0" prefWidth="296.0">
-            <StackPane fx:id="pass_stack" prefHeight="42.0" prefWidth="254.0">
+            <StackPane prefHeight="42.0" prefWidth="254.0">
                 <TextField fx:id="password_text_fld" prefWidth="238.0" />
                 <PasswordField fx:id="password_fld" />
             </StackPane>

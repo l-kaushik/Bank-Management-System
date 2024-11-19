@@ -31,7 +31,6 @@ public class CreateClientController implements Initializable, ClientCreationList
     public FontAwesomeIconView pass_toggle_icon;
 
     final String RED_BORDER = "-fx-border-color: red; -fx-border-width: 1px;";
-    public StackPane pass_stack;
     boolean hasError = false;
 
     @Override

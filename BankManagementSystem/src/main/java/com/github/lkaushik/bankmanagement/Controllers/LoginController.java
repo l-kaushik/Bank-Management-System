@@ -4,15 +4,9 @@ import com.github.lkaushik.bankmanagement.Models.Model;
 import com.github.lkaushik.bankmanagement.Views.AccountType;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -37,21 +31,45 @@ public class LoginController implements Initializable {
         login_btn.setOnAction(event -> onLogin());
         acc_selector.setOnAction(_ -> onAccountSelector());
         pass_toggle_btn.setOnAction(_ -> onPasswordToggle());
+
+        // adding change listener to both password fields
+        addTextSyncListener(password_fld, password_txt_fld);
+        addTextSyncListener(password_txt_fld, password_fld);
+
+        // setting default visibility
+        toggleVisibility(password_fld, true);
+        toggleVisibility(password_txt_fld, false);
     }
 
     private void onPasswordToggle() {
-        if(Objects.equals(toggle_icon.getGlyphName(), "EYE_SLASH")) {
-            toggle_icon.setGlyphName("EYE");
-            password_txt_fld.setVisible(true);
-            password_fld.setVisible(false);
-            password_txt_fld.setText(password_fld.getText());
-        }
-        else {
+        if(Objects.equals(toggle_icon.getGlyphName(), "EYE")) {
             toggle_icon.setGlyphName("EYE_SLASH");
-            password_txt_fld.setVisible(false);
-            password_fld.setVisible(true);
+            toggleVisibility(password_fld, true);
+            toggleVisibility(password_txt_fld, false);
+
             password_fld.setText(password_txt_fld.getText());
         }
+        else {
+            toggle_icon.setGlyphName("EYE");
+            toggleVisibility(password_fld, false);
+            toggleVisibility(password_txt_fld, true);
+            password_txt_fld.setText(password_fld.getText());
+        }
+    }
+
+    private void toggleVisibility(TextInputControl field, boolean b) {
+        field.setVisible(b);
+        field.setManaged(b);    // include/exclude from layout
+        field.setFocusTraversable(b);   // exclude from tab navigation
+    }
+
+    // add change listener to password fields
+    private void addTextSyncListener(TextInputControl source, TextInputControl target) {
+        source.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            if(!target.getText().equals(newValue)) {
+                target.setText(newValue);
+            }
+        });
     }
 
     private void onAccountSelector() {
