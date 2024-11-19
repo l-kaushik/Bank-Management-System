@@ -12,10 +12,58 @@ public class DatabaseDriver {
     public DatabaseDriver() {
         try{
             this.conn = DriverManager.getConnection("jdbc:sqlite:trustusbank.db");
+
+            // check if database is empty
+            if(!isDatabaseInitialized()) {
+                System.out.println("Database is not initialized\nInitializing new database.");
+                initializeDatabase();
+            }
         } catch(SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error connecting to database: " + e.getMessage());
         }
     }
+
+    private boolean isDatabaseInitialized() {
+        String query = "SELECT name FROM sqlite_master WHERE type='table' AND name='Admins'";
+        try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return  resultSet.next();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    private void initializeDatabase() {
+        try(Statement statement = conn.createStatement()) {
+            for(String query : DatabaseCreator.tableCreationQueries) {
+                statement.executeUpdate(query);
+            }
+            createAdminAccount();
+            System.out.println("Database initialized successfully.");
+        } catch (SQLException e) {
+            System.out.println("Failed to initialize database: " + e.getMessage());
+        }
+    }
+
+    private void createAdminAccount() {
+        String query = "INSERT INTO Admins(Username, Password) VALUES(?, ?)";
+        try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, "Admin");
+            preparedStatement.setString(2, "123456");
+
+            // Execute the query and check the result
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Admin account created successfully.");
+            } else {
+                System.out.println("Failed to create admin account.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error creating admin account: " + e.getMessage());
+        }
+    }
+
 
     /*
     * Client Section
