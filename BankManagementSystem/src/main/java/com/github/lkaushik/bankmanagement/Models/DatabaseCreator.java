@@ -42,6 +42,7 @@ public class DatabaseCreator {
                     "LastName"      TEXT NOT NULL,
                     "PayeeAddress"  TEXT NOT NULL,
                     "Password"      TEXT NOT NULL,
+                    "Salt"          TEXT NOT NULL,
                     "Date"  TEXT NOT NULL,
                     PRIMARY KEY("ID" AUTOINCREMENT)
             )

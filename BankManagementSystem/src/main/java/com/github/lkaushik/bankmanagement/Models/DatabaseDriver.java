@@ -84,6 +84,24 @@ public class DatabaseDriver {
         return resultSet;
     }
 
+    public String getClientPasswordSalt(String pAddress) {
+        String query = "SELECT Salt FROM Clients WHERE PayeeAddress = ?";
+        try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, pAddress);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getString("Salt");
+            }
+            else {
+                return "";
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+            return "";
+        }
+    }
+
     private ResultSet getAccountData(String owner, String tableName) {
         PreparedStatement preparedStatement;
         ResultSet resultSet = null;
@@ -284,13 +302,13 @@ public class DatabaseDriver {
         }
     }
 
-    public boolean pushClientData(Client client, String password) {
+    public boolean pushClientData(Client client, String password, String salt) {
         try {
             conn.setAutoCommit(false);
 
             pushCheckingAccount(client.checkingAccountProperty().getValue(), client.payeeAddressProperty().getValue());
             pushSavingsAccount(client.savingAccountProperty().getValue(), client.payeeAddressProperty().getValue());
-            pushClient(client, password);
+            pushClient(client, password, salt);
 
             conn.commit();
             return true;
@@ -303,14 +321,15 @@ public class DatabaseDriver {
         }
     }
 
-    private void pushClient(Client client, String password) throws SQLException {
-        String query = "INSERT INTO Clients (FirstName, LastName, PayeeAddress, Password, Date) VALUES (?, ?, ?, ?, ?)";
+    private void pushClient(Client client, String password, String salt) throws SQLException {
+        String query = "INSERT INTO Clients (FirstName, LastName, PayeeAddress, Password, Salt, Date) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)){
             preparedStatement.setString(1, client.firstNameProperty().getValue());
             preparedStatement.setString(2, client.lastNameProperty().getValue());
             preparedStatement.setString(3, client.payeeAddressProperty().getValue());
             preparedStatement.setString(4, password);
-            preparedStatement.setString(5, LocalDate.now().toString());
+            preparedStatement.setString(5, salt);
+            preparedStatement.setString(6, LocalDate.now().toString());
             preparedStatement.executeUpdate();
         }
     }

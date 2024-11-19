@@ -62,6 +62,9 @@ public class Model {
     public Client getClient() {return client;}
 
     public void evaluateClientCred(String pAddress, String password) {
+        String salt = getDatabaseDriver().getClientPasswordSalt(pAddress);
+        if(salt.isEmpty()) return;
+        password = PasswordManager.hashPassword(password, salt);
         ResultSet resultSet = getDatabaseDriver().getClientData(pAddress, password);
         try {
             if(resultSet.isBeforeFirst()) {
@@ -360,9 +363,12 @@ public class Model {
         Client client = new Client(firstName, lastName, address, checkingAccount, savingsAccount, LocalDate.now());
 
         // hash password
+        byte[] saltBytes = PasswordManager.generateSalt();
+        password = PasswordManager.hashPassword(password, saltBytes);
+        String salt = PasswordManager.byteToString(Objects.requireNonNull(saltBytes));
 
         // insert into database
-        if(databaseDriver.pushClientData(client, password)) {
+        if(databaseDriver.pushClientData(client, password, salt)) {
             notifyClientCreationListeners();
             AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Account Creation", "Your account has been created.\n Payee Address: " + address);
         }
