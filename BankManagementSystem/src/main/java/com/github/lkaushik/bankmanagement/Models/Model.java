@@ -500,7 +500,11 @@ public class Model {
     }
 
     public void updatePassword(String address, String password) {
-        if(databaseDriver.updateClientPassword(address, password)) {
+        byte[] saltByte = PasswordManager.generateSalt();
+        password = PasswordManager.hashPassword(password, saltByte);
+        String salt = PasswordManager.byteToString(Objects.requireNonNull(saltByte));
+
+        if(databaseDriver.updateClientPassword(address, password, salt)) {
             AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Password Updated", "Your password has been updated successfully!");
             notifyAccountCreationListeners();
         }

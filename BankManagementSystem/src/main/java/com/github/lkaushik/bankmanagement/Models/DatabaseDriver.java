@@ -473,12 +473,13 @@ public class DatabaseDriver {
         return true;
     }
 
-    public boolean updateClientPassword(String address, String password) {
-        String query = "UPDATE Clients SET Password = ? WHERE PayeeAddress = ?";
+    public boolean updateClientPassword(String address, String password, String salt) {
+        String query = "UPDATE Clients SET Password = ?, Salt = ? WHERE PayeeAddress = ?";
 
         try(PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, password);
-            preparedStatement.setString(2, address);
+            preparedStatement.setString(2, salt);
+            preparedStatement.setString(3, address);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
