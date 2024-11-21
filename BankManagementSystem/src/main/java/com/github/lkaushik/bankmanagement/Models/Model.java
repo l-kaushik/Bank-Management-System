@@ -512,4 +512,15 @@ public class Model {
             AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Password update failed", "Your password updating process has been failed, please try later!");
         }
     }
+
+    public void sendReport(String message) {
+
+        String sender = client.payeeAddressProperty().getValue();
+        if(databaseDriver.insertReport(sender, message)) {
+            AlertBoxCreator.createAlert(Alert.AlertType.INFORMATION, "Report status", "Report has been sent successfully, contact bank for future enquires.");
+        }
+        else {
+            AlertBoxCreator.createAlert(Alert.AlertType.ERROR, "Report status", "Failed to send your report, try again later.");
+        }
+    }
 }

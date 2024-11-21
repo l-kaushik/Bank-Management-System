@@ -37,7 +37,7 @@ public class DatabaseDriver {
     private void initializeDatabase() {
         try(Statement statement = conn.createStatement()) {
             for(String query : DatabaseCreator.tableCreationQueries) {
-                statement.executeUpdate(query);
+                statement.execute(query);
             }
             createAdminAccount();
             System.out.println("Database initialized successfully.");
@@ -480,6 +480,21 @@ public class DatabaseDriver {
             preparedStatement.setString(1, password);
             preparedStatement.setString(2, salt);
             preparedStatement.setString(3, address);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean insertReport(String address, String message) {
+        String query = "INSERT INTO Reports(Sender, Date, Message) VALUES(?, ?, ?)";
+
+        try(PreparedStatement preparedStatement = conn.prepareStatement((query))) {
+            preparedStatement.setString(1, address);
+            preparedStatement.setString(2, LocalDate.now().toString());
+            preparedStatement.setString(3, message);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

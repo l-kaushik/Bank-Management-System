@@ -60,11 +60,22 @@ public class DatabaseCreator {
             )
             """;
 
+    private static final String ReportTableQuery = """
+            CREATE TABLE "Reports" (
+                "ID" INTEGER NOT NULL,
+                "Sender"    TEXT NOT NULL,
+                "Date"      TEXT NOT NULL,
+                "Message"   TEXT,
+                PRIMARY KEY("ID" AUTOINCREMENT)
+            )
+            """;
+
     public static final String[] tableCreationQueries = {
             AdminTableQuery,
             ClientsTableQuery,
             SavingsAccountTableQuery,
             CheckingAccountsTableQuery,
-            TransactionsTableQuery
+            TransactionsTableQuery,
+            ReportTableQuery
     };
 }
