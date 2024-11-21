@@ -128,6 +128,7 @@ public class ViewFactory {
 
     public void simulateLogOut(Stage stage) {
         closeStage(stage);
+        setLoginAccountType(AccountType.CLIENT);
         showLoginWindow();
     }
 
